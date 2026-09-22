@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Campus Library - Main Server Central Desk</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    @media print {
+      body * { visibility: hidden !important; }
+      #printArea, #printArea * { visibility: visible !important; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP GLOBAL NAVBAR -->
+  <header class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-xl shadow-lg shadow-indigo-500/20">
+        📚
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-display text-base font-bold text-white tracking-tight">Smart Library Portal</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">RV University</span>
+        </div>
+        <p class="text-[11px] text-slate-400">Zero-Waste Remote Verification & Central Server</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-3">
+      <div class="bg-slate-900 border border-slate-800 p-1 rounded-xl flex items-center text-xs">
+        <button id="btnNavStudent" onclick="switchMainPortal('student')" class="px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white transition cursor-pointer">
+          Student Desk
+        </button>
+        <button id="btnNavTeacher" onclick="handleTeacherNavClick()" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
+          <span>🔒 Main Server Desk</span>
+          <span id="teacherBadgeCount" class="hidden px-1.5 py-0.2 rounded-full text-[10px] bg-rose-500 text-white font-bold">0</span>
+        </button>
+      </div>
+
+      <button onclick="toggleAdminModal(true)" class="p-2 md:px-3 md:py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer">
+        <span>⚙️</span>
+        <span class="hidden md:inline">Dev Database</span>
+      </button>
+
+      <div id="userHeaderArea" class="hidden items-center gap-2 pl-2 border-l border-slate-800">
+        <span id="lblStudentHeader" class="text-xs font-mono text-indigo-400 font-bold hidden md:inline"></span>
+        <button onclick="handleLogout()" class="text-xs bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 px-2.5 py-1.5 rounded-lg transition font-medium cursor-pointer">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SMS NOTIFICATION TOAST -->
+  <div id="smsToast" class="fixed top-20 right-4 max-w-sm w-full bg-slate-950 border-2 border-indigo-500 text-white rounded-2xl p-4 shadow-2xl z-50 transform translate-y-[-150%] transition-transform duration-300 flex items-start gap-3">
+    <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-lg flex-shrink-0">
+      💬
+    </div>
+    <div class="flex-1">
+      <div class="flex items-center justify-between">
+        <span id="smsToastHeader" class="text-[11px] font-bold uppercase tracking-wider text-indigo-400">Main Server Gateway</span>
+        <span class="text-[10px] text-slate-500">Just now</span>
+      </div>
+      <p id="smsToastBody" class="text-xs text-slate-200 mt-1 leading-relaxed"></p>
+      <button id="smsQuickFillBtn" class="mt-2 text-[11px] font-bold text-indigo-400 hover:text-indigo-300 underline cursor-pointer">
+        Auto-paste OTP into box
+      </button>
+    </div>
+    <button onclick="hideSmsToast()" class="text-slate-400 hover:text-white text-sm font-bold cursor-pointer">&times;</button>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-1 flex flex-col p-4 md:p-8 max-w-7xl mx-auto w-full">
+
+    <!-- PORTAL 1: STUDENT VIEW -->
+    <div id="studentContainer" class="flex-1 flex flex-col items-center">
+
+      <!-- AUTH BOX -->
+      <div id="authSection" class="w-full max-w-md bg-slate-950 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl my-auto">
+        <div class="text-center mb-6">
+          <h2 class="font-display text-2xl font-bold text-white">Student Library Access</h2>
+          <p class="text-xs text-slate-400 mt-1">Verify your university credentials to verify books remotely</p>
+        </div>
+
+        <div class="grid grid-cols-2 bg-slate-900 p-1 rounded-xl mb-6 text-xs font-semibold">
+          <button type="button" id="tabBtnLogin" onclick="setAuthTab('login')" class="py-2.5 rounded-lg bg-indigo-600 text-white transition shadow cursor-pointer">
+            Student Sign In
+          </button>
+          <button type="button" id="tabBtnRegister" onclick="setAuthTab('register')" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition cursor-pointer">
+            First-Time Setup
+          </button>
+        </div>
+
+        <div id="authAlert" class="hidden mb-4 p-3 rounded-xl text-xs font-medium border"></div>
+
+        <!-- SIGN IN BLOCK -->
+        <div id="boxLogin" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Student USN ID</label>
+            <input type="text" id="loginStudentId" placeholder="ENTER USN ID NO" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm font-mono text-white uppercase focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Personal Password</label>
+            <div class="relative">
+              <input type="password" id="loginPassword" placeholder="••••••••" class="w-full pl-4 pr-11 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <button type="button" onclick="togglePasswordVisibility('loginPassword', 'eyeIconLogin')" class="absolute right-3 top-2.5 text-slate-400 hover:text-indigo-400 focus:outline-none cursor-pointer">
+                <span id="eyeIconLogin">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" onclick="executeStudentLogin()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm rounded-xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-white">
+            Sign In & Browse Books
+          </button>
+
+          <div class="text-center pt-2">
+            <span class="text-[11px] text-slate-400">First time using the portal? </span>
+            <button type="button" onclick="setAuthTab('register')" class="text-[11px] font-bold text-indigo-400 hover:underline cursor-pointer">
+              First-Time Setup
+            </button>
+          </div>
+        </div>
+
+        <!-- FIRST-TIME SETUP WRAPPER -->
+        <div id="regStepWrapper" style="display: none;">
+          <div id="boxRegStep1" class="space-y-4">
+            <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-[11px] text-indigo-300 leading-relaxed">
+              <strong>Institutional Verification:</strong> Passwords can only be configured once. Once established, you must use that password every time you sign in.
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Student USN ID</label>
+              <input type="text" id="regStudentId" placeholder="ENTER USN ID NO" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm font-mono text-white uppercase focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Mobile Number</label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-2.5 text-sm text-slate-500 font-medium">+91</span>
+                <input type="tel" id="regMobile" pattern="[0-9]{10}" placeholder="10-digit mobile number" class="w-full pl-12 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              </div>
+            </div>
+
+            <button type="button" onclick="executeRegStep1()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 font-semibold text-sm rounded-xl transition shadow-lg shadow-emerald-600/30 cursor-pointer text-white">
+              Verify ID & Send OTP SMS
+            </button>
+          </div>
+
+          <div id="boxRegStep2" class="space-y-4" style="display: none;">
+            <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-300">
+              Enter the 4-digit code dispatched to: <span id="lblMobileVerifyTarget" class="font-mono font-bold text-white"></span>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">4-Digit Mobile OTP</label>
+              <input type="text" id="inputOtp" maxlength="4" placeholder="••••" class="w-full text-center tracking-[0.5em] text-lg font-mono px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Create Permanent Password</label>
+              <div class="relative">
+                <input type="password" id="regNewPassword" placeholder="e.g. Secret@123" class="w-full pl-4 pr-11 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <button type="button" onclick="togglePasswordVisibility('regNewPassword', 'eyeIconRegNew')" class="absolute right-3 top-2.5 text-slate-400 hover:text-indigo-400 focus:outline-none cursor-pointer">
+                  <span id="eyeIconRegNew">👁️</span>
+                </button>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">Must contain at least 1 letter, 1 number, and 1 special character (!@#$%^&*).</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Confirm Permanent Password</label>
+              <div class="relative">
+                <input type="password" id="regConfirmPassword" placeholder="Re-enter password" class="w-full pl-4 pr-11 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <button type="button" onclick="togglePasswordVisibility('regConfirmPassword', 'eyeIconRegConf')" class="absolute right-3 top-2.5 text-slate-400 hover:text-indigo-400 focus:outline-none cursor-pointer">
+                  <span id="eyeIconRegConf">👁️</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex gap-2">
+              <button type="button" onclick="cancelOtpStep()" class="w-1/3 py-2.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl transition cursor-pointer text-white">
+                Back
+              </button>
+              <button type="button" onclick="executeRegFinalize()" class="w-2/3 py-2.5 bg-emerald-600 hover:bg-emerald-500 font-semibold text-xs rounded-xl transition shadow-lg shadow-emerald-600/30 cursor-pointer text-white">
+                Lock & Save Password
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGGED-IN STUDENT DASHBOARD -->
+      <div id="studentDashboard" class="w-full space-y-6" style="display: none;">
+        <div class="bg-gradient-to-r from-slate-950 via-indigo-950/70 to-slate-950 border border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-2xl">
+          <div class="max-w-3xl relative z-10">
+            <span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-full text-xs font-semibold uppercase tracking-wider">
+              Structured Innovation Remote Verification
+            </span>
+            <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-3">
+              Welcome, <span id="dashStudentName" class="text-indigo-400">Student</span>!
+            </h2>
+            <p class="text-slate-300 text-xs md:text-sm mt-2 leading-relaxed">
+              Verify book presence remotely. Click "Ask Teacher to Hold" to dispatch an immediate verification check directly to the 4th Floor Main Server Counter.
+            </p>
+
+            <div class="mt-4 flex flex-wrap gap-2 text-xs">
+              <div class="bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                <span class="text-slate-400">USN ID:</span>
+                <span id="dashStudentId" class="font-mono font-bold text-indigo-400">--</span>
+              </div>
+              <div class="bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                <span class="text-slate-400">Mobile:</span>
+                <span id="dashStudentMobile" class="font-mono font-bold text-slate-200">--</span>
+              </div>
+              <button onclick="requestNoDuesModal()" class="bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600 text-emerald-300 hover:text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1 cursor-pointer">
+                <span>🎓</span>
+                <span>Get "NO DUES" Clearance</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <span>⚡</span>
+                <span>My Live Requests to Main Server</span>
+              </h3>
+              <span id="badgeLiveReqCount" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">0 Active</span>
+            </div>
+            <div id="studentRequestList" class="space-y-2.5 max-h-48 overflow-y-auto pr-1"></div>
+          </div>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                  <span>📖</span>
+                  <span>Currently Borrowed Books</span>
+                </h3>
+                <span id="badgeBorrowedCount" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">0 Borrowed</span>
+              </div>
+              <div id="studentBorrowedList" class="space-y-2 max-h-36 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4 shadow">
+          <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+            <div class="relative w-full md:w-96">
+              <input type="text" id="studentSearchQuery" oninput="renderBookCatalog()" placeholder="Search by Book Title or Author..." class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+            <div class="flex items-center gap-2 w-full md:w-auto">
+              <select id="filterAvailability" onchange="renderBookCatalog()" class="w-full md:w-auto px-3 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none">
+                <option value="ALL">Show All Inventory</option>
+                <option value="YES">In Library (Available)</option>
+                <option value="NO">Checked Out (Unavailable)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2"></div>
+
+          <div id="catalogEmptyMsg" class="hidden text-center py-12 text-slate-500">
+            <p class="text-sm font-semibold">No books match your search.</p>
+            <p class="text-xs mt-1">Try another keyword or author name.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PORTAL 2: TEACHER DESK VIEW (MAIN SERVER RVUM26CSE063) -->
+    <div id="teacherContainer" class="w-full space-y-6" style="display: none;">
+      <div class="bg-slate-950 border border-slate-800 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">
+              CENTRAL MAIN SERVER
+            </span>
+            <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+              Main Server Terminal: RVUM26CSE063 (Varun)
+            </span>
+          </div>
+          <h2 class="font-display text-2xl font-bold text-white mt-1">Live Campus Book Request Stream</h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Incoming book hold requests from <strong>any student</strong> in the college route directly to this central screen.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-right">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">Pending Queue</span>
+            <span id="teacherPendingBadge" class="text-lg font-bold text-amber-400 font-mono">0</span>
+          </div>
+          <button onclick="lockTeacherDesk()" class="px-3 py-2 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-semibold rounded-xl transition cursor-pointer">
+            Lock Server Desk
+          </button>
+        </div>
+      </div>
+
+      <!-- DIRECT INVENTORY INTAKE PANEL FOR TEACHER -->
+      <div class="bg-slate-950 border border-indigo-500/40 rounded-2xl p-5 shadow">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <span>➕</span>
+            <span>Direct Library Catalog Intake (Add New Books)</span>
+          </h3>
+          <span class="text-[10px] font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">Main Server Privileged</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-3">Add textbooks directly into the live college inventory without accessing developer menus.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <input type="text" id="teacherBookTitle" placeholder="Book Title (e.g. Modern Operating Systems)" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
+          <input type="text" id="teacherBookAuthor" placeholder="Author (e.g. Andrew S. Tanenbaum)" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
+          <select id="teacherBookStatus" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
+            <option value="true">In Library (Available)</option>
+            <option value="false">Checked Out (Unavailable)</option>
+          </select>
+          <button type="button" onclick="executeTeacherAddBook()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl transition cursor-pointer shadow-lg shadow-emerald-600/30">
+            + Insert into Inventory
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN SERVER QUEUE: ALL STUDENTS -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow">
+        <h3 class="text-sm font-bold text-white mb-4 flex items-center justify-between">
+          <span>Student Availability & Hold Requests Queue</span>
+          <span class="text-xs font-normal text-slate-400">Click YES to reserve on desk or NO if missing from shelf</span>
+        </h3>
+        <div id="teacherQueueContainer" class="space-y-3"></div>
+        <div id="teacherQueueEmpty" class="text-center py-12 text-slate-500">
+          <p class="text-sm font-semibold">No pending student inquiries right now.</p>
+          <p class="text-xs mt-1">When any student clicks "Ask Teacher to Hold", it will immediately appear in this central queue.</p>
+        </div>
+      </div>
+
+      <!-- COUNTER ISSUE SIMULATOR -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow">
+        <h3 class="text-sm font-bold text-white mb-3">Counter Issue Simulator</h3>
+        <p class="text-xs text-slate-400 mb-4">When a student collects their reserved book at the desk, log the checkout here.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <input type="text" id="issueStudentId" placeholder="ENTER USN ID NO" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs font-mono text-white uppercase focus:ring-1 focus:ring-indigo-500">
+          <select id="issueBookSelect" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500"></select>
+          <button type="button" onclick="executeDirectIssue()" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl transition cursor-pointer">
+            Mark as Borrowed
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: SECURE TEACHER AUTHENTICATION -->
+  <div id="teacherAuthModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4" style="display: none;">
+    <div class="bg-slate-950 border border-slate-800 text-white rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🔒</span>
+          <h3 class="font-display text-base font-bold">Main Server Verification</h3>
+        </div>
+        <button type="button" onclick="closeTeacherAuthModal()" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-400">
+        Enter authorized faculty credentials to unlock the central server desk.
+      </p>
+
+      <div id="teacherAlert" class="hidden p-2.5 rounded-xl text-xs font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30"></div>
+
+      <div class="space-y-3.5">
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Staff ID</label>
+          <input type="text" id="teacherStaffId" placeholder="ENTER USN ID NO" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Security PIN</label>
+          <div class="relative">
+            <input type="password" id="teacherStaffPin" placeholder="••••" class="w-full pl-3.5 pr-11 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
+            <button type="button" onclick="togglePasswordVisibility('teacherStaffPin', 'eyeIconTeacher')" class="absolute right-3 top-2.5 text-slate-400 hover:text-indigo-400 focus:outline-none cursor-pointer">
+              <span id="eyeIconTeacher">👁️</span>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" onclick="executeTeacherLogin()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl transition shadow-lg shadow-indigo-600/30 cursor-pointer">
+          Unlock Main Server Desk
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DEV / ADMIN DATABASE -->
+  <div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4" style="display: none;">
+    <div class="bg-slate-950 border border-slate-800 text-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="font-display text-lg font-bold">Developer Control</h3>
+          <p class="text-xs text-slate-400">Institutional Database Records</p>
+        </div>
+        <button type="button" onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-3">
+        <div class="flex justify-between items-center">
+          <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Authorized Student Whitelist</h4>
+          <span id="adminTotalIds" class="text-[11px] bg-slate-800 px-2 py-0.5 rounded text-slate-300">0 Authorized</span>
+        </div>
+        <textarea id="adminInputIds" rows="2" placeholder="Paste Student IDs: e.g. RVUM26CSE063, RVUM26CSE060 or Name-ID" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-white"></textarea>
+        <div class="flex justify-between">
+          <button type="button" onclick="addBulkStudentIds()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-lg transition cursor-pointer">
+            + Append to Database
+          </button>
+          <button type="button" onclick="resetDefaultIds()" class="text-xs text-slate-400 hover:text-rose-400 transition cursor-pointer">
+            Reset to Class List
+          </button>
+        </div>
+      </div>
+
+      <div class="text-right">
+        <button type="button" onclick="toggleAdminModal(false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl transition cursor-pointer text-white">
+          Close Window
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: "NO DUES" CLEARANCE -->
+  <div id="noDuesModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 items-center justify-center p-4" style="display: none;">
+    <div class="bg-slate-950 border border-slate-800 text-white rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-display text-base font-bold">Graduation Clearance Audit</h3>
+        <button type="button" onclick="closeNoDuesModal()" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <div id="noDuesContentArea" class="space-y-4"></div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button type="button" onclick="closeNoDuesModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl transition cursor-pointer text-white">
+          Close
+        </button>
+        <button id="btnPrintNoDues" type="button" onclick="printNoDuesCertificate()" class="hidden px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition cursor-pointer">
+          Print Certificate
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT ONLY CONTAINER -->
+  <div id="printArea" class="hidden p-12 text-slate-900 bg-white min-h-screen">
+    <div class="border-4 border-slate-900 p-8 rounded-2xl text-center space-y-6">
+      <div class="border-b-2 border-slate-300 pb-4">
+        <h1 class="text-3xl font-black uppercase tracking-wider">RV UNIVERSITY CENTRAL LIBRARY</h1>
+        <p class="text-sm font-semibold text-slate-600 mt-1">Official Institutional Clearance Record</p>
+      </div>
+
+      <div class="py-12">
+        <span class="text-xs font-bold uppercase tracking-widest text-slate-500 block mb-2">Clearance Status</span>
+        <div class="inline-block border-4 border-emerald-600 text-emerald-700 px-10 py-4 rounded-xl text-5xl font-black tracking-widest uppercase">
+          NO DUES
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 text-left border-t-2 border-slate-200 pt-6 text-sm">
+        <div>
+          <p class="text-slate-500">Student Name:</p>
+          <p id="printStudentName" class="font-bold text-lg text-slate-900">--</p>
+        </div>
+        <div>
+          <p class="text-slate-500">Student USN ID:</p>
+          <p id="printStudentId" class="font-mono font-bold text-lg text-slate-900">--</p>
+        </div>
+        <div class="mt-4">
+          <p class="text-slate-500">Verified Mobile Number:</p>
+          <p id="printStudentMobile" class="font-mono font-bold text-lg text-slate-900">--</p>
+        </div>
+        <div class="mt-4">
+          <p class="text-slate-500">Pending Books Outstanding:</p>
+          <p class="font-bold text-emerald-700">0 (All Returned)</p>
+        </div>
+        <div class="mt-4">
+          <p class="text-slate-500">Date of Verification:</p>
+          <p id="printDate" class="font-bold text-slate-800">--</p>
+        </div>
+      </div>
+
+      <div class="mt-12 pt-8 border-t border-dashed border-slate-400 flex justify-between items-end text-xs text-slate-500">
+        <div>
+          <p>Digitally verified by Institutional OPAC Database</p>
+          <p>Eligible for Final Year Convocation & Degree</p>
+        </div>
+        <div class="text-right">
+          <p class="font-bold text-slate-800">Chief Librarian / Automation Counter</p>
+          <p>Seal of Central Library</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION CORE ENGINE -->
+  <script>
+    const CLASS_WHITELIST = [
+      { name: "Varun", id: "RVUM26CSE063" },
+      { name: "Ullas", id: "RVUM26CSE060" },
+      { name: "Rakesh", id: "RVUM26CSE064" },
+      { name: "Arun", id: "RVUM26CSE066" },
+      { name: "Gagan", id: "RVUM26CSE065" },
+      { name: "Thandav", id: "RVUM26CSE067" },
+      { name: "Ram", id: "RVUM26CSE068" },
+      { name: "Manya", id: "RVUM26CSE069" },
+      { name: "Ananya", id: "RVUM26CSE070" },
+      { name: "Hema", id: "RVUM26CSE071" }
+    ];
+
+    const INITIAL_20_BOOKS = [
+      { id: 201, title: "Introduction to Algorithms (CLRS)", author: "Thomas H. Cormen", isAvailable: true },
+      { id: 202, title: "Computer Networking: A Top-Down Approach", author: "James Kurose & Keith Ross", isAvailable: false },
+      { id: 203, title: "Operating System Concepts", author: "Abraham Silberschatz & Peter Galvin", isAvailable: true },
+      { id: 204, title: "Database System Concepts", author: "Silberschatz, Korth & Sudarshan", isAvailable: true },
+      { id: 205, title: "Artificial Intelligence: A Modern Approach", author: "Stuart Russell & Peter Norvig", isAvailable: true },
+      { id: 206, title: "Compilers: Principles, Techniques, and Tools (Dragon Book)", author: "Alfred Aho & Jeffrey Ullman", isAvailable: false },
+      { id: 207, title: "Computer Organization and Design (RISC-V Edition)", author: "David A. Patterson & John L. Hennessy", isAvailable: true },
+      { id: 208, title: "Design Patterns: Elements of Reusable Object-Oriented Software", author: "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides", isAvailable: true },
+      { id: 209, title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin (Uncle Bob)", isAvailable: false },
+      { id: 210, title: "The C Programming Language", author: "Brian W. Kernighan & Dennis M. Ritchie", isAvailable: true },
+      { id: 211, title: "Theory of Computation: Formal Languages & Automata", author: "Michael Sipser", isAvailable: true },
+      { id: 212, title: "Digital Logic and Computer Design", author: "M. Morris Mano", isAvailable: true },
+      { id: 213, title: "Higher Engineering Mathematics", author: "B.S. Grewal", isAvailable: true },
+      { id: 214, title: "Advanced Engineering Mathematics", author: "Erwin Kreyszig", isAvailable: false },
+      { id: 215, title: "Discrete Mathematics and Its Applications", author: "Kenneth H. Rosen", isAvailable: true },
+      { id: 216, title: "Microelectronic Circuits", author: "Adel S. Sedra & Kenneth C. Smith", isAvailable: false },
+      { id: 217, title: "Signals and Systems", author: "Alan V. Oppenheim & Alan S. Willsky", isAvailable: true },
+      { id: 218, title: "Engineering Mechanics: Statics & Dynamics", author: "R.C. Hibbeler", isAvailable: true },
+      { id: 219, title: "Software Engineering: A Practitioner's Approach", author: "Roger S. Pressman", isAvailable: true },
+      { id: 220, title: "Data Communications and Networking", author: "Behrouz A. Forouzan", isAvailable: true }
+    ];
+
+    const DB = {
+      getWhitelist: () => {
+        try {
+          const s = localStorage.getItem('sl_whitelist');
+          return s ? JSON.parse(s) : CLASS_WHITELIST;
+        } catch(e) { return CLASS_WHITELIST; }
+      },
+      setWhitelist: (l) => { try { localStorage.setItem('sl_whitelist', JSON.stringify(l)); } catch(e){} },
+
+      getUsers: () => {
+        try {
+          const s = localStorage.getItem('sl_users');
+          return s ? JSON.parse(s) : [];
+        } catch(e) { return []; }
+      },
+      setUsers: (u) => { try { localStorage.setItem('sl_users', JSON.stringify(u)); } catch(e){} },
+
+      getBooks: () => {
+        try {
+          const s = localStorage.getItem('sl_books');
+          return s ? JSON.parse(s) : INITIAL_20_BOOKS;
+        } catch(e) { return INITIAL_20_BOOKS; }
+      },
+      setBooks: (b) => { try { localStorage.setItem('sl_books', JSON.stringify(b)); } catch(e){} },
+
+      getRequests: () => {
+        try {
+          const s = localStorage.getItem('sl_requests');
+          return s ? JSON.parse(s) : [];
+        } catch(e) { return []; }
+      },
+      setRequests: (r) => { try { localStorage.setItem('sl_requests', JSON.stringify(r)); } catch(e){} },
+
+      getBorrows: () => {
+        try {
+          const s = localStorage.getItem('sl_borrows');
+          return s ? JSON.parse(s) : [];
+        } catch(e) { return []; }
+      },
+      setBorrows: (b) => { try { localStorage.setItem('sl_borrows', JSON.stringify(b)); } catch(e){} },
+
+      getSession: () => {
+        try {
+          const s = localStorage.getItem('sl_session');
+          return s ? JSON.parse(s) : null;
+        } catch(e) { return null; }
+      },
+      setSession: (s) => {
+        try {
+          if (s) localStorage.setItem('sl_session', JSON.stringify(s));
+          else localStorage.removeItem('sl_session');
+        } catch(e){}
+      }
+    };
+
+    function normalizeId(id) {
+      return (id || '').toString().trim().replace(/[\s-_]/g, '').toUpperCase();
+    }
+
+    function findStudentInWhitelist(inputId) {
+      const clean = normalizeId(inputId);
+      const list = DB.getWhitelist();
+      return list.find(item => {
+        if (typeof item === 'string') return normalizeId(item) === clean;
+        return item.id && normalizeId(item.id) === clean;
+      });
+    }
+
+    let pendingRegistration = null;
+    let activePortal = 'student';
+    // STRICT SECURITY LOCK: Always false until valid credentials are verified
+    let isTeacherAuthenticated = false;
+
+    function handleTeacherNavClick() {
+      if (!isTeacherAuthenticated) {
+        openTeacherAuthModal();
+      } else {
+        switchMainPortal('teacher');
+      }
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const field = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!field) return;
+
+      if (field.type === 'password') {
+        field.type = 'text';
+        if (icon) icon.textContent = '🔒';
+      } else {
+        field.type = 'password';
+        if (icon) icon.textContent = '👁️';
+      }
+    }
+
+    function isValidStrongPassword(p) {
+      const hasLetter = /[a-zA-Z]/.test(p);
+      const hasNumber = /[0-9]/.test(p);
+      const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(p);
+      return hasLetter && hasNumber && hasSpecial && p.length >= 6;
+    }
+
+    function executeStudentLogin() {
+      const idInput = document.getElementById('loginStudentId');
+      const pwdInput = document.getElementById('loginPassword');
+      const id = normalizeId(idInput.value);
+      const pwd = pwdInput.value.trim();
+
+      if (!id || !pwd) {
+        showAuthAlert("Please enter both your Student USN ID and Password.");
+        return;
+      }
+
+      const users = DB.getUsers();
+      let match = users.find(u => normalizeId(u.idCard) === id && u.password === pwd);
+
+      if (!match) {
+        showAuthAlert("Invalid credentials. Please verify your USN and Password, or complete First-Time Setup.");
+        return;
+      }
+
+      hideAuthAlert();
+      DB.setSession({ idCard: match.idCard, name: match.name || "Student", mobile: match.mobile || "9876543210" });
+      updateAppView();
+    }
+
+    function setAuthTab(tab) {
+      const boxLogin = document.getElementById('boxLogin');
+      const regWrapper = document.getElementById('regStepWrapper');
+      const btnLog = document.getElementById('tabBtnLogin');
+      const btnReg = document.getElementById('tabBtnRegister');
+      hideAuthAlert();
+
+      if (tab === 'login') {
+        boxLogin.style.display = 'block';
+        regWrapper.style.display = 'none';
+        btnLog.className = "py-2.5 rounded-lg bg-indigo-600 text-white transition shadow cursor-pointer";
+        btnReg.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition cursor-pointer";
+      } else {
+        boxLogin.style.display = 'none';
+        regWrapper.style.display = 'block';
+        document.getElementById('boxRegStep1').style.display = 'block';
+        document.getElementById('boxRegStep2').style.display = 'none';
+        btnReg.className = "py-2.5 rounded-lg bg-emerald-600 text-white transition shadow cursor-pointer";
+        btnLog.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition cursor-pointer";
+      }
+    }
+
+    function showAuthAlert(msg, isError = true) {
+      const el = document.getElementById('authAlert');
+      el.textContent = msg;
+      el.className = `mb-4 p-3 rounded-xl text-xs font-medium ${isError ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'} border block`;
+    }
+    function hideAuthAlert() {
+      const el = document.getElementById('authAlert');
+      el.className = 'hidden';
+    }
+
+    function switchMainPortal(portal) {
+      if (portal === 'teacher' && !isTeacherAuthenticated) {
+        openTeacherAuthModal();
+        return;
+      }
+
+      activePortal = portal;
+      const sContainer = document.getElementById('studentContainer');
+      const tContainer = document.getElementById('teacherContainer');
+      const btnS = document.getElementById('btnNavStudent');
+      const btnT = document.getElementById('btnNavTeacher');
+
+      if (portal === 'student') {
+        sContainer.style.display = 'flex';
+        tContainer.style.display = 'none';
+        btnS.className = "px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white transition cursor-pointer";
+        btnT.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5 cursor-pointer";
+      } else {
+        sContainer.style.display = 'none';
+        tContainer.style.display = 'block';
+        btnT.className = "px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white transition flex items-center gap-1.5 cursor-pointer";
+        btnS.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition cursor-pointer";
+        renderTeacherQueue();
+        populateIssueDropdown();
+      }
+    }
+
+    function openTeacherAuthModal() {
+      const modal = document.getElementById('teacherAuthModal');
+      modal.style.display = 'flex';
+      document.getElementById('teacherAlert').classList.add('hidden');
+      document.getElementById('teacherStaffId').value = "";
+      document.getElementById('teacherStaffPin').value = "";
+    }
+
+    function closeTeacherAuthModal() {
+      document.getElementById('teacherAuthModal').style.display = 'none';
+    }
+
+    function executeTeacherLogin() {
+      const staffId = document.getElementById('teacherStaffId').value.trim();
+      const pin = document.getElementById('teacherStaffPin').value.trim();
+
+      if (staffId.toLowerCase() === 'varun' && pin === '1403') {
+        isTeacherAuthenticated = true;
+        closeTeacherAuthModal();
+        switchMainPortal('teacher');
+      } else {
+        const alertEl = document.getElementById('teacherAlert');
+        alertEl.textContent = "Access Denied: Incorrect Staff ID or Security PIN.";
+        alertEl.classList.remove('hidden');
+      }
+    }
+
+    function lockTeacherDesk() {
+      isTeacherAuthenticated = false;
+      switchMainPortal('student');
+    }
+
+    function executeRegStep1() {
+      const rawId = document.getElementById('regStudentId').value.trim();
+      const mobile = document.getElementById('regMobile').value.trim();
+
+      if (!rawId || !mobile) {
+        showAuthAlert("Please enter both Student USN ID and Mobile Number.");
+        return;
+      }
+
+      const cleanId = normalizeId(rawId);
+
+      const users = DB.getUsers();
+      const alreadyRegistered = users.find(u => normalizeId(u.idCard) === cleanId && u.isPermanent);
+      if (alreadyRegistered) {
+        showAuthAlert(`Account already locked. USN ${cleanId} has already set a permanent password. Please log in directly.`);
+        return;
+      }
+
+      const matchedStudent = findStudentInWhitelist(cleanId);
+      if (!matchedStudent) {
+        showAuthAlert(`Access Denied: USN ID "${cleanId}" is not in the institutional whitelist.`);
+        return;
+      }
+
+      const verifiedId = typeof matchedStudent === 'string' ? matchedStudent : matchedStudent.id;
+      const studentName = typeof matchedStudent === 'object' ? matchedStudent.name : "Student";
+
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      pendingRegistration = { idCard: verifiedId, name: studentName, mobile, otp };
+
+      document.getElementById('boxRegStep1').style.display = 'none';
+      document.getElementById('boxRegStep2').style.display = 'block';
+      document.getElementById('lblMobileVerifyTarget').textContent = `+91 ${mobile} (${studentName})`;
+
+      triggerSmsToast(`Smart Library: Hello ${studentName}! Your verification OTP is ${otp}.`, otp, "Student Verification SMS");
+    }
+
+    function executeRegFinalize() {
+      const enteredOtp = document.getElementById('inputOtp').value.trim();
+      const pwd = document.getElementById('regNewPassword').value;
+      const cPwd = document.getElementById('regConfirmPassword').value;
+
+      if (!pendingRegistration) {
+        showAuthAlert("Session expired. Please restart registration.");
+        cancelOtpStep();
+        return;
+      }
+
+      if (enteredOtp !== pendingRegistration.otp) {
+        showAuthAlert("Incorrect OTP code entered.");
+        return;
+      }
+
+      if (!isValidStrongPassword(pwd)) {
+        showAuthAlert("Password must be at least 6 characters and contain at least 1 letter, 1 number, and 1 special character (!@#$%^&*).");
+        return;
+      }
+
+      if (pwd !== cPwd) {
+        showAuthAlert("Passwords do not match. Please re-enter.");
+        return;
+      }
+
+      let users = DB.getUsers();
+      users = users.filter(u => normalizeId(u.idCard) !== normalizeId(pendingRegistration.idCard));
+      users.push({
+        idCard: pendingRegistration.idCard,
+        name: pendingRegistration.name,
+        mobile: pendingRegistration.mobile,
+        password: pwd,
+        isPermanent: true,
+        registeredAt: new Date().toISOString()
+      });
+      DB.setUsers(users);
+
+      showAuthAlert(`Success! Permanent password established for ${pendingRegistration.name}. Please sign in.`, false);
+      const registeredId = pendingRegistration.idCard;
+      pendingRegistration = null;
+
+      setTimeout(() => {
+        setAuthTab('login');
+        document.getElementById('loginStudentId').value = registeredId;
+        document.getElementById('loginPassword').value = '';
+      }, 1000);
+    }
+
+    function cancelOtpStep() {
+      pendingRegistration = null;
+      document.getElementById('boxRegStep1').style.display = 'block';
+      document.getElementById('boxRegStep2').style.display = 'none';
+      document.getElementById('inputOtp').value = '';
+    }
+
+    function handleLogout() {
+      DB.setSession(null);
+      isTeacherAuthenticated = false;
+      updateAppView();
+    }
+
+    function triggerSmsToast(message, otpToFill = null, headerText = "Central Gateway") {
+      const toast = document.getElementById('smsToast');
+      document.getElementById('smsToastHeader').textContent = headerText;
+      document.getElementById('smsToastBody').textContent = message;
+      toast.style.transform = 'translateY(0)';
+
+      const quickBtn = document.getElementById('smsQuickFillBtn');
+      if (otpToFill) {
+        quickBtn.classList.remove('hidden');
+        quickBtn.onclick = () => {
+          document.getElementById('inputOtp').value = otpToFill;
+          hideSmsToast();
+        };
+      } else {
+        quickBtn.classList.add('hidden');
+      }
+
+      setTimeout(() => {
+        hideSmsToast();
+      }, 8000);
+    }
+
+    function hideSmsToast() {
+      document.getElementById('smsToast').style.transform = 'translateY(-150%)';
+    }
+
+    function renderBookCatalog() {
+      const query = (document.getElementById('studentSearchQuery').value || '').toLowerCase().trim();
+      const filter = document.getElementById('filterAvailability').value;
+
+      const books = DB.getBooks();
+      const grid = document.getElementById('catalogGrid');
+      const emptyMsg = document.getElementById('catalogEmptyMsg');
+      const session = DB.getSession();
+      const requests = DB.getRequests();
+
+      let filtered = books.filter(b => {
+        const matchesQ = b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query);
+        const matchesStatus = (filter === 'ALL') ||
+                              (filter === 'YES' && b.isAvailable) ||
+                              (filter === 'NO' && !b.isAvailable);
+        return matchesQ && matchesStatus;
+      });
+
+      grid.innerHTML = '';
+      if (filtered.length === 0) {
+        emptyMsg.classList.remove('hidden');
+      } else {
+        emptyMsg.classList.add('hidden');
+        filtered.forEach(b => {
+          const existingReq = session ? requests.find(r => normalizeId(r.studentId) === normalizeId(session.idCard) && r.bookId === b.id && r.status === 'PENDING') : null;
+
+          const card = document.createElement('div');
+          card.className = "bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex flex-col justify-between transition shadow";
+          card.innerHTML = `
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                  b.isAvailable 
+                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                }">
+                  ${b.isAvailable ? '● In Library (Available)' : '✕ Checked Out / Not in Library'}
+                </span>
+              </div>
+              <h4 class="text-base font-bold text-white line-clamp-2">${b.title}</h4>
+              <p class="text-xs text-slate-400 mt-1">Author: <span class="text-slate-200 font-semibold">${b.author}</span></p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800/90 flex items-center justify-between">
+              <span class="text-[11px] text-slate-400">
+                ${b.isAvailable ? 'Save your 4th-floor walk:' : 'Save your walk — not on shelf'}
+              </span>
+              
+              ${b.isAvailable ? `
+                <button onclick="requestBookAvailability(${b.id})" ${existingReq ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
+                  existingReq 
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-not-allowed' 
+                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30'
+                }">
+                  ${existingReq ? '⏳ Waiting Teacher Reply' : '⚡ Ask Teacher to Hold'}
+                </button>
+              ` : `
+                <span class="text-[11px] text-rose-400 font-semibold">Unavailable</span>
+              `}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      renderStudentStatusPanels();
+    }
+
+    function requestBookAvailability(bookId) {
+      const session = DB.getSession();
+      if (!session) return;
+
+      const books = DB.getBooks();
+      const book = books.find(b => b.id === bookId);
+      if (!book) return;
+
+      const requests = DB.getRequests();
+      requests.push({
+        id: Date.now(),
+        studentId: session.idCard,
+        studentName: session.name,
+        studentMobile: session.mobile,
+        bookId: book.id,
+        bookTitle: book.title,
+        bookAuthor: book.author,
+        status: 'PENDING',
+        requestedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      DB.setRequests(requests);
+
+      renderBookCatalog();
+      updateTeacherBadges();
+
+      if (activePortal === 'teacher' && isTeacherAuthenticated) {
+        triggerSmsToast(`New Request from ${session.name} (${session.idCard}): "${book.title}"`, null, "Central Teacher Desk");
+      }
+    }
+
+    function renderStudentStatusPanels() {
+      const session = DB.getSession();
+      if (!session) return;
+
+      const requests = DB.getRequests().filter(r => normalizeId(r.studentId) === normalizeId(session.idCard));
+      const reqList = document.getElementById('studentRequestList');
+      document.getElementById('badgeLiveReqCount').textContent = `${requests.length} Requests`;
+
+      if (requests.length === 0) {
+        reqList.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">No active requests sent to teacher.</p>`;
+      } else {
+        reqList.innerHTML = requests.map(r => {
+          let badge = '';
+          if (r.status === 'PENDING') {
+            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">⏳ Awaiting Teacher Check</span>`;
+          } else if (r.status === 'CONFIRMED_YES') {
+            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✅ YES! Held at 4th Floor Counter</span>`;
+          } else {
+            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">❌ NO: Not on Shelf (Trip Saved)</span>`;
+          }
+
+          return `
+            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+              <div>
+                <p class="font-bold text-white">${r.bookTitle}</p>
+                <p class="text-[10px] text-slate-400">Asked at ${r.requestedAt}</p>
+              </div>
+              <div>${badge}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const borrows = DB.getBorrows().filter(b => normalizeId(b.studentId) === normalizeId(session.idCard) && !b.isReturned);
+      const bList = document.getElementById('studentBorrowedList');
+      document.getElementById('badgeBorrowedCount').textContent = `${borrows.length} Active`;
+
+      if (borrows.length === 0) {
+        bList.innerHTML = `<p class="text-xs text-slate-500 py-2 text-center">No books currently borrowed.</p>`;
+      } else {
+        bList.innerHTML = borrows.map(b => `
+          <div class="p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+            <div>
+              <p class="font-bold text-white">${b.bookTitle}</p>
+              <p class="text-[10px] text-slate-400">Due: <span class="text-amber-400 font-semibold">${b.dueDate}</span></p>
+            </div>
+            <button onclick="returnBook('${b.id}')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition cursor-pointer">
+              Mark Returned
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderTeacherQueue() {
+      const allRequests = DB.getRequests();
+      const container = document.getElementById('teacherQueueContainer');
+      const emptyMsg = document.getElementById('teacherQueueEmpty');
+      
+      const pendingReqs = allRequests.filter(r => r.status === 'PENDING');
+      document.getElementById('teacherPendingBadge').textContent = pendingReqs.length;
+      updateTeacherBadges();
+
+      if (allRequests.length === 0) {
+        emptyMsg.classList.remove('hidden');
+        container.innerHTML = '';
+      } else {
+        emptyMsg.classList.add('hidden');
+        container.innerHTML = allRequests.slice().reverse().map(r => `
+          <div class="p-4 rounded-2xl bg-slate-900 border ${r.status === 'PENDING' ? 'border-amber-500/40 bg-amber-500/5' : 'border-slate-800'} flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-emerald-400 text-sm">${r.studentName || 'Student'}</span>
+                <span class="font-mono font-bold text-indigo-400 text-xs">(${r.studentId})</span>
+                <span class="text-slate-400">Phone: +91 ${r.studentMobile}</span>
+                <span class="text-[10px] text-slate-500">at ${r.requestedAt}</span>
+              </div>
+              <p class="font-bold text-white text-sm mt-1">${r.bookTitle}</p>
+              <p class="text-[11px] text-slate-400">Author: ${r.bookAuthor}</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              ${r.status === 'PENDING' ? `
+                <button onclick="respondTeacherRequest(${r.id}, 'CONFIRMED_YES')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition shadow cursor-pointer">
+                  ✓ YES (Held on Shelf)
+                </button>
+                <button onclick="respondTeacherRequest(${r.id}, 'DECLINED_NO')" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition shadow cursor-pointer">
+                  ✕ NO (Not Available)
+                </button>
+              ` : `
+                <span class="font-bold ${r.status === 'CONFIRMED_YES' ? 'text-emerald-400' : 'text-rose-400'}">
+                  ${r.status === 'CONFIRMED_YES' ? '● Approved (Held)' : '● Declined (Unavailable)'}
+                </span>
+              `}
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function respondTeacherRequest(requestId, newStatus) {
+      let requests = DB.getRequests();
+      let target = requests.find(r => r.id === requestId);
+      if (target) {
+        target.status = newStatus;
+        DB.setRequests(requests);
+        renderTeacherQueue();
+        renderBookCatalog();
+
+        if (newStatus === 'CONFIRMED_YES') {
+          triggerSmsToast(`Held: Book "${target.bookTitle}" is confirmed for student ${target.studentName} (${target.studentId}).`, null, "Counter Reserved");
+        }
+      }
+    }
+
+    function updateTeacherBadges() {
+      const allRequests = DB.getRequests();
+      const pending = allRequests.filter(r => r.status === 'PENDING').length;
+      const b = document.getElementById('teacherBadgeCount');
+      if (pending > 0) {
+        b.textContent = pending;
+        b.classList.remove('hidden');
+      } else {
+        b.classList.add('hidden');
+      }
+    }
+
+    function executeTeacherAddBook() {
+      const title = document.getElementById('teacherBookTitle').value.trim();
+      const author = document.getElementById('teacherBookAuthor').value.trim();
+      const isAvailable = document.getElementById('teacherBookStatus').value === "true";
+
+      if (!title || !author) {
+        alert("Please enter both Book Title and Author Name.");
+        return;
+      }
+
+      const books = DB.getBooks();
+      books.push({ id: Date.now(), title, author, isAvailable });
+      DB.setBooks(books);
+
+      document.getElementById('teacherBookTitle').value = '';
+      document.getElementById('teacherBookAuthor').value = '';
+      
+      populateIssueDropdown();
+      renderBookCatalog();
+      alert(`Success! "${title}" by ${author} has been added directly to library catalog.`);
+    }
+
+    function populateIssueDropdown() {
+      const select = document.getElementById('issueBookSelect');
+      const books = DB.getBooks();
+      select.innerHTML = `<option value="">-- Choose Book to Issue --</option>` + 
+        books.map(b => `<option value="${b.id}">${b.title} (${b.author})</option>`).join('');
+    }
+
+    function executeDirectIssue() {
+      const studentId = normalizeId(document.getElementById('issueStudentId').value);
+      const bookId = parseInt(document.getElementById('issueBookSelect').value, 10);
+
+      const books = DB.getBooks();
+      const book = books.find(b => b.id === bookId);
+      if (!book) {
+        alert("Please select a valid book from the list.");
+        return;
+      }
+
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      const dueDateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      const borrows = DB.getBorrows();
+      borrows.push({
+        id: 'B-' + Date.now(),
+        studentId,
+        bookId: book.id,
+        bookTitle: book.title,
+        dueDate: dueDateStr,
+        isReturned: false,
+        issuedAt: new Date().toISOString()
+      });
+      DB.setBorrows(borrows);
+
+      book.isAvailable = false;
+      DB.setBooks(books);
+
+      alert(`Book "${book.title}" successfully issued to ${studentId}. Due on ${dueDateStr}.`);
+      document.getElementById('issueStudentId').value = '';
+      renderBookCatalog();
+    }
+
+    function returnBook(borrowId) {
+      let borrows = DB.getBorrows();
+      let b = borrows.find(x => x.id === borrowId);
+      if (b) {
+        b.isReturned = true;
+        DB.setBorrows(borrows);
+
+        let books = DB.getBooks();
+        let targetBook = books.find(bk => bk.id === b.bookId);
+        if (targetBook) {
+          targetBook.isAvailable = true;
+          DB.setBooks(books);
+        }
+
+        renderBookCatalog();
+        alert(`Book returned! Inventory updated to Available.`);
+      }
+    }
+
+    function requestNoDuesModal() {
+      const session = DB.getSession();
+      if (!session) return;
+
+      const modal = document.getElementById('noDuesModal');
+      const content = document.getElementById('noDuesContentArea');
+      const printBtn = document.getElementById('btnPrintNoDues');
+
+      const activeBorrows = DB.getBorrows().filter(b => normalizeId(b.studentId) === normalizeId(session.idCard) && !b.isReturned);
+
+      if (activeBorrows.length > 0) {
+        printBtn.classList.add('hidden');
+        content.innerHTML = `
+          <div class="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-center space-y-2">
+            <span class="text-3xl">⚠️</span>
+            <h4 class="text-base font-bold text-rose-300">Clearance Withheld: Active Books Pending</h4>
+            <p class="text-xs text-slate-300">You currently have <strong>${activeBorrows.length}</strong> book(s) borrowed that have not been returned to the library counter.</p>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1 text-xs">
+            <span class="text-slate-400 font-bold block mb-1">Unreturned Books:</span>
+            ${activeBorrows.map(b => `<div class="text-slate-200">• ${b.bookTitle}</div>`).join('')}
+          </div>
+          <p class="text-[11px] text-slate-400 text-center">Return these books at the 4th floor counter to unlock your "NO DUES" certificate.</p>
+        `;
+      } else {
+        printBtn.classList.remove('hidden');
+        content.innerHTML = `
+          <div class="p-6 bg-emerald-500/10 border-2 border-emerald-500/40 rounded-2xl text-center space-y-3">
+            <span class="text-xs font-bold tracking-widest text-emerald-400 uppercase block">Institutional Verification Passed</span>
+            <div class="text-4xl font-black font-display tracking-widest text-emerald-400 uppercase">
+              "NO DUES"
+            </div>
+            <p class="text-xs text-slate-300">Zero outstanding library books, overdue fines, or damaged assets detected.</p>
+          </div>
+
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
+            <div class="flex justify-between"><span class="text-slate-400">Student Name:</span> <span class="font-bold text-white">${session.name}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Student USN ID:</span> <span class="font-mono font-bold text-white">${session.idCard}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Verified Mobile:</span> <span class="font-mono text-white">+91 ${session.mobile}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Clearance Status:</span> <span class="text-emerald-400 font-bold">100% Cleared for Graduation</span></div>
+          </div>
+        `;
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeNoDuesModal() {
+      document.getElementById('noDuesModal').style.display = 'none';
+    }
+
+    function printNoDuesCertificate() {
+      const session = DB.getSession();
+      if (!session) return;
+
+      document.getElementById('printStudentName').textContent = session.name;
+      document.getElementById('printStudentId').textContent = session.idCard;
+      document.getElementById('printStudentMobile').textContent = "+91 " + session.mobile;
+      document.getElementById('printDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      window.print();
+    }
+
+    function toggleAdminModal(show) {
+      const modal = document.getElementById('adminModal');
+      modal.style.display = show ? 'flex' : 'none';
+      if (show) updateAdminStats();
+    }
+
+    function updateAdminStats() {
+      document.getElementById('adminTotalIds').textContent = `${DB.getWhitelist().length} Authorized`;
+    }
+
+    function addBulkStudentIds() {
+      const raw = document.getElementById('adminInputIds').value;
+      if (!raw.trim()) return;
+
+      const newEntries = raw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+      let list = DB.getWhitelist();
+      let added = 0;
+
+      newEntries.forEach(item => {
+        let name = "Student";
+        let id = item.toUpperCase();
+
+        if (item.includes('-')) {
+          const parts = item.split('-');
+          name = parts[0].trim();
+          id = parts[1].trim().toUpperCase();
+        }
+
+        const exists = list.some(x => (typeof x === 'string' ? normalizeId(x) === normalizeId(id) : x.id && normalizeId(x.id) === normalizeId(id)));
+        if (!exists) {
+          list.push({ name, id });
+          added++;
+        }
+      });
+
+      DB.setWhitelist(list);
+      document.getElementById('adminInputIds').value = '';
+      updateAdminStats();
+      alert(`Successfully added ${added} student(s) to the college database.`);
+    }
+
+    function resetDefaultIds() {
+      if (confirm("Reset whitelist to original class list?")) {
+        DB.setWhitelist(CLASS_WHITELIST);
+        updateAdminStats();
+      }
+    }
+
+    function updateAppView() {
+      const session = DB.getSession();
+      const authSection = document.getElementById('authSection');
+      const studentDash = document.getElementById('studentDashboard');
+      const userHeader = document.getElementById('userHeaderArea');
+      const lblUser = document.getElementById('lblStudentHeader');
+
+      if (session) {
+        authSection.style.display = 'none';
+        studentDash.style.display = 'block';
+        userHeader.classList.remove('hidden');
+        userHeader.classList.add('flex');
+
+        lblUser.textContent = `${session.name} (${session.idCard})`;
+        document.getElementById('dashStudentName').textContent = session.name;
+        document.getElementById('dashStudentId').textContent = session.idCard;
+        document.getElementById('dashStudentMobile').textContent = "+91 " + session.mobile;
+
+        renderBookCatalog();
+      } else {
+        authSection.style.display = 'block';
+        studentDash.style.display = 'none';
+        userHeader.classList.add('hidden');
+        userHeader.classList.remove('flex');
+      }
+
+      updateTeacherBadges();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Initialize state
+      isTeacherAuthenticated = false;
+      
+      let users = DB.getUsers();
+      if (users.length === 0) {
+        users = CLASS_WHITELIST.map(student => ({
+          idCard: student.id,
+          name: student.name,
+          mobile: "9876543210",
+          password: "Secret@123",
+          isPermanent: true,
+          registeredAt: new Date().toISOString()
+        }));
+        DB.setUsers(users);
+      }
+      updateAppView();
+    });
+  </script>
+</body>
+</html>
