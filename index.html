@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Campus Library - Main Server Central Desk</title>
+  <title>Smart Campus Library - Central Server Automation System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -31,7 +31,7 @@
           <span class="font-display text-base font-bold text-white tracking-tight">Smart Library Portal</span>
           <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">RV University</span>
         </div>
-        <p class="text-[11px] text-slate-400">Zero-Waste Remote Verification & Central Server</p>
+        <p class="text-[11px] text-slate-400">Automated Dynamic Inventory & Central Main Server</p>
       </div>
     </div>
 
@@ -62,12 +62,12 @@
 
   <!-- SMS NOTIFICATION TOAST -->
   <div id="smsToast" class="fixed top-20 right-4 max-w-sm w-full bg-slate-950 border-2 border-indigo-500 text-white rounded-2xl p-4 shadow-2xl z-50 transform translate-y-[-150%] transition-transform duration-300 flex items-start gap-3">
-    <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-lg flex-shrink-0">
+    <div id="smsIcon" class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-lg flex-shrink-0">
       💬
     </div>
     <div class="flex-1">
       <div class="flex items-center justify-between">
-        <span id="smsToastHeader" class="text-[11px] font-bold uppercase tracking-wider text-indigo-400">Main Server Gateway</span>
+        <span id="smsToastHeader" class="text-[11px] font-bold uppercase tracking-wider text-indigo-400">Institutional Gateway</span>
         <span class="text-[10px] text-slate-500">Just now</span>
       </div>
       <p id="smsToastBody" class="text-xs text-slate-200 mt-1 leading-relaxed"></p>
@@ -88,7 +88,7 @@
       <div id="authSection" class="w-full max-w-md bg-slate-950 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl my-auto">
         <div class="text-center mb-6">
           <h2 class="font-display text-2xl font-bold text-white">Student Library Access</h2>
-          <p class="text-xs text-slate-400 mt-1">Verify your university credentials to verify books remotely</p>
+          <p class="text-xs text-slate-400 mt-1">Check live inventory & reserve shelf copies online</p>
         </div>
 
         <div class="grid grid-cols-2 bg-slate-900 p-1 rounded-xl mb-6 text-xs font-semibold">
@@ -134,7 +134,7 @@
         <div id="regStepWrapper" style="display: none;">
           <div id="boxRegStep1" class="space-y-4">
             <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-[11px] text-indigo-300 leading-relaxed">
-              <strong>Institutional Verification:</strong> Passwords can only be configured once. Once established, you must use that password every time you sign in.
+              <strong>Account Setup:</strong> Passwords have been reset. Select your authorized USN to set your permanent password. Once established, it locks permanently.
             </div>
 
             <div>
@@ -203,13 +203,13 @@
         <div class="bg-gradient-to-r from-slate-950 via-indigo-950/70 to-slate-950 border border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-2xl">
           <div class="max-w-3xl relative z-10">
             <span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-full text-xs font-semibold uppercase tracking-wider">
-              Structured Innovation Remote Verification
+              Automated Zero-Waste Library System
             </span>
             <h2 class="font-display text-2xl md:text-3xl font-bold text-white mt-3">
               Welcome, <span id="dashStudentName" class="text-indigo-400">Student</span>!
             </h2>
             <p class="text-slate-300 text-xs md:text-sm mt-2 leading-relaxed">
-              Verify book presence remotely. Click "Ask Teacher to Hold" to dispatch an immediate verification check directly to the 4th Floor Main Server Counter.
+              Real-time shelf inventory tracking. Checkouts last <strong>7 days</strong> with automatic <strong>6th-day reminders</strong>. Maximum active limit: <strong>2 books per student</strong>.
             </p>
 
             <div class="mt-4 flex flex-wrap gap-2 text-xs">
@@ -221,40 +221,51 @@
                 <span class="text-slate-400">Mobile:</span>
                 <span id="dashStudentMobile" class="font-mono font-bold text-slate-200">--</span>
               </div>
+              <div class="bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                <span class="text-slate-400">Quota:</span>
+                <span id="dashActiveQuota" class="font-bold text-emerald-400">0/2</span>
+              </div>
+              <div id="accountStatusBadge" class="px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Active / Good Standing</span>
+              </div>
               <button onclick="requestNoDuesModal()" class="bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600 text-emerald-300 hover:text-white px-3 py-1.5 rounded-lg font-semibold transition flex items-center gap-1 cursor-pointer">
                 <span>🎓</span>
-                <span>Get "NO DUES" Clearance</span>
+                <span>Audit "NO DUES" Clearance</span>
               </button>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- LIVE REQUESTS & WAITLIST -->
           <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow">
             <div class="flex items-center justify-between mb-3">
               <h3 class="text-sm font-bold text-white flex items-center gap-2">
                 <span>⚡</span>
-                <span>My Live Requests to Main Server</span>
+                <span>Active Holds & Waitlists</span>
               </h3>
               <span id="badgeLiveReqCount" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">0 Active</span>
             </div>
-            <div id="studentRequestList" class="space-y-2.5 max-h-48 overflow-y-auto pr-1"></div>
+            <div id="studentRequestList" class="space-y-2.5 max-h-52 overflow-y-auto pr-1"></div>
           </div>
 
+          <!-- BORROWED BOOKS (7-DAY LIMIT & AUTO FINES + AUTO-RENEWAL) -->
           <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
                   <span>📖</span>
-                  <span>Currently Borrowed Books</span>
+                  <span>Currently Borrowed Books (7-Day Limit)</span>
                 </h3>
                 <span id="badgeBorrowedCount" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">0 Borrowed</span>
               </div>
-              <div id="studentBorrowedList" class="space-y-2 max-h-36 overflow-y-auto pr-1"></div>
+              <div id="studentBorrowedList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
             </div>
           </div>
         </div>
 
+        <!-- SEARCH & INVENTORY CATALOG -->
         <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4 shadow">
           <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
             <div class="relative w-full md:w-96">
@@ -265,9 +276,9 @@
             </div>
             <div class="flex items-center gap-2 w-full md:w-auto">
               <select id="filterAvailability" onchange="renderBookCatalog()" class="w-full md:w-auto px-3 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none">
-                <option value="ALL">Show All Inventory</option>
-                <option value="YES">In Library (Available)</option>
-                <option value="NO">Checked Out (Unavailable)</option>
+                <option value="ALL">All Titles</option>
+                <option value="YES">In Stock (Available on Shelf)</option>
+                <option value="NO">Out of Stock (0 Copies Remaining)</option>
               </select>
             </div>
           </div>
@@ -275,7 +286,7 @@
           <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2"></div>
 
           <div id="catalogEmptyMsg" class="hidden text-center py-12 text-slate-500">
-            <p class="text-sm font-semibold">No books match your search.</p>
+            <p class="text-sm font-semibold">No books match your query.</p>
             <p class="text-xs mt-1">Try another keyword or author name.</p>
           </div>
         </div>
@@ -293,18 +304,22 @@
             </span>
             <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
-              Main Server Terminal: RVUM26CSE063 (Varun)
+              Central Server Terminal: RVUM26CSE063 (Varun)
             </span>
           </div>
-          <h2 class="font-display text-2xl font-bold text-white mt-1">Live Campus Book Request Stream</h2>
+          <h2 class="font-display text-2xl font-bold text-white mt-1">Automated Campus Circulation & Inventory Hub</h2>
           <p class="text-xs text-slate-400 mt-1">
-            Incoming book hold requests from <strong>any student</strong> in the college route directly to this central screen.
+            Incoming book hold requests from <strong>any student</strong> in the university route directly to this central screen.
           </p>
         </div>
 
         <div class="flex items-center gap-3">
+          <button onclick="generateDailyAuditReport()" class="px-3.5 py-2 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+            <span>📊</span>
+            <span>Automated Daily Audit</span>
+          </button>
           <div class="bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-right">
-            <span class="text-[10px] uppercase font-bold text-slate-400 block">Pending Queue</span>
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">Pending Holds</span>
             <span id="teacherPendingBadge" class="text-lg font-bold text-amber-400 font-mono">0</span>
           </div>
           <button onclick="lockTeacherDesk()" class="px-3 py-2 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-semibold rounded-xl transition cursor-pointer">
@@ -313,53 +328,50 @@
         </div>
       </div>
 
-      <!-- DIRECT INVENTORY INTAKE PANEL FOR TEACHER -->
+      <!-- DIRECT INVENTORY INTAKE PANEL WITH STOCK QUANTITY -->
       <div class="bg-slate-950 border border-indigo-500/40 rounded-2xl p-5 shadow">
         <div class="flex items-center justify-between mb-2">
           <h3 class="text-sm font-bold text-white flex items-center gap-2">
             <span>➕</span>
-            <span>Direct Library Catalog Intake (Add New Books)</span>
+            <span>Direct Library Catalog Intake (Add Books & Set Quantity)</span>
           </h3>
           <span class="text-[10px] font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">Main Server Privileged</span>
         </div>
-        <p class="text-xs text-slate-400 mb-3">Add textbooks directly into the live college inventory without accessing developer menus.</p>
+        <p class="text-xs text-slate-400 mb-3">Specify total volume. The system will track live decrements upon issue and auto-reject when 0 copies remain.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <input type="text" id="teacherBookTitle" placeholder="Book Title (e.g. Modern Operating Systems)" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
-          <input type="text" id="teacherBookAuthor" placeholder="Author (e.g. Andrew S. Tanenbaum)" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
-          <select id="teacherBookStatus" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
-            <option value="true">In Library (Available)</option>
-            <option value="false">Checked Out (Unavailable)</option>
-          </select>
+          <input type="text" id="teacherBookTitle" placeholder="Book Title" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
+          <input type="text" id="teacherBookAuthor" placeholder="Author Name" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
+          <input type="number" id="teacherBookQty" min="1" max="50" value="3" placeholder="Copies Quantity" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500">
           <button type="button" onclick="executeTeacherAddBook()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl transition cursor-pointer shadow-lg shadow-emerald-600/30">
-            + Insert into Inventory
+            + Insert into Live Catalog
           </button>
         </div>
       </div>
 
-      <!-- MAIN SERVER QUEUE: ALL STUDENTS -->
+      <!-- MAIN SERVER QUEUE: INCOMING HOLDS -->
       <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow">
         <h3 class="text-sm font-bold text-white mb-4 flex items-center justify-between">
-          <span>Student Availability & Hold Requests Queue</span>
-          <span class="text-xs font-normal text-slate-400">Click YES to reserve on desk or NO if missing from shelf</span>
+          <span>Student Hold Requests Queue</span>
+          <span class="text-xs font-normal text-slate-400">Approve to reserve physical copy on desk</span>
         </h3>
         <div id="teacherQueueContainer" class="space-y-3"></div>
-        <div id="teacherQueueEmpty" class="text-center py-12 text-slate-500">
+        <div id="teacherQueueEmpty" class="text-center py-10 text-slate-500">
           <p class="text-sm font-semibold">No pending student inquiries right now.</p>
-          <p class="text-xs mt-1">When any student clicks "Ask Teacher to Hold", it will immediately appear in this central queue.</p>
+          <p class="text-xs mt-1">When any student requests an in-stock book, it will appear here immediately.</p>
         </div>
       </div>
 
-      <!-- COUNTER ISSUE SIMULATOR -->
+      <!-- COUNTER ISSUE SIMULATOR (DECREMENTS COPIES) -->
       <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow">
-        <h3 class="text-sm font-bold text-white mb-3">Counter Issue Simulator</h3>
-        <p class="text-xs text-slate-400 mb-4">When a student collects their reserved book at the desk, log the checkout here.</p>
+        <h3 class="text-sm font-bold text-white mb-3">Counter Issue Simulator (Direct Handover)</h3>
+        <p class="text-xs text-slate-400 mb-4">Issuing decrements available copies in real time and initializes the 7-day loan countdown.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <input type="text" id="issueStudentId" placeholder="ENTER USN ID NO" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs font-mono text-white uppercase focus:ring-1 focus:ring-indigo-500">
           <select id="issueBookSelect" class="px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:ring-1 focus:ring-indigo-500"></select>
           <button type="button" onclick="executeDirectIssue()" class="py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl transition cursor-pointer">
-            Mark as Borrowed
+            Issue Book (Decrement Stock)
           </button>
         </div>
       </div>
@@ -406,6 +418,27 @@
     </div>
   </div>
 
+  <!-- MODAL: DAILY AUDIT REPORT -->
+  <div id="auditModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 items-center justify-center p-4" style="display: none;">
+    <div class="bg-slate-950 border border-slate-800 text-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📊</span>
+          <h3 class="font-display text-base font-bold">Automated Daily Library Circulation Audit</h3>
+        </div>
+        <button type="button" onclick="closeAuditModal()" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <div id="auditReportContent" class="space-y-4 text-xs"></div>
+
+      <div class="flex justify-end pt-3 border-t border-slate-800">
+        <button type="button" onclick="closeAuditModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl transition cursor-pointer text-white">
+          Close Report
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: DEV / ADMIN DATABASE -->
   <div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-4" style="display: none;">
     <div class="bg-slate-950 border border-slate-800 text-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
@@ -428,7 +461,7 @@
             + Append to Database
           </button>
           <button type="button" onclick="resetDefaultIds()" class="text-xs text-slate-400 hover:text-rose-400 transition cursor-pointer">
-            Reset to Class List
+            Reset All Passwords & Accounts
           </button>
         </div>
       </div>
@@ -445,7 +478,7 @@
   <div id="noDuesModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 items-center justify-center p-4" style="display: none;">
     <div class="bg-slate-950 border border-slate-800 text-white rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-display text-base font-bold">Graduation Clearance Audit</h3>
+        <h3 class="font-display text-base font-bold">Graduation Clearance & Fine Audit</h3>
         <button type="button" onclick="closeNoDuesModal()" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
@@ -495,6 +528,10 @@
           <p class="font-bold text-emerald-700">0 (All Returned)</p>
         </div>
         <div class="mt-4">
+          <p class="text-slate-500">Accrued Overdue Fines:</p>
+          <p class="font-bold text-emerald-700">₹0.00 (Cleared)</p>
+        </div>
+        <div class="mt-4">
           <p class="text-slate-500">Date of Verification:</p>
           <p id="printDate" class="font-bold text-slate-800">--</p>
         </div>
@@ -528,27 +565,17 @@
       { name: "Hema", id: "RVUM26CSE071" }
     ];
 
-    const INITIAL_20_BOOKS = [
-      { id: 201, title: "Introduction to Algorithms (CLRS)", author: "Thomas H. Cormen", isAvailable: true },
-      { id: 202, title: "Computer Networking: A Top-Down Approach", author: "James Kurose & Keith Ross", isAvailable: false },
-      { id: 203, title: "Operating System Concepts", author: "Abraham Silberschatz & Peter Galvin", isAvailable: true },
-      { id: 204, title: "Database System Concepts", author: "Silberschatz, Korth & Sudarshan", isAvailable: true },
-      { id: 205, title: "Artificial Intelligence: A Modern Approach", author: "Stuart Russell & Peter Norvig", isAvailable: true },
-      { id: 206, title: "Compilers: Principles, Techniques, and Tools (Dragon Book)", author: "Alfred Aho & Jeffrey Ullman", isAvailable: false },
-      { id: 207, title: "Computer Organization and Design (RISC-V Edition)", author: "David A. Patterson & John L. Hennessy", isAvailable: true },
-      { id: 208, title: "Design Patterns: Elements of Reusable Object-Oriented Software", author: "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides", isAvailable: true },
-      { id: 209, title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin (Uncle Bob)", isAvailable: false },
-      { id: 210, title: "The C Programming Language", author: "Brian W. Kernighan & Dennis M. Ritchie", isAvailable: true },
-      { id: 211, title: "Theory of Computation: Formal Languages & Automata", author: "Michael Sipser", isAvailable: true },
-      { id: 212, title: "Digital Logic and Computer Design", author: "M. Morris Mano", isAvailable: true },
-      { id: 213, title: "Higher Engineering Mathematics", author: "B.S. Grewal", isAvailable: true },
-      { id: 214, title: "Advanced Engineering Mathematics", author: "Erwin Kreyszig", isAvailable: false },
-      { id: 215, title: "Discrete Mathematics and Its Applications", author: "Kenneth H. Rosen", isAvailable: true },
-      { id: 216, title: "Microelectronic Circuits", author: "Adel S. Sedra & Kenneth C. Smith", isAvailable: false },
-      { id: 217, title: "Signals and Systems", author: "Alan V. Oppenheim & Alan S. Willsky", isAvailable: true },
-      { id: 218, title: "Engineering Mechanics: Statics & Dynamics", author: "R.C. Hibbeler", isAvailable: true },
-      { id: 219, title: "Software Engineering: A Practitioner's Approach", author: "Roger S. Pressman", isAvailable: true },
-      { id: 220, title: "Data Communications and Networking", author: "Behrouz A. Forouzan", isAvailable: true }
+    const INITIAL_BOOKS = [
+      { id: 201, title: "Introduction to Algorithms (CLRS)", author: "Thomas H. Cormen", totalCopies: 4, availableCopies: 3 },
+      { id: 202, title: "Computer Networking: A Top-Down Approach", author: "James Kurose & Keith Ross", totalCopies: 2, availableCopies: 0 },
+      { id: 203, title: "Operating System Concepts", author: "Abraham Silberschatz & Peter Galvin", totalCopies: 3, availableCopies: 2 },
+      { id: 204, title: "Database System Concepts", author: "Silberschatz, Korth & Sudarshan", totalCopies: 3, availableCopies: 1 },
+      { id: 205, title: "Artificial Intelligence: A Modern Approach", author: "Stuart Russell & Peter Norvig", totalCopies: 2, availableCopies: 2 },
+      { id: 206, title: "Compilers: Principles, Techniques, and Tools", author: "Alfred Aho & Jeffrey Ullman", totalCopies: 2, availableCopies: 0 },
+      { id: 207, title: "Computer Organization and Design", author: "David A. Patterson & John L. Hennessy", totalCopies: 4, availableCopies: 3 },
+      { id: 208, title: "Design Patterns: Elements of Reusable Software", author: "Erich Gamma, Richard Helm", totalCopies: 3, availableCopies: 2 },
+      { id: 209, title: "Clean Code: Agile Software Craftsmanship", author: "Robert C. Martin (Uncle Bob)", totalCopies: 2, availableCopies: 0 },
+      { id: 210, title: "The C Programming Language", author: "Brian W. Kernighan & Dennis Ritchie", totalCopies: 5, availableCopies: 4 }
     ];
 
     const DB = {
@@ -570,11 +597,11 @@
 
       getBooks: () => {
         try {
-          const s = localStorage.getItem('sl_books');
-          return s ? JSON.parse(s) : INITIAL_20_BOOKS;
-        } catch(e) { return INITIAL_20_BOOKS; }
+          const s = localStorage.getItem('sl_books_v4');
+          return s ? JSON.parse(s) : INITIAL_BOOKS;
+        } catch(e) { return INITIAL_BOOKS; }
       },
-      setBooks: (b) => { try { localStorage.setItem('sl_books', JSON.stringify(b)); } catch(e){} },
+      setBooks: (b) => { try { localStorage.setItem('sl_books_v4', JSON.stringify(b)); } catch(e){} },
 
       getRequests: () => {
         try {
@@ -583,6 +610,14 @@
         } catch(e) { return []; }
       },
       setRequests: (r) => { try { localStorage.setItem('sl_requests', JSON.stringify(r)); } catch(e){} },
+
+      getWaitlist: () => {
+        try {
+          const s = localStorage.getItem('sl_waitlist');
+          return s ? JSON.parse(s) : [];
+        } catch(e) { return []; }
+      },
+      setWaitlist: (w) => { try { localStorage.setItem('sl_waitlist', JSON.stringify(w)); } catch(e){} },
 
       getBorrows: () => {
         try {
@@ -621,7 +656,6 @@
 
     let pendingRegistration = null;
     let activePortal = 'student';
-    // STRICT SECURITY LOCK: Always false until valid credentials are verified
     let isTeacherAuthenticated = false;
 
     function handleTeacherNavClick() {
@@ -668,7 +702,7 @@
       let match = users.find(u => normalizeId(u.idCard) === id && u.password === pwd);
 
       if (!match) {
-        showAuthAlert("Invalid credentials. Please verify your USN and Password, or complete First-Time Setup.");
+        showAuthAlert("Account not registered or invalid password. Please click 'First-Time Setup' to establish your password.");
         return;
       }
 
@@ -782,7 +816,7 @@
       const users = DB.getUsers();
       const alreadyRegistered = users.find(u => normalizeId(u.idCard) === cleanId && u.isPermanent);
       if (alreadyRegistered) {
-        showAuthAlert(`Account already locked. USN ${cleanId} has already set a permanent password. Please log in directly.`);
+        showAuthAlert(`Account already locked. USN ${cleanId} has already established a permanent password. Please sign in directly.`);
         return;
       }
 
@@ -867,11 +901,21 @@
       updateAppView();
     }
 
-    function triggerSmsToast(message, otpToFill = null, headerText = "Central Gateway") {
+    function triggerSmsToast(message, otpToFill = null, headerText = "Central Gateway", isWarning = false) {
       const toast = document.getElementById('smsToast');
+      const icon = document.getElementById('smsIcon');
       document.getElementById('smsToastHeader').textContent = headerText;
       document.getElementById('smsToastBody').textContent = message;
-      toast.style.transform = 'translateY(0)';
+
+      if (isWarning) {
+        toast.className = "fixed top-20 right-4 max-w-sm w-full bg-slate-950 border-2 border-amber-500 text-white rounded-2xl p-4 shadow-2xl z-50 transform translate-y-0 transition-transform duration-300 flex items-start gap-3";
+        icon.className = "w-10 h-10 rounded-xl bg-amber-600 flex items-center justify-center text-lg flex-shrink-0";
+        icon.textContent = "⏰";
+      } else {
+        toast.className = "fixed top-20 right-4 max-w-sm w-full bg-slate-950 border-2 border-indigo-500 text-white rounded-2xl p-4 shadow-2xl z-50 transform translate-y-0 transition-transform duration-300 flex items-start gap-3";
+        icon.className = "w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-lg flex-shrink-0";
+        icon.textContent = "💬";
+      }
 
       const quickBtn = document.getElementById('smsQuickFillBtn');
       if (otpToFill) {
@@ -893,6 +937,83 @@
       document.getElementById('smsToast').style.transform = 'translateY(-150%)';
     }
 
+    function isStudentBlacklisted(studentId) {
+      const borrows = DB.getBorrows().filter(b => normalizeId(b.studentId) === normalizeId(studentId) && !b.isReturned);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      for (let b of borrows) {
+        const dueDate = new Date(b.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        if (today.getTime() > dueDate.getTime()) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function getStudentActiveCount(studentId) {
+      const activeBorrows = DB.getBorrows().filter(b => normalizeId(b.studentId) === normalizeId(studentId) && !b.isReturned).length;
+      const activeHolds = DB.getRequests().filter(r => normalizeId(r.studentId) === normalizeId(studentId) && r.status === 'PENDING').length;
+      return activeBorrows + activeHolds;
+    }
+
+    function checkDuePriorDayAlerts() {
+      const session = DB.getSession();
+      if (!session) return;
+
+      const borrows = DB.getBorrows().filter(b => normalizeId(b.studentId) === normalizeId(session.idCard) && !b.isReturned);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      borrows.forEach(b => {
+        const dueDate = new Date(b.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+
+        const diffTime = dueDate.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+          setTimeout(() => {
+            triggerSmsToast(`6th-Day Alert for ${session.name}: "${b.bookTitle}" reaches 6 days today and is DUE TOMORROW (${b.dueDate}). Use self-service renewal if no peers are waiting!`, null, "6th-Day Alert: Due Tomorrow", true);
+          }, 1200);
+        } else if (diffDays <= 0) {
+          const fineAmount = Math.abs(diffDays) * 5;
+          setTimeout(() => {
+            triggerSmsToast(`AUTO-SUSPENSION: "${b.bookTitle}" is overdue. Fine: ₹${fineAmount}. New hold requests are blocked until returned.`, null, "Overdue Notice: Account Suspended", true);
+          }, 1200);
+        }
+      });
+    }
+
+    function executeStudentSelfRenewal(borrowId) {
+      let borrows = DB.getBorrows();
+      let b = borrows.find(x => x.id === borrowId);
+      if (!b) return;
+
+      const waitlist = DB.getWaitlist();
+      const isWaitlisted = waitlist.some(w => w.bookId === b.bookId);
+
+      if (isWaitlisted) {
+        alert(`Renewal Blocked: A peer is currently queued on the FIFO waitlist for "${b.bookTitle}". As per automated circulation policy, this book must be returned on Day 7.`);
+        return;
+      }
+
+      if (b.renewedCount && b.renewedCount >= 2) {
+        alert("Maximum Renewals Reached: Books can be renewed a maximum of 2 times.");
+        return;
+      }
+
+      const currentDue = new Date(b.dueDate);
+      currentDue.setDate(currentDue.getDate() + 7);
+      b.dueDate = currentDue.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      b.renewedCount = (b.renewedCount || 0) + 1;
+      DB.setBorrows(borrows);
+
+      alert(`Success! Self-service renewal approved. Due date for "${b.bookTitle}" extended by 7 days to ${b.dueDate}.`);
+      renderStudentStatusPanels();
+    }
+
     function renderBookCatalog() {
       const query = (document.getElementById('studentSearchQuery').value || '').toLowerCase().trim();
       const filter = document.getElementById('filterAvailability').value;
@@ -902,12 +1023,31 @@
       const emptyMsg = document.getElementById('catalogEmptyMsg');
       const session = DB.getSession();
       const requests = DB.getRequests();
+      const waitlist = DB.getWaitlist();
+
+      const activeQuota = session ? getStudentActiveCount(session.idCard) : 0;
+      const isSuspended = session ? isStudentBlacklisted(session.idCard) : false;
+
+      if (document.getElementById('dashActiveQuota')) {
+        document.getElementById('dashActiveQuota').textContent = `${activeQuota}/2`;
+      }
+
+      const statusBadge = document.getElementById('accountStatusBadge');
+      if (statusBadge) {
+        if (isSuspended) {
+          statusBadge.className = "px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 bg-rose-500/20 text-rose-400 border border-rose-500/30";
+          statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span><span>Suspended: Overdue Item Pending</span>`;
+        } else {
+          statusBadge.className = "px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+          statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Active / Good Standing</span>`;
+        }
+      }
 
       let filtered = books.filter(b => {
         const matchesQ = b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query);
         const matchesStatus = (filter === 'ALL') ||
-                              (filter === 'YES' && b.isAvailable) ||
-                              (filter === 'NO' && !b.isAvailable);
+                              (filter === 'YES' && b.availableCopies > 0) ||
+                              (filter === 'NO' && b.availableCopies === 0);
         return matchesQ && matchesStatus;
       });
 
@@ -917,7 +1057,9 @@
       } else {
         emptyMsg.classList.add('hidden');
         filtered.forEach(b => {
+          const inStock = b.availableCopies > 0;
           const existingReq = session ? requests.find(r => normalizeId(r.studentId) === normalizeId(session.idCard) && r.bookId === b.id && r.status === 'PENDING') : null;
+          const isWaitlisted = session ? waitlist.some(w => normalizeId(w.studentId) === normalizeId(session.idCard) && w.bookId === b.id) : false;
 
           const card = document.createElement('div');
           card.className = "bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex flex-col justify-between transition shadow";
@@ -925,11 +1067,11 @@
             <div>
               <div class="flex items-start justify-between gap-2 mb-2">
                 <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                  b.isAvailable 
+                  inStock 
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
                     : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
                 }">
-                  ${b.isAvailable ? '● In Library (Available)' : '✕ Checked Out / Not in Library'}
+                  ${inStock ? `● In Stock (${b.availableCopies}/${b.totalCopies} Available)` : `✕ Out of Stock (0/${b.totalCopies} Available)`}
                 </span>
               </div>
               <h4 class="text-base font-bold text-white line-clamp-2">${b.title}</h4>
@@ -938,19 +1080,31 @@
 
             <div class="mt-4 pt-3 border-t border-slate-800/90 flex items-center justify-between">
               <span class="text-[11px] text-slate-400">
-                ${b.isAvailable ? 'Save your 4th-floor walk:' : 'Save your walk — not on shelf'}
+                ${isSuspended ? 'Suspended due to fine:' : inStock ? 'Physical shelf reservation:' : 'Auto-rejected: 0 remaining'}
               </span>
               
-              ${b.isAvailable ? `
-                <button onclick="requestBookAvailability(${b.id})" ${existingReq ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
-                  existingReq 
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-not-allowed' 
-                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30'
+              ${inStock ? `
+                <button onclick="requestBookAvailability(${b.id})" ${existingReq || activeQuota >= 2 || isSuspended ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
+                  isSuspended
+                    ? 'bg-rose-950/40 text-rose-400 border border-rose-500/30 cursor-not-allowed'
+                    : existingReq 
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-not-allowed' 
+                      : activeQuota >= 2 
+                        ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30'
                 }">
-                  ${existingReq ? '⏳ Waiting Teacher Reply' : '⚡ Ask Teacher to Hold'}
+                  ${isSuspended ? '🚫 Account Suspended' : existingReq ? '⏳ Hold Pending' : activeQuota >= 2 ? 'Quota Max (2/2)' : '⚡ Ask Teacher to Hold'}
                 </button>
               ` : `
-                <span class="text-[11px] text-rose-400 font-semibold">Unavailable</span>
+                <button onclick="joinBookWaitlist(${b.id})" ${isWaitlisted || isSuspended ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer ${
+                  isSuspended
+                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                    : isWaitlisted 
+                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed' 
+                      : 'bg-amber-600 hover:bg-amber-500 text-white shadow'
+                }">
+                  ${isSuspended ? '🚫 Suspended' : isWaitlisted ? '✓ On Waitlist' : '📋 Join FIFO Waitlist'}
+                </button>
               `}
             </div>
           `;
@@ -965,9 +1119,27 @@
       const session = DB.getSession();
       if (!session) return;
 
-      const books = DB.getBooks();
+      if (isStudentBlacklisted(session.idCard)) {
+        alert("Automated System Suspension: You have an overdue book that has not been returned. Return all overdue titles to lift hold restrictions.");
+        return;
+      }
+
+      if (getStudentActiveCount(session.idCard) >= 2) {
+        alert("Borrow Limit Reached: You have reached the maximum allowed active quota (2 books). Return an active book to unlock new requests.");
+        return;
+      }
+
+      let books = DB.getBooks();
       const book = books.find(b => b.id === bookId);
       if (!book) return;
+
+      if (book.availableCopies <= 0) {
+        alert(`System Auto-Rejection: All ${book.totalCopies} copies of "${book.title}" are currently issued. You may join the waitlist instead.`);
+        return;
+      }
+
+      book.availableCopies -= 1;
+      DB.setBooks(books);
 
       const requests = DB.getRequests();
       requests.push({
@@ -987,8 +1159,36 @@
       updateTeacherBadges();
 
       if (activePortal === 'teacher' && isTeacherAuthenticated) {
-        triggerSmsToast(`New Request from ${session.name} (${session.idCard}): "${book.title}"`, null, "Central Teacher Desk");
+        triggerSmsToast(`New Hold Request from ${session.name} (${session.idCard}): "${book.title}" (Reserved 1 copy).`, null, "Central Teacher Desk");
       }
+    }
+
+    function joinBookWaitlist(bookId) {
+      const session = DB.getSession();
+      if (!session) return;
+
+      if (isStudentBlacklisted(session.idCard)) {
+        alert("Automated Suspension: Settle existing overdue books before joining waitlists.");
+        return;
+      }
+
+      const books = DB.getBooks();
+      const book = books.find(b => b.id === bookId);
+      if (!book) return;
+
+      let waitlist = DB.getWaitlist();
+      waitlist.push({
+        id: Date.now(),
+        bookId: book.id,
+        bookTitle: book.title,
+        studentId: session.idCard,
+        studentName: session.name,
+        joinedAt: new Date().toLocaleDateString()
+      });
+      DB.setWaitlist(waitlist);
+
+      alert(`Added to FIFO Waitlist for "${book.title}". Priority transit lock will reserve a copy for you immediately when returned.`);
+      renderBookCatalog();
     }
 
     function renderStudentStatusPanels() {
@@ -996,52 +1196,96 @@
       if (!session) return;
 
       const requests = DB.getRequests().filter(r => normalizeId(r.studentId) === normalizeId(session.idCard));
+      const waitlist = DB.getWaitlist().filter(w => normalizeId(w.studentId) === normalizeId(session.idCard));
       const reqList = document.getElementById('studentRequestList');
-      document.getElementById('badgeLiveReqCount').textContent = `${requests.length} Requests`;
+      
+      const totalCount = requests.length + waitlist.length;
+      document.getElementById('badgeLiveReqCount').textContent = `${totalCount} Active`;
 
-      if (requests.length === 0) {
-        reqList.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">No active requests sent to teacher.</p>`;
+      if (totalCount === 0) {
+        reqList.innerHTML = `<p class="text-xs text-slate-500 py-3 text-center">No active holds or waitlist queues.</p>`;
       } else {
-        reqList.innerHTML = requests.map(r => {
+        let content = '';
+        requests.forEach(r => {
           let badge = '';
           if (r.status === 'PENDING') {
-            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">⏳ Awaiting Teacher Check</span>`;
+            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">⏳ Desk Hold Reserved</span>`;
           } else if (r.status === 'CONFIRMED_YES') {
-            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✅ YES! Held at 4th Floor Counter</span>`;
+            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✅ Approved on Counter</span>`;
           } else {
-            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">❌ NO: Not on Shelf (Trip Saved)</span>`;
+            badge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">❌ Auto-Declined</span>`;
           }
-
-          return `
+          content += `
             <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
               <div>
                 <p class="font-bold text-white">${r.bookTitle}</p>
-                <p class="text-[10px] text-slate-400">Asked at ${r.requestedAt}</p>
+                <p class="text-[10px] text-slate-400">Hold asked at ${r.requestedAt}</p>
               </div>
               <div>${badge}</div>
             </div>
           `;
-        }).join('');
+        });
+
+        waitlist.forEach(w => {
+          content += `
+            <div class="p-2.5 rounded-xl bg-amber-950/20 border border-amber-500/30 flex items-center justify-between text-xs">
+              <div>
+                <p class="font-bold text-white">${w.bookTitle}</p>
+                <p class="text-[10px] text-amber-300">Waitlist FIFO Queue</p>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300">Auto-Allocates on Return</span>
+            </div>
+          `;
+        });
+
+        reqList.innerHTML = content;
       }
 
       const borrows = DB.getBorrows().filter(b => normalizeId(b.studentId) === normalizeId(session.idCard) && !b.isReturned);
       const bList = document.getElementById('studentBorrowedList');
       document.getElementById('badgeBorrowedCount').textContent = `${borrows.length} Active`;
 
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       if (borrows.length === 0) {
         bList.innerHTML = `<p class="text-xs text-slate-500 py-2 text-center">No books currently borrowed.</p>`;
       } else {
-        bList.innerHTML = borrows.map(b => `
-          <div class="p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
-            <div>
-              <p class="font-bold text-white">${b.bookTitle}</p>
-              <p class="text-[10px] text-slate-400">Due: <span class="text-amber-400 font-semibold">${b.dueDate}</span></p>
+        bList.innerHTML = borrows.map(b => {
+          const dueDate = new Date(b.dueDate);
+          dueDate.setHours(0, 0, 0, 0);
+          const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+          let dueBadge = `<span class="text-slate-300 font-semibold">${b.dueDate}</span>`;
+          let rowStyle = 'bg-slate-900 border-slate-800';
+
+          if (diffDays === 1) {
+            dueBadge = `<span class="px-2 py-0.5 bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded font-bold">⚠️ DUE TOMORROW (6th Day Alert)</span>`;
+            rowStyle = 'bg-amber-950/20 border-amber-500/40';
+          } else if (diffDays <= 0) {
+            const fine = Math.abs(diffDays) * 5;
+            dueBadge = `<span class="px-2 py-0.5 bg-rose-500/20 border border-rose-500/40 text-rose-300 rounded font-bold">🚨 OVERDUE: Fine ₹${fine} (Due: ${b.dueDate})</span>`;
+            rowStyle = 'bg-rose-950/20 border-rose-500/40';
+          }
+
+          return `
+            <div class="p-2.5 rounded-xl ${rowStyle} border flex items-center justify-between text-xs">
+              <div>
+                <p class="font-bold text-white">${b.bookTitle}</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">Status: ${dueBadge}</p>
+                ${b.renewedCount ? `<p class="text-[10px] text-indigo-400">Renewed: ${b.renewedCount}x</p>` : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="executeStudentSelfRenewal('${b.id}')" class="text-[10px] bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white px-2.5 py-1 rounded transition border border-indigo-500/30 cursor-pointer">
+                  Extend +7 Days
+                </button>
+                <button onclick="returnBook('${b.id}')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition cursor-pointer">
+                  Mark Returned
+                </button>
+              </div>
             </div>
-            <button onclick="returnBook('${b.id}')" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition cursor-pointer">
-              Mark Returned
-            </button>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       }
     }
 
@@ -1075,14 +1319,14 @@
             <div class="flex items-center gap-2">
               ${r.status === 'PENDING' ? `
                 <button onclick="respondTeacherRequest(${r.id}, 'CONFIRMED_YES')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition shadow cursor-pointer">
-                  ✓ YES (Held on Shelf)
+                  ✓ Confirm Handover (Day 1 of 7)
                 </button>
                 <button onclick="respondTeacherRequest(${r.id}, 'DECLINED_NO')" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition shadow cursor-pointer">
-                  ✕ NO (Not Available)
+                  ✕ Cancel Hold (Restore Stock)
                 </button>
               ` : `
                 <span class="font-bold ${r.status === 'CONFIRMED_YES' ? 'text-emerald-400' : 'text-rose-400'}">
-                  ${r.status === 'CONFIRMED_YES' ? '● Approved (Held)' : '● Declined (Unavailable)'}
+                  ${r.status === 'CONFIRMED_YES' ? '● Handed Over' : '● Cancelled'}
                 </span>
               `}
             </div>
@@ -1097,12 +1341,37 @@
       if (target) {
         target.status = newStatus;
         DB.setRequests(requests);
-        renderTeacherQueue();
-        renderBookCatalog();
 
         if (newStatus === 'CONFIRMED_YES') {
-          triggerSmsToast(`Held: Book "${target.bookTitle}" is confirmed for student ${target.studentName} (${target.studentId}).`, null, "Counter Reserved");
+          const issueDate = new Date();
+          const dueDate = new Date();
+          dueDate.setDate(issueDate.getDate() + 7);
+          const dueDateStr = dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+          const borrows = DB.getBorrows();
+          borrows.push({
+            id: 'B-' + Date.now(),
+            studentId: target.studentId,
+            bookId: target.bookId,
+            bookTitle: target.bookTitle,
+            issueDate: issueDate.toISOString(),
+            dueDate: dueDateStr,
+            isReturned: false,
+            issuedAt: new Date().toISOString()
+          });
+          DB.setBorrows(borrows);
+          triggerSmsToast(`Handover Complete: "${target.bookTitle}" issued to ${target.studentName} (${target.studentId}). Due on ${dueDateStr}.`, null, "Counter Confirmed");
+        } else {
+          let books = DB.getBooks();
+          let b = books.find(x => x.id === target.bookId);
+          if (b) {
+            b.availableCopies = Math.min(b.totalCopies, b.availableCopies + 1);
+            DB.setBooks(books);
+          }
         }
+
+        renderTeacherQueue();
+        renderBookCatalog();
       }
     }
 
@@ -1121,7 +1390,7 @@
     function executeTeacherAddBook() {
       const title = document.getElementById('teacherBookTitle').value.trim();
       const author = document.getElementById('teacherBookAuthor').value.trim();
-      const isAvailable = document.getElementById('teacherBookStatus').value === "true";
+      const qty = parseInt(document.getElementById('teacherBookQty').value, 10) || 1;
 
       if (!title || !author) {
         alert("Please enter both Book Title and Author Name.");
@@ -1129,38 +1398,63 @@
       }
 
       const books = DB.getBooks();
-      books.push({ id: Date.now(), title, author, isAvailable });
+      books.push({ id: Date.now(), title, author, totalCopies: qty, availableCopies: qty });
       DB.setBooks(books);
 
       document.getElementById('teacherBookTitle').value = '';
       document.getElementById('teacherBookAuthor').value = '';
+      document.getElementById('teacherBookQty').value = '3';
       
       populateIssueDropdown();
       renderBookCatalog();
-      alert(`Success! "${title}" by ${author} has been added directly to library catalog.`);
+      alert(`Success! "${title}" with ${qty} copies added directly to the catalog.`);
     }
 
     function populateIssueDropdown() {
       const select = document.getElementById('issueBookSelect');
       const books = DB.getBooks();
       select.innerHTML = `<option value="">-- Choose Book to Issue --</option>` + 
-        books.map(b => `<option value="${b.id}">${b.title} (${b.author})</option>`).join('');
+        books.map(b => `<option value="${b.id}">${b.title} (${b.availableCopies}/${b.totalCopies} available)</option>`).join('');
     }
 
     function executeDirectIssue() {
       const studentId = normalizeId(document.getElementById('issueStudentId').value);
       const bookId = parseInt(document.getElementById('issueBookSelect').value, 10);
 
-      const books = DB.getBooks();
+      if (!studentId) {
+        alert("Please enter the student's USN ID.");
+        return;
+      }
+
+      if (isStudentBlacklisted(studentId)) {
+        alert("Blocked: Student currently has unreturned overdue books. Must return overdue items first.");
+        return;
+      }
+
+      if (getStudentActiveCount(studentId) >= 2) {
+        alert("Quota Blocked: Student has already reached their 2-book limit.");
+        return;
+      }
+
+      let books = DB.getBooks();
       const book = books.find(b => b.id === bookId);
       if (!book) {
         alert("Please select a valid book from the list.");
         return;
       }
 
-      const d = new Date();
-      d.setDate(d.getDate() + 1);
-      const dueDateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      if (book.availableCopies <= 0) {
+        alert(`Cannot issue: 0 copies of "${book.title}" are currently available in the library.`);
+        return;
+      }
+
+      book.availableCopies -= 1;
+      DB.setBooks(books);
+
+      const issueDate = new Date();
+      const dueDate = new Date();
+      dueDate.setDate(issueDate.getDate() + 7);
+      const dueDateStr = dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
       const borrows = DB.getBorrows();
       borrows.push({
@@ -1168,17 +1462,16 @@
         studentId,
         bookId: book.id,
         bookTitle: book.title,
+        issueDate: issueDate.toISOString(),
         dueDate: dueDateStr,
         isReturned: false,
         issuedAt: new Date().toISOString()
       });
       DB.setBorrows(borrows);
 
-      book.isAvailable = false;
-      DB.setBooks(books);
-
-      alert(`Book "${book.title}" successfully issued to ${studentId}. Due on ${dueDateStr}.`);
+      alert(`Book "${book.title}" issued to ${studentId}. Remaining on shelf: ${book.availableCopies}/${book.totalCopies}. Due: ${dueDateStr}.`);
       document.getElementById('issueStudentId').value = '';
+      populateIssueDropdown();
       renderBookCatalog();
     }
 
@@ -1192,13 +1485,114 @@
         let books = DB.getBooks();
         let targetBook = books.find(bk => bk.id === b.bookId);
         if (targetBook) {
-          targetBook.isAvailable = true;
+          let waitlist = DB.getWaitlist();
+          const nextInQueueIndex = waitlist.findIndex(w => w.bookId === targetBook.id);
+
+          if (nextInQueueIndex !== -1) {
+            const nextStudent = waitlist.splice(nextInQueueIndex, 1)[0];
+            DB.setWaitlist(waitlist);
+
+            const requests = DB.getRequests();
+            requests.push({
+              id: Date.now(),
+              studentId: nextStudent.studentId,
+              studentName: nextStudent.studentName,
+              studentMobile: "9876543210",
+              bookId: targetBook.id,
+              bookTitle: targetBook.title,
+              bookAuthor: targetBook.author,
+              status: 'PENDING',
+              requestedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+            DB.setRequests(requests);
+
+            triggerSmsToast(`Priority Transit Lock: "${targetBook.title}" was returned and is held exclusively for ${nextStudent.studentName} (${nextStudent.studentId})!`, null, "Automated Waitlist Hold");
+            alert(`Priority Transit Lock Engaged: "${targetBook.title}" is held at the desk exclusively for ${nextStudent.studentName} (${nextStudent.studentId}). Stock remains reserved.`);
+          } else {
+            targetBook.availableCopies = Math.min(targetBook.totalCopies, targetBook.availableCopies + 1);
+            alert(`Book returned! Inventory restored to ${targetBook.availableCopies}/${targetBook.totalCopies} available.`);
+          }
           DB.setBooks(books);
         }
 
+        populateIssueDropdown();
         renderBookCatalog();
-        alert(`Book returned! Inventory updated to Available.`);
       }
+    }
+
+    function generateDailyAuditReport() {
+      const modal = document.getElementById('auditModal');
+      const content = document.getElementById('auditReportContent');
+      const books = DB.getBooks();
+      const borrows = DB.getBorrows();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const activeBorrows = borrows.filter(b => !b.isReturned);
+      let totalOverdue = 0;
+      let totalFines = 0;
+      let approachingDay6 = 0;
+
+      activeBorrows.forEach(b => {
+        const dueDate = new Date(b.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) approachingDay6++;
+        if (diffDays <= 0) {
+          totalOverdue++;
+          totalFines += Math.abs(diffDays) * 5;
+        }
+      });
+
+      const outOfStockTitles = books.filter(b => b.availableCopies === 0);
+
+      content.innerHTML = `
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+          <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl">
+            <span class="text-slate-400 text-[10px] block font-bold uppercase">Total Checked Out</span>
+            <span class="text-xl font-bold text-indigo-400 font-mono">${activeBorrows.length}</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl">
+            <span class="text-slate-400 text-[10px] block font-bold uppercase">Due Tomorrow (Day 6)</span>
+            <span class="text-xl font-bold text-amber-400 font-mono">${approachingDay6}</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl">
+            <span class="text-slate-400 text-[10px] block font-bold uppercase">Overdue Items</span>
+            <span class="text-xl font-bold text-rose-400 font-mono">${totalOverdue}</span>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl">
+            <span class="text-slate-400 text-[10px] block font-bold uppercase">Accrued Fines</span>
+            <span class="text-xl font-bold text-emerald-400 font-mono">₹${totalFines}</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
+          <h4 class="font-bold text-white uppercase text-[11px] tracking-wider text-indigo-400">Inventory Depletion (0 Copies Remaining)</h4>
+          ${outOfStockTitles.length === 0 ? '<p class="text-slate-400">All titles have at least 1 copy in stock.</p>' : `
+            <div class="space-y-1">
+              ${outOfStockTitles.map(t => `<div class="flex justify-between border-b border-slate-800/60 pb-1"><span>${t.title}</span> <span class="text-rose-400 font-mono font-bold">0/${t.totalCopies}</span></div>`).join('')}
+            </div>
+          `}
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
+          <h4 class="font-bold text-white uppercase text-[11px] tracking-wider text-rose-400">Overdue Students Suspended</h4>
+          ${totalOverdue === 0 ? '<p class="text-slate-400">Zero students currently overdue.</p>' : `
+            <div class="space-y-1">
+              ${activeBorrows.filter(b => new Date(b.dueDate).getTime() < today.getTime()).map(b => {
+                const daysLate = Math.ceil((today.getTime() - new Date(b.dueDate).getTime()) / (1000 * 60 * 60 * 24));
+                return `<div class="flex justify-between border-b border-slate-800/60 pb-1 font-mono"><span>${b.studentId} - "${b.bookTitle}"</span> <span class="text-rose-400 font-bold">${daysLate} days overdue (₹${daysLate * 5})</span></div>`;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeAuditModal() {
+      document.getElementById('auditModal').style.display = 'none';
     }
 
     function requestNoDuesModal() {
@@ -1210,20 +1604,32 @@
       const printBtn = document.getElementById('btnPrintNoDues');
 
       const activeBorrows = DB.getBorrows().filter(b => normalizeId(b.studentId) === normalizeId(session.idCard) && !b.isReturned);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-      if (activeBorrows.length > 0) {
+      let totalFines = 0;
+      activeBorrows.forEach(b => {
+        const dueDate = new Date(b.dueDate);
+        dueDate.setHours(0, 0, 0, 0);
+        const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) {
+          totalFines += Math.abs(diffDays) * 5;
+        }
+      });
+
+      if (activeBorrows.length > 0 || totalFines > 0) {
         printBtn.classList.add('hidden');
         content.innerHTML = `
           <div class="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-center space-y-2">
             <span class="text-3xl">⚠️</span>
-            <h4 class="text-base font-bold text-rose-300">Clearance Withheld: Active Books Pending</h4>
-            <p class="text-xs text-slate-300">You currently have <strong>${activeBorrows.length}</strong> book(s) borrowed that have not been returned to the library counter.</p>
+            <h4 class="text-base font-bold text-rose-300">Clearance Withheld: Outstanding Books or Fines</h4>
+            <p class="text-xs text-slate-300">You have <strong>${activeBorrows.length}</strong> unreturned book(s) and <strong>₹${totalFines}.00</strong> in accrued overdue fines.</p>
           </div>
           <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1 text-xs">
-            <span class="text-slate-400 font-bold block mb-1">Unreturned Books:</span>
-            ${activeBorrows.map(b => `<div class="text-slate-200">• ${b.bookTitle}</div>`).join('')}
+            <span class="text-slate-400 font-bold block mb-1">Unreturned Books & Late Fines:</span>
+            ${activeBorrows.map(b => `<div class="text-slate-200">• ${b.bookTitle} (Due:${b.dueDate})</div>`).join('')}
           </div>
-          <p class="text-[11px] text-slate-400 text-center">Return these books at the 4th floor counter to unlock your "NO DUES" certificate.</p>
+          <p class="text-[11px] text-slate-400 text-center">Return these books and clear fine balance at the 4th floor desk to unlock graduation clearance.</p>
         `;
       } else {
         printBtn.classList.remove('hidden');
@@ -1233,13 +1639,14 @@
             <div class="text-4xl font-black font-display tracking-widest text-emerald-400 uppercase">
               "NO DUES"
             </div>
-            <p class="text-xs text-slate-300">Zero outstanding library books, overdue fines, or damaged assets detected.</p>
+            <p class="text-xs text-slate-300">Zero outstanding books, overdue fines, or library liabilities detected.</p>
           </div>
 
           <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
             <div class="flex justify-between"><span class="text-slate-400">Student Name:</span> <span class="font-bold text-white">${session.name}</span></div>
             <div class="flex justify-between"><span class="text-slate-400">Student USN ID:</span> <span class="font-mono font-bold text-white">${session.idCard}</span></div>
             <div class="flex justify-between"><span class="text-slate-400">Verified Mobile:</span> <span class="font-mono text-white">+91 ${session.mobile}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Accrued Fines:</span> <span class="text-emerald-400 font-bold">₹0.00 (Cleared)</span></div>
             <div class="flex justify-between"><span class="text-slate-400">Clearance Status:</span> <span class="text-emerald-400 font-bold">100% Cleared for Graduation</span></div>
           </div>
         `;
@@ -1302,13 +1709,21 @@
       DB.setWhitelist(list);
       document.getElementById('adminInputIds').value = '';
       updateAdminStats();
-      alert(`Successfully added ${added} student(s) to the college database.`);
+      alert(`Successfully added ${added} student(s) to the database.`);
     }
 
     function resetDefaultIds() {
-      if (confirm("Reset whitelist to original class list?")) {
+      if (confirm("Reset all accounts? Passwords will be cleared so all 10 students can perform First-Time Setup.")) {
         DB.setWhitelist(CLASS_WHITELIST);
+        DB.setUsers([]);
+        DB.setSession(null);
+        DB.setBooks(INITIAL_BOOKS);
+        DB.setRequests([]);
+        DB.setBorrows([]);
+        DB.setWaitlist([]);
         updateAdminStats();
+        alert("All student accounts, inventory, and queues have been reset.");
+        updateAppView();
       }
     }
 
@@ -1331,6 +1746,7 @@
         document.getElementById('dashStudentMobile').textContent = "+91 " + session.mobile;
 
         renderBookCatalog();
+        checkDuePriorDayAlerts();
       } else {
         authSection.style.display = 'block';
         studentDash.style.display = 'none';
@@ -1342,21 +1758,9 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Initialize state
       isTeacherAuthenticated = false;
-      
-      let users = DB.getUsers();
-      if (users.length === 0) {
-        users = CLASS_WHITELIST.map(student => ({
-          idCard: student.id,
-          name: student.name,
-          mobile: "9876543210",
-          password: "Secret@123",
-          isPermanent: true,
-          registeredAt: new Date().toISOString()
-        }));
-        DB.setUsers(users);
-      }
+      // WIPE EXISTING PASSWORDS AUTOMATICALLY FOR FRESH RUN
+      DB.setUsers([]);
       updateAppView();
     });
   </script>
