@@ -134,7 +134,7 @@
         <div id="regStepWrapper" style="display: none;">
           <div id="boxRegStep1" class="space-y-4">
             <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-[11px] text-indigo-300 leading-relaxed">
-              <strong>Account Setup:</strong> Passwords have been reset. Select your authorized USN to set your permanent password. Once established, it locks permanently.
+              <strong>Account Setup:</strong> Select your authorized USN to set your permanent password. Once established, it locks permanently.
             </div>
 
             <div>
@@ -250,7 +250,7 @@
             <div id="studentRequestList" class="space-y-2.5 max-h-52 overflow-y-auto pr-1"></div>
           </div>
 
-          <!-- BORROWED BOOKS (7-DAY LIMIT & AUTO FINES + AUTO-RENEWAL) -->
+          <!-- BORROWED BOOKS -->
           <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3">
@@ -328,6 +328,35 @@
         </div>
       </div>
 
+      <!-- MAIN SERVER STUDENT CREDENTIAL VAULT (VIEW PASSWORDS) -->
+      <div class="bg-slate-950 border border-amber-500/40 rounded-2xl p-5 shadow">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-bold text-amber-300 flex items-center gap-2">
+            <span>🔑</span>
+            <span>Main Server Student Passwords & Credentials Vault</span>
+          </h3>
+          <span class="text-[10px] font-semibold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Staff Confidential</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-3">Live directory of all 10 students, their verification status, and established permanent passwords.</p>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border border-slate-800 rounded-xl overflow-hidden">
+            <thead class="bg-slate-900 text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
+              <tr>
+                <th class="p-3 border-b border-slate-800">Student Name</th>
+                <th class="p-3 border-b border-slate-800">USN ID</th>
+                <th class="p-3 border-b border-slate-800">Mobile No.</th>
+                <th class="p-3 border-b border-slate-800">Permanent Password</th>
+                <th class="p-3 border-b border-slate-800 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody id="teacherVaultTableBody" class="divide-y divide-slate-800">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- DIRECT INVENTORY INTAKE PANEL WITH STOCK QUANTITY -->
       <div class="bg-slate-950 border border-indigo-500/40 rounded-2xl p-5 shadow">
         <div class="flex items-center justify-between mb-2">
@@ -362,7 +391,7 @@
         </div>
       </div>
 
-      <!-- COUNTER ISSUE SIMULATOR (DECREMENTS COPIES) -->
+      <!-- COUNTER ISSUE SIMULATOR -->
       <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow">
         <h3 class="text-sm font-bold text-white mb-3">Counter Issue Simulator (Direct Handover)</h3>
         <p class="text-xs text-slate-400 mb-4">Issuing decrements available copies in real time and initializes the 7-day loan countdown.</p>
@@ -461,7 +490,7 @@
             + Append to Database
           </button>
           <button type="button" onclick="resetDefaultIds()" class="text-xs text-slate-400 hover:text-rose-400 transition cursor-pointer">
-            Reset All Passwords & Accounts
+            Clear All Passwords (Reset)
           </button>
         </div>
       </div>
@@ -589,19 +618,19 @@
 
       getUsers: () => {
         try {
-          const s = localStorage.getItem('sl_users');
+          const s = localStorage.getItem('sl_users_v5');
           return s ? JSON.parse(s) : [];
         } catch(e) { return []; }
       },
-      setUsers: (u) => { try { localStorage.setItem('sl_users', JSON.stringify(u)); } catch(e){} },
+      setUsers: (u) => { try { localStorage.setItem('sl_users_v5', JSON.stringify(u)); } catch(e){} },
 
       getBooks: () => {
         try {
-          const s = localStorage.getItem('sl_books_v4');
+          const s = localStorage.getItem('sl_books_v5');
           return s ? JSON.parse(s) : INITIAL_BOOKS;
         } catch(e) { return INITIAL_BOOKS; }
       },
-      setBooks: (b) => { try { localStorage.setItem('sl_books_v4', JSON.stringify(b)); } catch(e){} },
+      setBooks: (b) => { try { localStorage.setItem('sl_books_v5', JSON.stringify(b)); } catch(e){} },
 
       getRequests: () => {
         try {
@@ -766,6 +795,7 @@
         btnT.className = "px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white transition flex items-center gap-1.5 cursor-pointer";
         btnS.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white transition cursor-pointer";
         renderTeacherQueue();
+        renderTeacherVaultTable();
         populateIssueDropdown();
       }
     }
@@ -1289,6 +1319,62 @@
       }
     }
 
+    // MAIN SERVER CREDENTIALS VAULT RENDERER
+    function renderTeacherVaultTable() {
+      const tbody = document.getElementById('teacherVaultTableBody');
+      const whitelist = DB.getWhitelist();
+      const users = DB.getUsers();
+
+      tbody.innerHTML = whitelist.map((st, idx) => {
+        const studentName = typeof st === 'object' ? st.name : "Student";
+        const studentId = typeof st === 'object' ? st.id : st;
+        const reg = users.find(u => normalizeId(u.idCard) === normalizeId(studentId));
+
+        return `
+          <tr class="hover:bg-slate-900/60 transition">
+            <td class="p-3 font-semibold text-white">${studentName}</td>
+            <td class="p-3 font-mono text-indigo-400 font-bold">${studentId}</td>
+            <td class="p-3 font-mono text-slate-300">${reg ? '+91 ' + reg.mobile : '<span class="text-slate-600 font-sans italic">Not Provided</span>'}</td>
+            <td class="p-3 font-mono">
+              ${reg ? `
+                <div class="flex items-center gap-2">
+                  <span id="vaultPwd_${idx}" class="text-emerald-400 font-bold tracking-wider">••••••••</span>
+                  <button type="button" onclick="toggleVaultPasswordVisibility('vaultPwd_${idx}', '${reg.password}')" class="text-slate-400 hover:text-white cursor-pointer text-xs">
+                    👁️
+                  </button>
+                </div>
+              ` : `
+                <span class="text-slate-500 italic font-sans">No Password Set</span>
+              `}
+            </td>
+            <td class="p-3 text-right">
+              ${reg ? `
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  Locked & Active
+                </span>
+              ` : `
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  Awaiting First-Time Setup
+                </span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function toggleVaultPasswordVisibility(spanId, clearPassword) {
+      const span = document.getElementById(spanId);
+      if (!span) return;
+      if (span.textContent === '••••••••') {
+        span.textContent = clearPassword;
+        span.classList.remove('tracking-wider');
+      } else {
+        span.textContent = '••••••••';
+        span.classList.add('tracking-wider');
+      }
+    }
+
     function renderTeacherQueue() {
       const allRequests = DB.getRequests();
       const container = document.getElementById('teacherQueueContainer');
@@ -1755,12 +1841,14 @@
       }
 
       updateTeacherBadges();
+      if (isTeacherAuthenticated) {
+        renderTeacherVaultTable();
+      }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       isTeacherAuthenticated = false;
-      // WIPE EXISTING PASSWORDS AUTOMATICALLY FOR FRESH RUN
-      DB.setUsers([]);
+      // Persistent storage preserved on load (no auto-wipe)
       updateAppView();
     });
   </script>
