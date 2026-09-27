@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Campus Library Desk - RV University</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- HTML5 Barcode/QR Scanner Library -->
+  <!-- HTML5 QR/Barcode Scanner -->
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -45,12 +45,13 @@
       </span>
     </div>
 
+    <!-- Active User & Terminal Triggers -->
     <div class="flex items-center gap-3">
       <div id="currentUserBadge" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono">
         <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
       
-      <!-- FACULTY TERMINAL (RVUM26CSE063 ONLY) -->
+      <!-- FACULTY TERMINAL BUTTON (RESTRICTED TO RVUM26CSE063) -->
       <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
         <span>⚡</span> Central Server Desk
       </button>
@@ -139,7 +140,7 @@
       </div>
     </section>
 
-    <!-- VIEW 2: STUDENT PORTAL (VIEW-ONLY INVENTORY STATUS) -->
+    <!-- VIEW 2: STUDENT PORTAL (VIEW-ONLY STOCK TELEMETRY) -->
     <section id="studentView" class="hidden space-y-6">
       <div class="bg-[#0e1724] border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -240,11 +241,11 @@
           <div class="border border-slate-800 bg-slate-900/50 p-5 rounded-2xl space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
               <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Scan & Register Textbook</h4>
-                <p class="text-[11px] text-slate-500">Scan barcode or ISBN to fetch official title & authors automatically</p>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Scan & Ingest Textbook</h4>
+                <p class="text-[11px] text-slate-500">Scan barcode or enter ISBN to automatically detect Title & Author</p>
               </div>
               <button type="button" id="scannerToggleBtn" onclick="toggleBarcodeScanner()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
-                <span>📷</span> Open Barcode Scanner
+                <span>📷</span> Open Camera Scanner
               </button>
             </div>
 
@@ -269,7 +270,7 @@
                   <div class="flex gap-2">
                     <input type="text" id="newBookBarcode" placeholder="Scan barcode or type 10/13 digit ISBN" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
                     <button type="button" onclick="triggerManualLookup()" class="px-4 py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-xs text-indigo-300 font-semibold whitespace-nowrap">
-                      Fetch Details
+                      Fetch Title & Author
                     </button>
                   </div>
                 </div>
@@ -282,11 +283,11 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label class="block text-[11px] text-slate-400 mb-1">Book Title (Auto-Fetched from ISBN) *</label>
-                  <input type="text" id="newBookTitle" placeholder="Auto-fills from Google/OpenLibrary, or type manually" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                  <input type="text" id="newBookTitle" placeholder="Auto-fills from ISBN registries" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-400 mb-1">Author(s) (Auto-Fetched from ISBN) *</label>
-                  <input type="text" id="newBookAuthor" placeholder="Auto-fills from Google/OpenLibrary, or type manually" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                  <input type="text" id="newBookAuthor" placeholder="Auto-fills from ISBN registries" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
                 </div>
               </div>
 
@@ -456,7 +457,30 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1 }
     ];
 
-    const STORAGE_KEY = "rvu_smart_library_multi_api_v4";
+    // -------------------------------------------------------------
+    // OFFLINE SYLLABUS DIRECTORY (INDIAN ENGINEERING EDITIONS)
+    // -------------------------------------------------------------
+    const ACADEMIC_SYLLABUS_REGISTRY = {
+      "9780132350884": { title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin" },
+      "9780262046305": { title: "Introduction to Algorithms (CLRS 4th Edition)", author: "Thomas H. Cormen, Charles E. Leiserson" },
+      "9780262033848": { title: "Introduction to Algorithms (CLRS 3rd Edition)", author: "Thomas H. Cormen, Ronald L. Rivest" },
+      "9780134997193": { title: "Computer Organization & Architecture (11th Edition)", author: "William Stallings" },
+      "9789332518704": { title: "Computer Organization & Architecture (Pearson India)", author: "William Stallings" },
+      "9781259676512": { title: "Discrete Mathematics and Its Applications (8th Edition)", author: "Kenneth H. Rosen" },
+      "9789390727049": { title: "Discrete Mathematics and Its Applications (Indian Adaptation)", author: "Kenneth H. Rosen" },
+      "9781847886361": { title: "Design Thinking: Understanding How Designers Think and Work", author: "Nigel Cross" },
+      "9781118063330": { title: "Operating System Concepts (9th Edition)", author: "Abraham Silberschatz, Peter B. Galvin" },
+      "9789351194545": { title: "Operating System Concepts (Wiley India Edition)", author: "Abraham Silberschatz, Greg Gagne" },
+      "9780131103627": { title: "The C Programming Language (2nd Edition)", author: "Brian W. Kernighan, Dennis M. Ritchie" },
+      "9789332549449": { title: "The C Programming Language (Pearson India Edition)", author: "Brian W. Kernighan, Dennis M. Ritchie" },
+      "9780073523323": { title: "Database System Concepts (6th Edition)", author: "Abraham Silberschatz, Henry F. Korth" },
+      "9789332901469": { title: "Database System Concepts (McGraw Hill India)", author: "Abraham Silberschatz, S. Sudarshan" },
+      "9780133594140": { title: "Computer Networks (5th Edition)", author: "Andrew S. Tanenbaum, David J. Wetherall" },
+      "9789332518742": { title: "Computer Networks (Pearson India Edition)", author: "Andrew S. Tanenbaum" },
+      "9780201633610": { title: "Design Patterns: Elements of Reusable Object-Oriented Software", author: "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides" }
+    };
+
+    const STORAGE_KEY = "rvu_smart_library_scanned_v5";
     const SESSION_KEY = "rvu_active_session_usn";
 
     function loadState() {
@@ -713,7 +737,7 @@
     }
 
     // -------------------------------------------------------------
-    // MAIN SERVER DESK (RVUM26CSE063 ONLY)
+    // FACULTY DESK TERMINAL (RVUM26CSE063 ONLY)
     // -------------------------------------------------------------
     function openMainServerTerminal() {
       if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
@@ -793,79 +817,96 @@
     }
 
     // -------------------------------------------------------------
-    // AUTOMATIC ISBN METADATA ENGINE (GOOGLE BOOKS + OPEN LIBRARY)
+    // CORS-BYPASSING JSONP ISBN AUTO-RESOLVER WITH OFFLINE FALLBACK
     // -------------------------------------------------------------
-    async function fetchBookByIsbn(rawCode) {
+    let activeJsonpScript = null;
+
+    function fetchBookByIsbn(rawCode) {
       const isbn = rawCode.replace(/[^0-9X]/gi, "");
       const badge = document.getElementById("lookupStatusBadge");
       const titleInput = document.getElementById("newBookTitle");
       const authorInput = document.getElementById("newBookAuthor");
 
       if (!isbn || (isbn.length !== 10 && isbn.length !== 13)) {
-        showToast("Invalid ISBN format. Barcode must be 10 or 13 digits.", "warning");
+        showToast("Invalid code length. Ensure barcode has 10 or 13 digits.", "warning");
         return;
       }
 
       badge.classList.remove("hidden");
       badge.className = "text-[10px] font-mono text-amber-400 animate-pulse";
-      badge.textContent = "Querying ISBN registries...";
-      showToast(`Searching registry for ISBN ${isbn}...`, "info");
+      badge.textContent = "Resolving ISBN...";
 
-      // 1. Check Google Books API
-      try {
-        const gUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
-        const gResponse = await fetch(gUrl);
-        if (gResponse.ok) {
-          const gData = await gResponse.json();
-          if (gData.totalItems > 0 && gData.items && gData.items[0]?.volumeInfo) {
-            const vol = gData.items[0].volumeInfo;
-            const fetchedTitle = vol.title + (vol.subtitle ? `: ${vol.subtitle}` : "");
-            const fetchedAuthor = vol.authors && vol.authors.length > 0 ? vol.authors.join(", ") : "Unknown Author";
-
-            titleInput.value = fetchedTitle;
-            authorInput.value = fetchedAuthor;
-
-            badge.className = "text-[10px] font-mono text-emerald-400";
-            badge.textContent = "✓ Verified via Google Books";
-            showToast(`Auto-Identified: "${fetchedTitle}"`, "success");
-            return;
-          }
-        }
-      } catch (err) {
-        console.warn("Google Books registry timeout, attempting OpenLibrary...", err);
+      // ROUTE 1: Check Built-in Offline Academic Syllabus Registry
+      if (ACADEMIC_SYLLABUS_REGISTRY[isbn]) {
+        const item = ACADEMIC_SYLLABUS_REGISTRY[isbn];
+        titleInput.value = item.title;
+        authorInput.value = item.author;
+        badge.className = "text-[10px] font-mono text-emerald-400";
+        badge.textContent = "✓ Matched in Offline Syllabus";
+        showToast(`Identified: "${item.title}"`, "success");
+        return;
       }
 
-      // 2. Fallback: Open Library API
-      try {
-        const oUrl = `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&jscmd=data&format=json`;
-        const oResponse = await fetch(oUrl);
-        if (oResponse.ok) {
-          const oData = await oResponse.json();
-          const bookKey = `ISBN:${isbn}`;
-          if (oData[bookKey]) {
-            const b = oData[bookKey];
-            const fetchedTitle = b.title || "";
-            const fetchedAuthor = b.authors && b.authors.length > 0 ? b.authors.map(a => a.name).join(", ") : "Unknown Author";
+      // ROUTE 2: Google Books API via JSONP (Bypasses CORS restrictions)
+      if (activeJsonpScript) activeJsonpScript.remove();
 
-            titleInput.value = fetchedTitle;
-            authorInput.value = fetchedAuthor;
+      window.handleGoogleBooksResponse = function(response) {
+        if (response && response.items && response.items.length > 0) {
+          const vol = response.items[0].volumeInfo;
+          const detectedTitle = vol.title + (vol.subtitle ? `: ${vol.subtitle}` : "");
+          const detectedAuthor = vol.authors && vol.authors.length > 0 ? vol.authors.join(", ") : "Various Authors";
 
-            badge.className = "text-[10px] font-mono text-emerald-400";
-            badge.textContent = "✓ Verified via Open Library";
-            showToast(`Auto-Identified: "${fetchedTitle}"`, "success");
-            return;
-          }
+          titleInput.value = detectedTitle;
+          authorInput.value = detectedAuthor;
+
+          badge.className = "text-[10px] font-mono text-emerald-400";
+          badge.textContent = "✓ Verified via Google Books";
+          showToast(`Identified: "${detectedTitle}"`, "success");
+        } else {
+          // ROUTE 3: Open Library API Fallback
+          fallbackOpenLibrary(isbn);
         }
-      } catch (err) {
-        console.warn("Open Library registry failed.", err);
-      }
+      };
 
-      // 3. Fallback when ISBN is valid but unlisted
-      badge.className = "text-[10px] font-mono text-amber-300";
-      badge.textContent = "⚠️ Unlisted ISBN - Type Title Below";
-      showToast("ISBN not listed in global database. Please type book title manually.", "warning");
-      titleInput.value = "";
-      titleInput.focus();
+      const script = document.createElement("script");
+      script.src = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&callback=handleGoogleBooksResponse`;
+      script.onerror = function() { fallbackOpenLibrary(isbn); };
+      document.body.appendChild(script);
+      activeJsonpScript = script;
+    }
+
+    function fallbackOpenLibrary(isbn) {
+      const badge = document.getElementById("lookupStatusBadge");
+      const titleInput = document.getElementById("newBookTitle");
+      const authorInput = document.getElementById("newBookAuthor");
+
+      window[`handleOL_${isbn}`] = function(data) {
+        const key = `ISBN:${isbn}`;
+        if (data && data[key]) {
+          const b = data[key];
+          titleInput.value = b.title || "";
+          authorInput.value = b.authors && b.authors.length > 0 ? b.authors.map(a => a.name).join(", ") : "Unknown Author";
+
+          badge.className = "text-[10px] font-mono text-emerald-400";
+          badge.textContent = "✓ Verified via Open Library";
+          showToast(`Identified: "${b.title}"`, "success");
+        } else {
+          badge.className = "text-[10px] font-mono text-amber-300";
+          badge.textContent = "⚠️ Unlisted in Registries - Enter Title";
+          showToast("ISBN valid, but unindexed online. Enter Title manually.", "warning");
+          titleInput.value = "";
+          titleInput.focus();
+        }
+      };
+
+      const olScript = document.createElement("script");
+      olScript.src = `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&jscmd=data&format=jsonp&callback=handleOL_${isbn}`;
+      olScript.onerror = function() {
+        badge.className = "text-[10px] font-mono text-rose-400";
+        badge.textContent = "✕ Lookup Failed - Enter Title";
+        showToast("Lookup timed out. Please enter Title manually.", "warning");
+      };
+      document.body.appendChild(olScript);
     }
 
     function triggerManualLookup() {
@@ -901,14 +942,14 @@
       html5QrScanner.start(
         { facingMode: "environment" },
         config,
-        async (decodedText) => {
+        (decodedText) => {
           const cleanCode = decodedText.replace(/[^0-9X]/gi, "");
           document.getElementById("newBookBarcode").value = cleanCode;
           toggleBarcodeScanner();
           showToast(`Scanned Code: ${cleanCode}`, "info");
 
-          // Automatically fetch book title and author using the scanned ISBN
-          await fetchBookByIsbn(cleanCode);
+          // Directly trigger the CORS-bypass lookup engine
+          fetchBookByIsbn(cleanCode);
         },
         (errorMessage) => {
           status.textContent = "Point camera steadily at book barcode/ISBN.";
