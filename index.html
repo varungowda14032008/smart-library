@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Campus Library Desk - RV University</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- HTML5 QR/Barcode Scanner -->
+  <!-- Barcode Scanner -->
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <!-- In-Browser OCR Engine for Reading Book Covers -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b131e; }
     .font-display { font-family: 'Space Grotesk', sans-serif; }
-    #reader video { border-radius: 1rem; width: 100% !important; }
+    #reader video, #ocrVideo { border-radius: 1rem; width: 100% !important; }
     @media print {
       body * { visibility: hidden; }
       #printableCert, #printableCert * { visibility: visible; }
@@ -51,7 +53,7 @@
         <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
       
-      <!-- FACULTY TERMINAL BUTTON (RESTRICTED TO RVUM26CSE063) -->
+      <!-- MAIN SERVER TERMINAL BUTTON (RESTRICTED TO RVUM26CSE063) -->
       <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
         <span>⚡</span> Central Server Desk
       </button>
@@ -237,42 +239,60 @@
             </div>
           </div>
 
-          <!-- SCANNER & INGESTION FORM -->
+          <!-- DUAL CAMERA SCANNER (BARCODE + COVER OCR) -->
           <div class="border border-slate-800 bg-slate-900/50 p-5 rounded-2xl space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
               <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Scan & Ingest Textbook</h4>
-                <p class="text-[11px] text-slate-500">Scan barcode or enter ISBN to automatically detect Title & Author</p>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Fast Ingestion Engine</h4>
+                <p class="text-[11px] text-slate-500">Scan barcode for ISBN, or point camera at cover to extract Title & Author instantly</p>
               </div>
-              <button type="button" id="scannerToggleBtn" onclick="toggleBarcodeScanner()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
-                <span>📷</span> Open Camera Scanner
-              </button>
+              <div class="flex gap-2">
+                <button type="button" onclick="toggleBarcodeScanner()" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
+                  <span>📷</span> Scan Barcode (ISBN)
+                </button>
+                <button type="button" onclick="toggleCoverScanner()" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
+                  <span>📖</span> Scan Book Cover (Title OCR)
+                </button>
+              </div>
             </div>
 
-            <!-- SCANNER CAMERA VIEWPORT -->
+            <!-- CAMERA VIEWPORT: BARCODE -->
             <div id="scannerContainer" class="hidden space-y-3 p-4 bg-black/40 border border-indigo-500/30 rounded-2xl">
               <div class="flex items-center justify-between text-xs text-indigo-300">
-                <span>Point camera at the barcode on the back of the book</span>
-                <button type="button" onclick="toggleBarcodeScanner()" class="text-slate-400 hover:text-white">✕ Close Camera</button>
+                <span>Align barcode / ISBN in camera frame</span>
+                <button type="button" onclick="toggleBarcodeScanner()" class="text-slate-400 hover:text-white">✕ Close</button>
               </div>
               <div id="reader" class="overflow-hidden rounded-xl max-w-sm mx-auto"></div>
               <p id="scannerStatus" class="text-[11px] font-mono text-center text-slate-400">Starting optical scanner feed...</p>
             </div>
 
-            <!-- BOOK INGESTION FORM -->
+            <!-- CAMERA VIEWPORT: BOOK COVER OCR -->
+            <div id="coverScannerContainer" class="hidden space-y-3 p-4 bg-black/40 border border-amber-500/30 rounded-2xl">
+              <div class="flex items-center justify-between text-xs text-amber-300">
+                <span>Hold front cover or title page in view, then snap</span>
+                <button type="button" onclick="toggleCoverScanner()" class="text-slate-400 hover:text-white">✕ Close</button>
+              </div>
+              <div class="max-w-sm mx-auto relative rounded-xl overflow-hidden bg-black aspect-video flex items-center justify-center">
+                <video id="ocrVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="ocrCanvas" class="hidden"></canvas>
+              </div>
+              <div class="flex justify-center gap-3">
+                <button type="button" id="snapCoverBtn" onclick="captureAndReadCover()" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2">
+                  <span>📸</span> Snap & Extract Title
+                </button>
+              </div>
+              <p id="coverOcrStatus" class="text-[11px] font-mono text-center text-slate-400">Camera ready. Align book cover clearly.</p>
+            </div>
+
+            <!-- INGESTION FORM -->
             <form onsubmit="event.preventDefault(); addNewBook();" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="md:col-span-2">
                   <label class="block text-[11px] text-slate-400 mb-1 flex items-center justify-between">
-                    <span>Scanned Barcode / ISBN *</span>
+                    <span>Scanned Barcode / ISBN</span>
                     <span id="lookupStatusBadge" class="hidden text-[10px] font-mono"></span>
                   </label>
-                  <div class="flex gap-2">
-                    <input type="text" id="newBookBarcode" placeholder="Scan barcode or type 10/13 digit ISBN" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
-                    <button type="button" onclick="triggerManualLookup()" class="px-4 py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-xs text-indigo-300 font-semibold whitespace-nowrap">
-                      Fetch Title & Author
-                    </button>
-                  </div>
+                  <input type="text" id="newBookBarcode" placeholder="Auto-fills from barcode scanner or manual input" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-400 mb-1">Copies on Shelf *</label>
@@ -282,12 +302,23 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[11px] text-slate-400 mb-1">Book Title (Auto-Fetched from ISBN) *</label>
-                  <input type="text" id="newBookTitle" placeholder="Auto-fills from ISBN registries" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                  <label class="block text-[11px] text-slate-400 mb-1 flex items-center justify-between">
+                    <span>Book Title (Auto-Extracted from Cover or ISBN) *</span>
+                    <span id="ocrSuccessBadge" class="hidden text-[10px] text-emerald-400 font-mono">✓ Optical Match</span>
+                  </label>
+                  <input type="text" id="newBookTitle" oninput="debounceTitleAuthorLookup()" placeholder="Auto-extracts from camera snap, or type here" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label class="block text-[11px] text-slate-400 mb-1">Author(s) (Auto-Fetched from ISBN) *</label>
-                  <input type="text" id="newBookAuthor" placeholder="Auto-fills from ISBN registries" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                  <label class="block text-[11px] text-slate-400 mb-1 flex items-center justify-between">
+                    <span>Author(s) *</span>
+                    <span id="authorDetectBadge" class="hidden text-[10px] text-indigo-400 font-mono">Auto-Discovered</span>
+                  </label>
+                  <div class="flex gap-2">
+                    <input type="text" id="newBookAuthor" placeholder="Auto-discovered via title or cover" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                    <button type="button" onclick="lookupAuthorByTitle()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 whitespace-nowrap">
+                      Find Author
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -457,30 +488,7 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1 }
     ];
 
-    // -------------------------------------------------------------
-    // OFFLINE SYLLABUS DIRECTORY (INDIAN ENGINEERING EDITIONS)
-    // -------------------------------------------------------------
-    const ACADEMIC_SYLLABUS_REGISTRY = {
-      "9780132350884": { title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin" },
-      "9780262046305": { title: "Introduction to Algorithms (CLRS 4th Edition)", author: "Thomas H. Cormen, Charles E. Leiserson" },
-      "9780262033848": { title: "Introduction to Algorithms (CLRS 3rd Edition)", author: "Thomas H. Cormen, Ronald L. Rivest" },
-      "9780134997193": { title: "Computer Organization & Architecture (11th Edition)", author: "William Stallings" },
-      "9789332518704": { title: "Computer Organization & Architecture (Pearson India)", author: "William Stallings" },
-      "9781259676512": { title: "Discrete Mathematics and Its Applications (8th Edition)", author: "Kenneth H. Rosen" },
-      "9789390727049": { title: "Discrete Mathematics and Its Applications (Indian Adaptation)", author: "Kenneth H. Rosen" },
-      "9781847886361": { title: "Design Thinking: Understanding How Designers Think and Work", author: "Nigel Cross" },
-      "9781118063330": { title: "Operating System Concepts (9th Edition)", author: "Abraham Silberschatz, Peter B. Galvin" },
-      "9789351194545": { title: "Operating System Concepts (Wiley India Edition)", author: "Abraham Silberschatz, Greg Gagne" },
-      "9780131103627": { title: "The C Programming Language (2nd Edition)", author: "Brian W. Kernighan, Dennis M. Ritchie" },
-      "9789332549449": { title: "The C Programming Language (Pearson India Edition)", author: "Brian W. Kernighan, Dennis M. Ritchie" },
-      "9780073523323": { title: "Database System Concepts (6th Edition)", author: "Abraham Silberschatz, Henry F. Korth" },
-      "9789332901469": { title: "Database System Concepts (McGraw Hill India)", author: "Abraham Silberschatz, S. Sudarshan" },
-      "9780133594140": { title: "Computer Networks (5th Edition)", author: "Andrew S. Tanenbaum, David J. Wetherall" },
-      "9789332518742": { title: "Computer Networks (Pearson India Edition)", author: "Andrew S. Tanenbaum" },
-      "9780201633610": { title: "Design Patterns: Elements of Reusable Object-Oriented Software", author: "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides" }
-    };
-
-    const STORAGE_KEY = "rvu_smart_library_scanned_v5";
+    const STORAGE_KEY = "rvu_smart_library_ocr_v6";
     const SESSION_KEY = "rvu_active_session_usn";
 
     function loadState() {
@@ -501,6 +509,8 @@
     let currentStudent = null;
     let pendingOtp = null;
     let html5QrScanner = null;
+    let coverStream = null;
+    let titleDebounceTimer = null;
 
     function showToast(message, type = "info") {
       const colors = {
@@ -708,7 +718,7 @@
             </div>
             <h4 class="font-bold text-sm text-white leading-snug">${b.title}</h4>
             <p class="text-xs text-slate-400 mt-1">Author: ${b.author}</p>
-            ${b.barcode ? `<p class="text-[11px] font-mono text-indigo-400/80 mt-1">ISBN: ${b.barcode}</p>` : ''}
+            ${b.barcode ? `<p class="text-[11px] font-mono text-indigo-400/80 mt-1">Ref/ISBN: ${b.barcode}</p>` : ''}
           </div>
 
           <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
@@ -748,8 +758,9 @@
     }
 
     function toggleFacultyModal(show) {
-      if (!show && html5QrScanner) {
-        stopBarcodeScanner();
+      if (!show) {
+        if (html5QrScanner) stopBarcodeScanner();
+        if (coverStream) stopCoverScanner();
       }
       document.getElementById("facultyModal").classList.toggle("hidden", !show);
     }
@@ -817,112 +828,12 @@
     }
 
     // -------------------------------------------------------------
-    // CORS-BYPASSING JSONP ISBN AUTO-RESOLVER WITH OFFLINE FALLBACK
-    // -------------------------------------------------------------
-    let activeJsonpScript = null;
-
-    function fetchBookByIsbn(rawCode) {
-      const isbn = rawCode.replace(/[^0-9X]/gi, "");
-      const badge = document.getElementById("lookupStatusBadge");
-      const titleInput = document.getElementById("newBookTitle");
-      const authorInput = document.getElementById("newBookAuthor");
-
-      if (!isbn || (isbn.length !== 10 && isbn.length !== 13)) {
-        showToast("Invalid code length. Ensure barcode has 10 or 13 digits.", "warning");
-        return;
-      }
-
-      badge.classList.remove("hidden");
-      badge.className = "text-[10px] font-mono text-amber-400 animate-pulse";
-      badge.textContent = "Resolving ISBN...";
-
-      // ROUTE 1: Check Built-in Offline Academic Syllabus Registry
-      if (ACADEMIC_SYLLABUS_REGISTRY[isbn]) {
-        const item = ACADEMIC_SYLLABUS_REGISTRY[isbn];
-        titleInput.value = item.title;
-        authorInput.value = item.author;
-        badge.className = "text-[10px] font-mono text-emerald-400";
-        badge.textContent = "✓ Matched in Offline Syllabus";
-        showToast(`Identified: "${item.title}"`, "success");
-        return;
-      }
-
-      // ROUTE 2: Google Books API via JSONP (Bypasses CORS restrictions)
-      if (activeJsonpScript) activeJsonpScript.remove();
-
-      window.handleGoogleBooksResponse = function(response) {
-        if (response && response.items && response.items.length > 0) {
-          const vol = response.items[0].volumeInfo;
-          const detectedTitle = vol.title + (vol.subtitle ? `: ${vol.subtitle}` : "");
-          const detectedAuthor = vol.authors && vol.authors.length > 0 ? vol.authors.join(", ") : "Various Authors";
-
-          titleInput.value = detectedTitle;
-          authorInput.value = detectedAuthor;
-
-          badge.className = "text-[10px] font-mono text-emerald-400";
-          badge.textContent = "✓ Verified via Google Books";
-          showToast(`Identified: "${detectedTitle}"`, "success");
-        } else {
-          // ROUTE 3: Open Library API Fallback
-          fallbackOpenLibrary(isbn);
-        }
-      };
-
-      const script = document.createElement("script");
-      script.src = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&callback=handleGoogleBooksResponse`;
-      script.onerror = function() { fallbackOpenLibrary(isbn); };
-      document.body.appendChild(script);
-      activeJsonpScript = script;
-    }
-
-    function fallbackOpenLibrary(isbn) {
-      const badge = document.getElementById("lookupStatusBadge");
-      const titleInput = document.getElementById("newBookTitle");
-      const authorInput = document.getElementById("newBookAuthor");
-
-      window[`handleOL_${isbn}`] = function(data) {
-        const key = `ISBN:${isbn}`;
-        if (data && data[key]) {
-          const b = data[key];
-          titleInput.value = b.title || "";
-          authorInput.value = b.authors && b.authors.length > 0 ? b.authors.map(a => a.name).join(", ") : "Unknown Author";
-
-          badge.className = "text-[10px] font-mono text-emerald-400";
-          badge.textContent = "✓ Verified via Open Library";
-          showToast(`Identified: "${b.title}"`, "success");
-        } else {
-          badge.className = "text-[10px] font-mono text-amber-300";
-          badge.textContent = "⚠️ Unlisted in Registries - Enter Title";
-          showToast("ISBN valid, but unindexed online. Enter Title manually.", "warning");
-          titleInput.value = "";
-          titleInput.focus();
-        }
-      };
-
-      const olScript = document.createElement("script");
-      olScript.src = `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&jscmd=data&format=jsonp&callback=handleOL_${isbn}`;
-      olScript.onerror = function() {
-        badge.className = "text-[10px] font-mono text-rose-400";
-        badge.textContent = "✕ Lookup Failed - Enter Title";
-        showToast("Lookup timed out. Please enter Title manually.", "warning");
-      };
-      document.body.appendChild(olScript);
-    }
-
-    function triggerManualLookup() {
-      const code = document.getElementById("newBookBarcode").value.trim();
-      if (code) {
-        fetchBookByIsbn(code);
-      } else {
-        showToast("Scan a barcode or enter an ISBN number first.", "warning");
-      }
-    }
-
-    // -------------------------------------------------------------
-    // OPTICAL BARCODE SCANNER LOGIC
+    // FEATURE 1: BARCODE SCANNER
     // -------------------------------------------------------------
     function toggleBarcodeScanner() {
       const container = document.getElementById("scannerContainer");
+      if (coverStream) stopCoverScanner();
+
       if (container.classList.contains("hidden")) {
         container.classList.remove("hidden");
         startBarcodeScanner();
@@ -948,15 +859,15 @@
           toggleBarcodeScanner();
           showToast(`Scanned Code: ${cleanCode}`, "info");
 
-          // Directly trigger the CORS-bypass lookup engine
-          fetchBookByIsbn(cleanCode);
+          // Try searching author/title by scanned barcode
+          lookupTitleByIsbn(cleanCode);
         },
         (errorMessage) => {
           status.textContent = "Point camera steadily at book barcode/ISBN.";
         }
       ).catch((err) => {
-        status.textContent = "Camera access denied or unavailable. Enter details manually.";
-        showToast("Camera scanner unavailable. Enter details manually.", "warning");
+        status.textContent = "Camera access denied or unavailable.";
+        showToast("Camera scanner unavailable.", "warning");
       });
     }
 
@@ -969,6 +880,173 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // FEATURE 2: CAMERA BOOK COVER OCR ENGINE (Tesseract.js)
+    // -------------------------------------------------------------
+    async function toggleCoverScanner() {
+      const container = document.getElementById("coverScannerContainer");
+      if (html5QrScanner) stopBarcodeScanner();
+
+      if (container.classList.contains("hidden")) {
+        container.classList.remove("hidden");
+        await startCoverScanner();
+      } else {
+        container.classList.add("hidden");
+        stopCoverScanner();
+      }
+    }
+
+    async function startCoverScanner() {
+      const video = document.getElementById("ocrVideo");
+      const status = document.getElementById("coverOcrStatus");
+      status.textContent = "Initializing camera stream...";
+
+      try {
+        coverStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" } },
+          audio: false
+        });
+        video.srcObject = coverStream;
+        status.textContent = "Camera active. Hold book cover flat and steady.";
+      } catch (err) {
+        status.textContent = "Failed to access camera: " + err.message;
+        showToast("Camera access error. Ensure permissions are allowed.", "error");
+      }
+    }
+
+    function stopCoverScanner() {
+      if (coverStream) {
+        coverStream.getTracks().forEach(track => track.stop());
+        coverStream = null;
+      }
+      document.getElementById("coverScannerContainer").classList.add("hidden");
+    }
+
+    async function captureAndReadCover() {
+      const video = document.getElementById("ocrVideo");
+      const canvas = document.getElementById("ocrCanvas");
+      const status = document.getElementById("coverOcrStatus");
+      const snapBtn = document.getElementById("snapCoverBtn");
+
+      if (!video.videoWidth) {
+        showToast("Camera feed not ready. Please wait a second.", "warning");
+        return;
+      }
+
+      snapBtn.disabled = true;
+      snapBtn.classList.add("opacity-50");
+      status.textContent = "Capturing frame & extracting text (OCR)...";
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      try {
+        const { data: { text } } = await Tesseract.recognize(canvas, 'eng', {
+          logger: m => {
+            if (m.status === "recognizing text") {
+              status.textContent = `Reading text: ${Math.round(m.progress * 100)}%`;
+            }
+          }
+        });
+
+        // Clean & parse lines from cover
+        const lines = text.split("\n")
+          .map(l => l.replace(/[^a-zA-Z0-9\s:,\-\.&]/g, "").trim())
+          .filter(l => l.length > 3);
+
+        if (lines.length > 0) {
+          // Typically the first prominent text line on a book cover is the Title
+          const detectedTitle = lines[0];
+          document.getElementById("newBookTitle").value = detectedTitle;
+          document.getElementById("ocrSuccessBadge").classList.remove("hidden");
+          showToast(`Cover Text Captured: "${detectedTitle}"`, "success");
+
+          // If a second line exists, populate as candidate author or query online database
+          if (lines.length > 1) {
+            document.getElementById("newBookAuthor").value = lines.slice(1, 3).join(", ");
+          }
+
+          // Auto-discover official Author via Google Books query for this Title
+          lookupAuthorByTitle(detectedTitle);
+          stopCoverScanner();
+        } else {
+          status.textContent = "No legible text found. Please hold closer with good lighting.";
+          showToast("Could not recognize title. Try holding closer with good light.", "warning");
+        }
+      } catch (err) {
+        status.textContent = "OCR extraction error: " + err.message;
+        showToast("OCR Error. Please try snapping again.", "error");
+      } finally {
+        snapBtn.disabled = false;
+        snapBtn.classList.remove("opacity-50");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // FEATURE 3: AUTO-DISCOVER AUTHOR VIA BOOK TITLE
+    // -------------------------------------------------------------
+    function debounceTitleAuthorLookup() {
+      clearTimeout(titleDebounceTimer);
+      titleDebounceTimer = setTimeout(() => {
+        const title = document.getElementById("newBookTitle").value.trim();
+        if (title.length > 4) {
+          lookupAuthorByTitle(title);
+        }
+      }, 900);
+    }
+
+    function lookupAuthorByTitle(customTitle) {
+      const title = customTitle || document.getElementById("newBookTitle").value.trim();
+      const authorInput = document.getElementById("newBookAuthor");
+      const badge = document.getElementById("authorDetectBadge");
+
+      if (!title || title.length < 3) return;
+
+      badge.classList.remove("hidden");
+      badge.textContent = "Searching author...";
+      badge.className = "text-[10px] text-amber-400 font-mono animate-pulse";
+
+      // JSONP to Google Books searching by title
+      window.handleAuthorLookup = function(data) {
+        if (data && data.items && data.items.length > 0) {
+          const match = data.items[0].volumeInfo;
+          if (match.authors && match.authors.length > 0) {
+            const authorNames = match.authors.join(", ");
+            authorInput.value = authorNames;
+            badge.textContent = "✓ Auto-Found";
+            badge.className = "text-[10px] text-emerald-400 font-mono";
+            showToast(`Author Found: ${authorNames}`, "success");
+            return;
+          }
+        }
+        badge.textContent = "Manual input";
+        badge.className = "text-[10px] text-slate-500 font-mono";
+      };
+
+      const script = document.createElement("script");
+      script.src = `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&callback=handleAuthorLookup`;
+      document.body.appendChild(script);
+    }
+
+    function lookupTitleByIsbn(isbn) {
+      window.handleIsbnDirect = function(data) {
+        if (data && data.items && data.items.length > 0) {
+          const v = data.items[0].volumeInfo;
+          if (v.title) document.getElementById("newBookTitle").value = v.title;
+          if (v.authors) document.getElementById("newBookAuthor").value = v.authors.join(", ");
+          showToast(`Identified: "${v.title}"`, "success");
+        }
+      };
+      const script = document.createElement("script");
+      script.src = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&callback=handleIsbnDirect`;
+      document.body.appendChild(script);
+    }
+
+    // -------------------------------------------------------------
+    // ADD NEW BOOK TO INVENTORY
+    // -------------------------------------------------------------
     function addNewBook() {
       const title = document.getElementById("newBookTitle").value.trim();
       const author = document.getElementById("newBookAuthor").value.trim();
@@ -979,7 +1057,7 @@
         id: "B" + (state.books.length + 1),
         title: title,
         author: author,
-        barcode: barcode || "MANUAL-" + Date.now().toString().slice(-6),
+        barcode: barcode || "REF-" + Date.now().toString().slice(-6),
         total: count,
         available: count
       });
@@ -991,7 +1069,8 @@
       document.getElementById("newBookAuthor").value = "";
       document.getElementById("newBookBarcode").value = "";
       document.getElementById("newBookCount").value = "1";
-      document.getElementById("lookupStatusBadge").classList.add("hidden");
+      document.getElementById("ocrSuccessBadge").classList.add("hidden");
+      document.getElementById("authorDetectBadge").classList.add("hidden");
 
       renderFacultyDashboard();
       if (currentStudent) renderCatalog();
