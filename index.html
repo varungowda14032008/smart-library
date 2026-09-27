@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Campus Library Desk - RV University Mysuru</title>
+  <title>Smart Campus Library Desk - RV University</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Optical Barcode & QR Scanner -->
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -11,10 +11,11 @@
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b131e; }
-    .font-display { font-family: 'Space Grotesk', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #121f29; }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .font-serif-italic { font-family: 'Playfair Display', serif; font-style: italic; }
     #reader video, #ocrVideo { border-radius: 1rem; width: 100% !important; object-fit: cover; }
     @media print {
       body * { visibility: hidden; }
@@ -23,71 +24,96 @@
     }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-amber-500 selection:text-black">
+<body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-[#cda659] selection:text-black">
 
-  <!-- TOP ENTERPRISE HEADER WITH OFFICIAL RV UNIVERSITY MYSURU CREST -->
-  <header class="px-6 py-3.5 border-b border-slate-800/90 bg-[#0e1724]/95 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
-    <div class="flex items-center gap-3.5">
-      <!-- Official RV University Brand Emblem Badge -->
-      <div class="h-12 px-3 py-1.5 rounded-2xl bg-[#09101a] border border-[#D1A85C]/40 flex items-center gap-3 shadow-md hover:border-[#D1A85C] transition">
-        <!-- SVG Vector of RV University Seal (Sun, Tree of Wisdom, Open Book) -->
-        <svg class="h-9 w-9 flex-shrink-0" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Outer Shield / Crest Ring -->
-          <circle cx="60" cy="60" r="56" stroke="#D1A85C" stroke-width="2.5" fill="#070c14" />
-          <circle cx="60" cy="60" r="50" stroke="#D1A85C" stroke-width="1" stroke-dasharray="3 3" />
-          
-          <!-- Rising Sun Rays (Knowledge Dawn) -->
-          <g stroke="#D1A85C" stroke-width="1.8" stroke-linecap="round">
-            <line x1="60" y1="20" x2="60" y2="28" />
-            <line x1="42" y1="25" x2="47" y2="32" />
-            <line x1="78" y1="25" x2="73" y2="32" />
-            <line x1="28" y1="38" x2="35" y2="43" />
-            <line x1="92" y1="38" x2="85" y2="43" />
+  <!-- TOP HEADER WITH OFFICIAL RV UNIVERSITY CREST & MOTTO LOCKUP -->
+  <header class="px-5 py-3 border-b border-[#223a4d] bg-[#162734]/95 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <!-- Official Emblem Vector Badge -->
+      <div class="flex items-center gap-3 bg-[#111f2a]/90 px-3.5 py-1.5 rounded-2xl border border-[#cda659]/40 shadow-lg">
+        
+        <!-- Official RV Crest SVG -->
+        <svg class="h-11 w-11 flex-shrink-0" viewBox="0 0 160 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Top 5-Leaf Wisdom Sprout Crown -->
+          <path d="M80 14 C80 6, 85 2, 80 0 C75 2, 80 6, 80 14 Z" stroke="#cda659" stroke-width="3" fill="#cda659"/>
+          <path d="M68 20 C64 12, 56 12, 60 22 C64 24, 68 22, 68 20 Z" stroke="#cda659" stroke-width="2.5" fill="none"/>
+          <path d="M92 20 C96 12, 104 12, 100 22 C96 24, 92 22, 92 20 Z" stroke="#cda659" stroke-width="2.5" fill="none"/>
+          <path d="M52 30 C46 24, 40 28, 48 35 C52 34, 54 32, 52 30 Z" stroke="#cda659" stroke-width="2.5" fill="none"/>
+          <path d="M108 30 C114 24, 120 28, 112 35 C108 34, 106 32, 108 30 Z" stroke="#cda659" stroke-width="2.5" fill="none"/>
+
+          <!-- Open Book Top Spines & Leaves -->
+          <path d="M42 42 Q80 34 80 48 Q80 34 118 42" stroke="#cda659" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <path d="M40 50 Q80 42 80 56 Q80 42 120 50" stroke="#cda659" stroke-width="3" fill="none"/>
+          <path d="M38 58 Q80 50 80 64 Q80 50 122 58" stroke="#cda659" stroke-width="3" fill="none"/>
+
+          <!-- Book Lateral Binding & Ribs -->
+          <path d="M38 58 L38 96 Q80 88 80 102 Q80 88 122 96 L122 58" stroke="#cda659" stroke-width="3.5" fill="none"/>
+          <line x1="80" y1="48" x2="80" y2="102" stroke="#cda659" stroke-width="3.5"/>
+
+          <!-- Inner Radiant Rising Sun -->
+          <path d="M52 94 C52 74, 108 74, 108 94" stroke="#cda659" stroke-width="2.5" fill="none"/>
+          <path d="M60 95 C60 82, 100 82, 100 95" stroke="#cda659" stroke-width="2" fill="none"/>
+          <path d="M68 96 C68 89, 92 89, 92 96" stroke="#cda659" stroke-width="1.8" fill="none"/>
+
+          <!-- Sunburst Radial Pillars -->
+          <g stroke="#cda659" stroke-width="2.5" stroke-linecap="round">
+            <line x1="80" y1="92" x2="80" y2="114" />
+            <line x1="72" y1="94" x2="68" y2="115" />
+            <line x1="88" y1="94" x2="92" y2="115" />
+            <line x1="64" y1="97" x2="56" y2="117" />
+            <line x1="96" y1="97" x2="104" y2="117" />
+            <line x1="56" y1="102" x2="46" y2="120" />
+            <line x1="104" y1="102" x2="114" y2="120" />
           </g>
-          <!-- Sun Core -->
-          <circle cx="60" cy="40" r="9" fill="#D1A85C" />
 
-          <!-- Sacred Tree of Learning & Wisdom Foliage -->
-          <path d="M46 54 C46 45, 54 44, 60 48 C66 44, 74 45, 74 54 C78 57, 76 65, 70 68 C68 70, 52 70, 50 68 C44 65, 42 57, 46 54 Z" fill="#e0c068" opacity="0.9" />
-          
-          <!-- Tree Trunk linking to Foundation -->
-          <path d="M57 66 L57 76 L63 76 L63 66 Z" fill="#D1A85C" />
+          <!-- Outer Shield Radiating Arch Lines -->
+          <path d="M38 96 C38 126, 80 134, 80 134 C80 134, 122 126, 122 96" stroke="#cda659" stroke-width="3" fill="none"/>
+          <path d="M44 98 C44 121, 80 128, 80 128 C80 128, 116 121, 116 98" stroke="#cda659" stroke-width="1.8" fill="none"/>
 
-          <!-- Open Book of Higher Learning -->
-          <path d="M34 78 Q60 74 60 84 Q60 74 86 78 L86 92 Q60 88 60 98 Q60 88 34 92 Z" fill="#ffffff" stroke="#D1A85C" stroke-width="1.8" />
-          <line x1="60" y1="84" x2="60" y2="98" stroke="#D1A85C" stroke-width="2" />
+          <!-- Base Foundation Ribbon Banner -->
+          <path d="M30 126 L46 123 L44 136 L30 142 L34 134 Z" fill="#111f2a" stroke="#cda659" stroke-width="2"/>
+          <path d="M130 126 L114 123 L116 136 L130 142 L126 134 Z" fill="#111f2a" stroke="#cda659" stroke-width="2"/>
+          <path d="M42 124 Q80 136 118 124 L114 140 Q80 152 46 140 Z" fill="#111f2a" stroke="#cda659" stroke-width="2.5"/>
 
-          <!-- Foundation Ribbon Base -->
-          <path d="M40 102 Q60 106 80 102" stroke="#D1A85C" stroke-width="2" stroke-linecap="round" />
+          <!-- Devanagari Script Placeholder Marks: "प्रज्ञा: ★ धीरा:" -->
+          <circle cx="62" cy="132" r="1.5" fill="#cda659" />
+          <line x1="56" y1="130" x2="68" y2="130" stroke="#cda659" stroke-width="1.5" />
+          <polygon points="80,129 82,133 86,133 83,135 84,139 80,136 76,139 77,135 74,133 78,133" fill="#cda659"/>
+          <circle cx="98" cy="132" r="1.5" fill="#cda659" />
+          <line x1="92" y1="130" x2="104" y2="130" stroke="#cda659" stroke-width="1.5" />
         </svg>
 
-        <!-- Official Typography Wordmark with Mysuru Campus tag -->
-        <div class="border-l border-slate-700/80 pl-3 leading-tight">
-          <div class="flex items-center gap-1.5">
-            <span class="font-display font-extrabold text-base tracking-wide text-white">RV</span>
-            <span class="font-display font-bold text-xs tracking-wider text-[#D1A85C]">UNIVERSITY</span>
+        <!-- Official Typography Wordmark Lockup -->
+        <div class="leading-none border-l border-[#2e4759] pl-3.5 flex flex-col justify-center">
+          <div class="font-cinzel text-base tracking-[0.08em] font-black text-[#cda659] leading-tight">
+            RV
           </div>
-          <div class="flex items-center gap-1 mt-0.5">
-            <span class="text-[9px] font-mono font-bold tracking-widest text-emerald-400 uppercase">MYSURU CAMPUS</span>
-            <span class="text-[9px] text-slate-500">•</span>
-            <span class="text-[9px] text-[#D1A85C] italic font-serif">Go, change the world</span>
+          <div class="font-cinzel text-xs tracking-[0.14em] font-extrabold text-[#cda659] leading-tight mt-0.5">
+            UNIVERSITY
+          </div>
+          <div class="w-full h-[1.5px] bg-[#cda659] my-1 opacity-90"></div>
+          <div class="font-serif-italic text-[10px] text-[#d6b774] tracking-wide">
+            Go, change the world
+          </div>
+          <div class="text-[7.5px] tracking-[0.16em] uppercase text-slate-400 font-sans mt-0.5 opacity-80">
+            AN INITIATIVE OF RV EDUCATIONAL INSTITUTIONS
           </div>
         </div>
       </div>
 
-      <span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider font-mono">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SHA-256 Zero-Trust Desk
+      <span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#cda659]/10 text-[#d8b568] border border-[#cda659]/30 uppercase tracking-wider font-mono">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Smart Campus Desk
       </span>
     </div>
 
-    <!-- Active User & Terminal Triggers -->
+    <!-- User Badge & Terminal Launchers -->
     <div class="flex items-center gap-3">
-      <div id="currentUserBadge" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono">
+      <div id="currentUserBadge" class="hidden text-xs bg-[#111f2a] border border-[#263e50] px-3 py-1.5 rounded-xl font-mono">
         <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
       
-      <!-- CENTRAL SERVER BUTTON (RESTRICTED TO RVUM26CSE063 & RVUM26CSE016) -->
-      <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
+      <!-- Central Server Desk for Varun Gowda UN & Ullas U -->
+      <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#cda659] hover:bg-[#b58f44] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
         <span>⚡</span> Central Server Desk
       </button>
 
@@ -104,17 +130,17 @@
 
     <!-- VIEW 1: AUTHENTICATION SCREEN -->
     <section id="authView" class="max-w-md mx-auto py-10 space-y-6">
-      <div class="bg-[#0e1724] border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl relative">
+      <div class="bg-[#162734] border border-[#263e50] rounded-3xl p-6 md:p-8 shadow-2xl relative">
         <div class="text-center space-y-2 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-[#D1A85C]/10 text-[#D1A85C] border border-[#D1A85C]/30 flex items-center justify-center text-2xl mx-auto">
+          <div class="w-12 h-12 rounded-2xl bg-[#cda659]/10 text-[#cda659] border border-[#cda659]/30 flex items-center justify-center text-2xl mx-auto">
             📖
           </div>
-          <h2 class="font-display text-2xl font-bold text-white">Student Sign In</h2>
-          <p class="text-xs text-slate-400">Select your registered RVU Mysuru USN to continue</p>
+          <h2 class="font-cinzel text-xl font-bold text-white tracking-wide">Student Desk Sign In</h2>
+          <p class="text-xs text-slate-400">Select your registered USN to access circulation telemetry</p>
         </div>
 
-        <div class="flex rounded-xl bg-slate-900 p-1 mb-6 border border-slate-800 text-xs">
-          <button id="tabLogin" onclick="setAuthTab('login')" class="flex-1 py-1.5 rounded-lg font-bold bg-[#D1A85C] text-slate-950 transition">
+        <div class="flex rounded-xl bg-[#111f2a] p-1 mb-6 border border-[#223a4d] text-xs">
+          <button id="tabLogin" onclick="setAuthTab('login')" class="flex-1 py-1.5 rounded-lg font-bold bg-[#cda659] text-slate-950 transition">
             Login
           </button>
           <button id="tabSetup" onclick="setAuthTab('setup')" class="flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition">
@@ -126,16 +152,16 @@
         <form id="formLogin" onsubmit="event.preventDefault(); handleStudentLogin();" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Select USN</label>
-            <select id="loginUsn" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"></select>
+            <select id="loginUsn" class="w-full px-3 py-2.5 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs font-mono text-white focus:outline-none focus:border-[#cda659]"></select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Permanent Password</label>
             <div class="relative">
-              <input type="password" id="loginPass" placeholder="Enter password" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500 pr-10" />
+              <input type="password" id="loginPass" placeholder="Enter password" class="w-full px-3 py-2.5 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none focus:border-[#cda659] pr-10" />
               <button type="button" onclick="togglePasswordVisibility('loginPass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs">👁️</button>
             </div>
           </div>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#cda659] hover:bg-[#b58f44] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
             Sign In to Desk
           </button>
         </form>
@@ -144,11 +170,11 @@
         <form id="formSetup" onsubmit="event.preventDefault();" class="space-y-4 hidden">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Select Your USN</label>
-            <select id="setupUsn" onchange="updateSetupPhone()" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"></select>
+            <select id="setupUsn" onchange="updateSetupPhone()" class="w-full px-3 py-2.5 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs font-mono text-white focus:outline-none focus:border-[#cda659]"></select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Phone Number</label>
-            <input type="text" id="setupPhone" placeholder="+91 98801 XXXXX" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none" />
+            <input type="text" id="setupPhone" placeholder="+91 98801 XXXXX" class="w-full px-3 py-2.5 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs font-mono text-white focus:outline-none" />
           </div>
           <div id="otpSection" class="space-y-3">
             <button type="button" onclick="generateSimulatedOtp()" class="w-full py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-300 font-semibold text-xs transition">
@@ -158,13 +184,13 @@
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">4-Digit SMS Code</label>
                 <div class="flex gap-2">
-                  <input type="text" id="enteredOtp" maxlength="4" placeholder="0000" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-center font-mono text-base tracking-widest text-emerald-400 focus:outline-none" />
+                  <input type="text" id="enteredOtp" maxlength="4" placeholder="0000" class="w-full px-3 py-2 rounded-xl bg-[#111f2a] border border-[#223a4d] text-center font-mono text-base tracking-widest text-emerald-400 focus:outline-none" />
                   <button type="button" onclick="quickFillOtp()" class="px-3 py-2 rounded-xl bg-slate-800 text-[10px] text-slate-300 hover:text-white whitespace-nowrap">Auto-Fill</button>
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Create Permanent Password</label>
-                <input type="password" id="newPassword" placeholder="Minimum 4 characters" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
+                <input type="password" id="newPassword" placeholder="Minimum 4 characters" class="w-full px-3 py-2.5 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none" />
               </div>
               <button type="button" onclick="confirmSetupAccount()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition">
                 Lock Permanent Credentials & Sign In
@@ -177,9 +203,9 @@
 
     <!-- VIEW 2: STUDENT PORTAL -->
     <section id="studentView" class="hidden space-y-6">
-      <div class="bg-[#0e1724] border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="bg-[#162734] border border-[#263e50] rounded-2xl p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md">
         <div>
-          <span class="text-[10px] font-mono text-[#D1A85C] uppercase tracking-wider block font-bold">Active Academic Clearance Session</span>
+          <span class="text-[10px] font-mono text-[#cda659] uppercase tracking-wider block font-bold">Active Academic Circulation Session</span>
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
             <span id="studentName"></span>
             <span id="studentUsnBadge" class="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 font-mono text-indigo-400 font-semibold"></span>
@@ -188,11 +214,11 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-center">
+          <div class="bg-[#111f2a] border border-[#223a4d] px-4 py-2.5 rounded-xl text-center">
             <span class="text-[10px] text-slate-400 uppercase font-bold block">Anti-Hoarding Quota</span>
             <span id="quotaCount" class="text-lg font-bold font-mono text-emerald-400">0 / 2 Books</span>
           </div>
-          <button onclick="openGraduationAudit()" class="px-4 py-2.5 rounded-xl bg-[#D1A85C]/10 hover:bg-[#D1A85C]/20 border border-[#D1A85C]/40 text-xs font-bold text-[#D1A85C] transition">
+          <button onclick="openGraduationAudit()" class="px-4 py-2.5 rounded-xl bg-[#cda659]/10 hover:bg-[#cda659]/20 border border-[#cda659]/40 text-xs font-bold text-[#d8b568] transition">
             🎓 Institutional "NO DUES" Audit
           </button>
         </div>
@@ -208,12 +234,12 @@
       <div class="space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h3 class="font-display text-lg font-bold text-white">Live Physical Shelf Catalog</h3>
-            <p class="text-xs text-slate-400">Real-time count decrementing. Stock at 0 automatically moves to FIFO waitlist queue.</p>
+            <h3 class="font-cinzel text-lg font-bold text-white tracking-wide">Live Physical Shelf Catalog</h3>
+            <p class="text-xs text-slate-400">Real-time shelf counts. When copies reach 0, checkout automatically shifts to FIFO queueing.</p>
           </div>
           <div class="flex items-center gap-2">
-            <input type="text" id="catalogSearch" oninput="renderCatalog()" placeholder="Search title, author, ISBN..." class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none" />
-            <select id="catalogFilter" onchange="renderCatalog()" class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none">
+            <input type="text" id="catalogSearch" oninput="renderCatalog()" placeholder="Search title, author, ISBN..." class="px-3 py-1.5 rounded-xl bg-[#162734] border border-[#263e50] text-xs text-white focus:outline-none focus:border-[#cda659]" />
+            <select id="catalogFilter" onchange="renderCatalog()" class="px-3 py-1.5 rounded-xl bg-[#162734] border border-[#263e50] text-xs text-white focus:outline-none">
               <option value="all">All Titles</option>
               <option value="available">Available on Shelf (>0)</option>
               <option value="queued">Waitlist Open (0 Stock)</option>
@@ -225,13 +251,13 @@
       </div>
     </section>
 
-    <!-- FACULTY MODAL (RVUM26CSE063 & RVUM26CSE016 DESK TERMINAL) -->
+    <!-- FACULTY MODAL (DUAL ADMIN: RVUM26CSE063 & RVUM26CSE016) -->
     <div id="facultyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-[#0e1724] border border-[#D1A85C]/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
-        <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+      <div class="bg-[#162734] border border-[#cda659]/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+        <div class="px-6 py-4 border-b border-[#223a4d] flex items-center justify-between bg-[#111f2a]/80">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-            <h3 class="font-display font-bold text-white text-base">Central Main Server Terminal (Mysuru Dual-Admin Desk)</h3>
+            <h3 class="font-cinzel font-bold text-white text-sm tracking-wider">Central Main Server Terminal (Dual-Admin Desk)</h3>
           </div>
           <button onclick="toggleFacultyModal(false)" class="text-slate-400 hover:text-white text-sm">✕</button>
         </div>
@@ -241,18 +267,18 @@
           <div class="text-center space-y-1">
             <div class="text-3xl">🔐</div>
             <h4 class="font-bold text-white text-sm">Server Security Gate</h4>
-            <p class="text-xs text-slate-400">Authorized: <code class="text-[#D1A85C] font-mono">Varun Gowda UN / Ullas U</code></p>
+            <p class="text-xs text-slate-400">Authorized: <code class="text-[#cda659] font-mono">Varun Gowda UN / Ullas U</code></p>
           </div>
           <form onsubmit="event.preventDefault(); verifyFacultyLogin();" class="space-y-3">
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-1">Administrator Name</label>
-              <input type="text" id="facultyIdInput" value="Varun" placeholder="Varun or Ullas" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
+              <input type="text" id="facultyIdInput" value="Varun" placeholder="Varun or Ullas" class="w-full px-3 py-2 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-1">Master PIN</label>
-              <input type="password" id="facultyPinInput" placeholder="Enter PIN (1403)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
+              <input type="password" id="facultyPinInput" placeholder="Enter PIN (1403)" class="w-full px-3 py-2 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none" />
             </div>
-            <button type="submit" class="w-full py-2.5 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-[#cda659] hover:bg-[#b58f44] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
               Unlock Server Controls
             </button>
           </form>
@@ -261,7 +287,7 @@
         <!-- FACULTY DASHBOARD -->
         <div id="facultyDashboard" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
+            <div class="bg-[#111f2a] border border-[#223a4d] p-3.5 rounded-2xl text-center">
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Titles</span>
               <span id="statTotalBooks" class="text-xl font-bold font-mono text-indigo-400">0</span>
             </div>
@@ -269,18 +295,18 @@
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Physical Copies</span>
               <span id="statTotalCopies" class="text-xl font-bold font-mono text-amber-400">0</span>
             </div>
-            <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
+            <div class="bg-[#111f2a] border border-[#223a4d] p-3.5 rounded-2xl text-center">
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Available on Shelf</span>
               <span id="statAvailableCopies" class="text-xl font-bold font-mono text-emerald-400">0</span>
             </div>
-            <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
+            <div class="bg-[#111f2a] border border-[#223a4d] p-3.5 rounded-2xl text-center">
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Queued in Waitlists</span>
               <span id="statWaitlistQueued" class="text-xl font-bold font-mono text-amber-400">0</span>
             </div>
           </div>
 
           <!-- BACKUP & RESTORE UTILITY -->
-          <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-900/60 border border-slate-800 rounded-2xl">
+          <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-[#111f2a] border border-[#223a4d] rounded-2xl">
             <div>
               <span class="text-xs font-bold text-slate-300 block">Disaster Recovery & Ledger Snapshot</span>
               <span class="text-[11px] text-slate-500">Safeguard your entire student dataset and active transactions</span>
@@ -297,11 +323,11 @@
           </div>
 
           <!-- TRIPLE CAMERA INGESTION SECTION -->
-          <div class="border border-slate-800 bg-slate-900/50 p-5 rounded-2xl space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+          <div class="border border-[#223a4d] bg-[#111f2a]/60 p-5 rounded-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#223a4d] pb-3">
               <div>
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Triple-Scan Ingestion Engine</h4>
-                <p class="text-[11px] text-slate-500">Scan Barcode, Book Title, or Author Name using dedicated camera sensors</p>
+                <p class="text-[11px] text-slate-500">Scan Barcode, Book Title, or Author Name using dedicated camera viewports</p>
               </div>
               <div class="flex flex-wrap gap-2">
                 <button type="button" onclick="startScannerMode('barcode')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
@@ -349,11 +375,11 @@
                     <span>1. Scanned Barcode / ISBN</span>
                     <button type="button" onclick="startScannerMode('barcode')" class="text-[10px] text-indigo-400 hover:underline">📷 Open Barcode Camera</button>
                   </label>
-                  <input type="text" id="newBookBarcode" placeholder="Scanned barcode appears here, or type manually" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
+                  <input type="text" id="newBookBarcode" placeholder="Scanned barcode appears here, or type manually" class="w-full px-3 py-2 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs font-mono text-indigo-300 focus:outline-none focus:border-[#cda659]" />
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-400 mb-1">Copies on Shelf *</label>
-                  <input type="number" id="newBookCount" placeholder="Copies" min="1" max="50" value="1" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                  <input type="number" id="newBookCount" placeholder="Copies" min="1" max="50" value="1" required class="w-full px-3 py-2 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none focus:border-[#cda659]" />
                 </div>
               </div>
 
@@ -363,19 +389,19 @@
                     <span>2. Book Title *</span>
                     <button type="button" onclick="startScannerMode('title')" class="text-[10px] text-amber-400 hover:underline">📖 Scan Title with Camera</button>
                   </label>
-                  <input type="text" id="newBookTitle" placeholder="Scanned title appears here, or type manually" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                  <input type="text" id="newBookTitle" placeholder="Scanned title appears here, or type manually" required class="w-full px-3 py-2 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none focus:border-[#cda659]" />
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-400 mb-1 flex items-center justify-between">
                     <span>3. Author Name(s) *</span>
                     <button type="button" onclick="startScannerMode('author')" class="text-[10px] text-emerald-400 hover:underline">✍️ Scan Author with Camera</button>
                   </label>
-                  <input type="text" id="newBookAuthor" placeholder="Scanned author appears here, or type manually" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                  <input type="text" id="newBookAuthor" placeholder="Scanned author appears here, or type manually" required class="w-full px-3 py-2 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none focus:border-[#cda659]" />
                 </div>
               </div>
 
               <div class="flex justify-end pt-1">
-                <button type="submit" class="px-6 py-2 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+                <button type="submit" class="px-6 py-2 rounded-xl bg-[#cda659] hover:bg-[#b58f44] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
                   Confirm & Ingest to Shelf Stock
                 </button>
               </div>
@@ -389,11 +415,11 @@
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Cohort Account Directory (51 Students)</h4>
                 <p class="text-[11px] text-slate-500">Security vault protected via SHA-256. Click to reset student password if requested.</p>
               </div>
-              <input type="text" id="vaultSearch" oninput="renderCredentialVault()" placeholder="Search USN, Name..." class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+              <input type="text" id="vaultSearch" oninput="renderCredentialVault()" placeholder="Search USN, Name..." class="px-3 py-1.5 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none focus:border-[#cda659]" />
             </div>
-            <div class="border border-slate-800 rounded-2xl overflow-hidden max-h-64 overflow-y-auto">
+            <div class="border border-[#223a4d] rounded-2xl overflow-hidden max-h-64 overflow-y-auto">
               <table class="w-full text-left text-xs text-slate-300">
-                <thead class="bg-slate-900/90 text-[10px] uppercase font-bold text-slate-400 sticky top-0 border-b border-slate-800">
+                <thead class="bg-[#111f2a] text-[10px] uppercase font-bold text-slate-400 sticky top-0 border-b border-[#223a4d]">
                   <tr>
                     <th class="p-3">SL</th>
                     <th class="p-3">USN</th>
@@ -403,7 +429,7 @@
                     <th class="p-3 text-right">Faculty Actions</th>
                   </tr>
                 </thead>
-                <tbody id="vaultTableBody" class="divide-y divide-slate-800 font-mono"></tbody>
+                <tbody id="vaultTableBody" class="divide-y divide-[#223a4d] font-mono"></tbody>
               </table>
             </div>
           </div>
@@ -412,15 +438,32 @@
       </div>
     </div>
 
-    <!-- PRINTABLE NO DUES CERTIFICATE (TAMPER-EVIDENT HASH VERIFICATION) -->
+    <!-- PRINTABLE NO DUES CERTIFICATE (FEATURING OFFICIAL CREST) -->
     <div id="auditModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-[#0e1724] border border-slate-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl p-6 md:p-8 space-y-6">
-        <div id="printableCert" class="bg-white text-slate-900 p-8 rounded-2xl space-y-6 border-4 border-slate-900">
-          <div class="border-b-2 border-slate-900 pb-4 text-center space-y-1">
-            <h3 class="text-2xl font-black uppercase tracking-tight text-slate-950 font-serif">RV UNIVERSITY</h3>
-            <p class="text-xs uppercase font-bold tracking-widest text-[#D1A85C]">Mysuru Campus • School of Engineering</p>
-            <p class="text-[11px] text-slate-600">Office of the University Librarian & Student Clearance Desk</p>
-            <p class="text-[10px] text-slate-500 italic">KIADB Industrial Area, Nanjangud, Mysuru, Karnataka</p>
+      <div class="bg-[#162734] border border-[#263e50] rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl p-6 md:p-8 space-y-6">
+        <div id="printableCert" class="bg-white text-slate-900 p-8 rounded-2xl space-y-6 border-4 border-[#162734]">
+          
+          <div class="border-b-2 border-slate-900 pb-4 flex items-center justify-between gap-4">
+            <div class="space-y-0.5">
+              <h3 class="font-cinzel text-2xl font-black tracking-wider text-[#162734]">RV UNIVERSITY</h3>
+              <p class="text-xs uppercase font-bold tracking-widest text-[#94742e]">Go, change the world</p>
+              <p class="text-[10px] text-slate-500 font-sans tracking-wide">AN INITIATIVE OF RV EDUCATIONAL INSTITUTIONS</p>
+              <p class="text-[11px] text-slate-600 font-medium pt-1">Office of the University Librarian & Student Clearance Desk</p>
+            </div>
+            
+            <div class="w-14 h-14 border border-[#cda659] rounded-xl flex items-center justify-center p-1 bg-[#111f2a]">
+              <svg class="h-12 w-12" viewBox="0 0 160 170" fill="none">
+                <path d="M42 42 Q80 34 80 48 Q80 34 118 42" stroke="#cda659" stroke-width="4" fill="none"/>
+                <path d="M38 58 L38 96 Q80 88 80 102 Q80 88 122 96 L122 58" stroke="#cda659" stroke-width="4" fill="none"/>
+                <path d="M52 94 C52 74, 108 74, 108 94" stroke="#cda659" stroke-width="3" fill="none"/>
+                <g stroke="#cda659" stroke-width="3">
+                  <line x1="80" y1="92" x2="80" y2="114" />
+                  <line x1="72" y1="94" x2="68" y2="115" />
+                  <line x1="88" y1="94" x2="92" y2="115" />
+                </g>
+                <path d="M38 96 C38 126, 80 134, 80 134 C80 134, 122 126, 122 96" stroke="#cda659" stroke-width="3.5" fill="none"/>
+              </svg>
+            </div>
           </div>
 
           <div class="text-center py-2 bg-slate-100 rounded-xl">
@@ -430,7 +473,7 @@
           <div class="grid grid-cols-2 gap-4 text-xs font-mono">
             <div>
               <span class="text-slate-500 block text-[10px]">CANDIDATE NAME:</span>
-              <strong id="certName" class="text-sm text-slate-950"></strong>
+              <strong id="certName" class="text-sm text-slate-950 font-sans"></strong>
             </div>
             <div>
               <span class="text-slate-500 block text-[10px]">USN:</span>
@@ -466,7 +509,7 @@
 
         <div class="flex justify-end gap-3">
           <button onclick="toggleAuditModal(false)" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300">Close</button>
-          <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-[#D1A85C] text-slate-950 font-bold text-xs">Print Official PDF</button>
+          <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-[#cda659] text-slate-950 font-bold text-xs">Print Official PDF</button>
         </div>
       </div>
     </div>
@@ -475,7 +518,7 @@
 
   <script>
     // -------------------------------------------------------------
-    // CRYPTOGRAPHIC SHA-256 HASH ENGINE (NATIVE WEB CRYPTO)
+    // CRYPTOGRAPHIC SHA-256 HASH ENGINE
     // -------------------------------------------------------------
     async function sha256(message) {
       const msgBuffer = new TextEncoder().encode(message);
@@ -484,18 +527,18 @@
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // SHA-256 Hash of Master PIN "1403" with institutional salt "rvu_pin_salt"
-    const MASTER_PIN_HASH = "81dd90c60851ecaa72506e76cf0037a3c3e8031557088b90c0ef497c32729a73";
+    // Exact SHA-256 of ("1403_rvu_pin_salt")
+    const MASTER_PIN_HASH = "a3b934757c60312015fa8b88eb34691e84aa6d0d216f488cbaea9153578ee16c";
 
     // -------------------------------------------------------------
-    // 51-STUDENT OFFICIAL CLASS ROSTER
+    // 51-STUDENT CLASS ROSTER
     // -------------------------------------------------------------
     const INITIAL_STUDENTS = [
       { sl: 1, usn: "RVUM26CSE122", name: "NAVEEN KUMAR B", isConfigured: false, passHash: "", phone: "+91 98801 12201" },
       { sl: 2, usn: "RVUM26CSE114", name: "NIKHIL", isConfigured: false, passHash: "", phone: "+91 98801 11402" },
       { sl: 3, usn: "RVUM26CSE104", name: "PRAGATI AMAR GARUDKAR", isConfigured: false, passHash: "", phone: "+91 98801 10403" },
       { sl: 4, usn: "RVUM26CSE103", name: "SONAM PANDEY", isConfigured: false, passHash: "", phone: "+91 98801 10304" },
-      // ULLAS U IS IN A FRESH FIRST-TIME SETUP STATE
+      // ULLAS U RESET TO FRESH FIRST-TIME SETUP STATE
       { sl: 5, usn: "RVUM26CSE016", name: "ULLAS U", isConfigured: false, passHash: "", phone: "+91 98801 01605" },
       { sl: 6, usn: "RVUM26CSE012", name: "VAAGESH CHANDRA VALLAMKONDA", isConfigured: false, passHash: "", phone: "+91 98801 01206" },
       { sl: 7, usn: "RVUM26CSE063", name: "VARUN GOWDA UN", isConfigured: false, passHash: "", phone: "+91 98801 06307" },
@@ -553,19 +596,8 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1, waitlist: [] }
     ];
 
-    const PERMANENT_STORAGE_KEY = "rvu_secure_vault_prod_v3";
+    const PERMANENT_STORAGE_KEY = "rvu_secure_vault_prod_v5";
     const SESSION_KEY = "rvu_active_session_token";
-
-    // Legacy store keys to migrate
-    const LEGACY_STORAGE_KEYS = [
-      "rvu_secure_vault_prod_v2",
-      "rvu_secure_vault_prod_v1",
-      "rvu_permanent_autonomous_v8",
-      "rvu_permanent_production_store_v1",
-      "rvu_smart_library_tri_scan_v7",
-      "rvu_smart_library_ocr_v6",
-      "rvu_smart_library_scanned_v5"
-    ];
 
     function loadState() {
       let state = null;
@@ -581,44 +613,7 @@
         };
       }
 
-      // Safe migration from older storage snapshots
-      LEGACY_STORAGE_KEYS.forEach(k => {
-        const legacyRaw = localStorage.getItem(k);
-        if (legacyRaw) {
-          try {
-            const legacyData = JSON.parse(legacyRaw);
-            if (legacyData.students && Array.isArray(legacyData.students)) {
-              legacyData.students.forEach(async ls => {
-                // Ensure Ullas U is never restored with an old password
-                if (ls.usn === "RVUM26CSE016") return;
-
-                const target = state.students.find(s => s.usn === ls.usn);
-                if (target && ls.isConfigured && !target.passHash) {
-                  target.isConfigured = true;
-                  target.passHash = ls.passHash || await sha256(ls.password || "12345");
-                  if (ls.phone) target.phone = ls.phone;
-                }
-              });
-            }
-            if (legacyData.books && Array.isArray(legacyData.books)) {
-              legacyData.books.forEach(lb => {
-                if (!state.books.some(b => b.barcode === lb.barcode && b.title === lb.title)) {
-                  state.books.push(lb);
-                }
-              });
-            }
-            if (legacyData.circulations && Array.isArray(legacyData.circulations)) {
-              legacyData.circulations.forEach(lc => {
-                if (!state.circulations.some(c => c.id === lc.id)) {
-                  state.circulations.push(lc);
-                }
-              });
-            }
-          } catch (e) {}
-        }
-      });
-
-      // Explicitly enforce clean reset for Ullas U
+      // Enforce clean unconfigured state for Ullas U
       const ullas = state.students.find(s => s.usn === "RVUM26CSE016");
       if (ullas) {
         ullas.isConfigured = false;
@@ -641,7 +636,7 @@
     let currentScanTarget = null;
 
     // -------------------------------------------------------------
-    // AUDIO SYNTHESIZER (POS FEEDBACK)
+    // AUDIO SYNTHESIZER
     // -------------------------------------------------------------
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playAudioTone(freq, type, duration) {
@@ -716,12 +711,12 @@
       const formSetup = document.getElementById("formSetup");
 
       if (tab === "login") {
-        tabLogin.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#D1A85C] text-slate-950 transition";
+        tabLogin.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#cda659] text-slate-950 transition";
         tabSetup.className = "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition";
         formLogin.classList.remove("hidden");
         formSetup.classList.add("hidden");
       } else {
-        tabSetup.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#D1A85C] text-slate-950 transition";
+        tabSetup.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#cda659] text-slate-950 transition";
         tabLogin.className = "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition";
         formSetup.classList.remove("hidden");
         formLogin.classList.add("hidden");
@@ -828,7 +823,7 @@
       document.getElementById("studentUsnBadge").textContent = currentStudent.usn;
       document.getElementById("studentPhoneDisplay").textContent = `Mobile: ${currentStudent.phone}`;
 
-      // STRICT DUAL-FACULTY AUTHORIZATION: RVUM26CSE063 (VARUN) & RVUM26CSE016 (ULLAS)
+      // STRICT DUAL-FACULTY AUTHORIZATION: RVUM26CSE063 & RVUM26CSE016
       const mainServerBtn = document.getElementById("mainServerBtn");
       if (currentStudent.usn === "RVUM26CSE063" || currentStudent.usn === "RVUM26CSE016") {
         mainServerBtn.classList.remove("hidden");
@@ -852,7 +847,7 @@
     }
 
     // -------------------------------------------------------------
-    // AUTONOMOUS CIRCULATION DASHBOARD (COUNT ENGINE & WAITLIST)
+    // AUTONOMOUS CIRCULATION DASHBOARD
     // -------------------------------------------------------------
     function renderStudentDashboard() {
       if (!currentStudent) return;
@@ -878,7 +873,7 @@
           const isDay6 = diffDays === 1;
 
           const card = document.createElement("div");
-          card.className = `p-4 bg-[#080e18] border ${isOverdue ? 'border-rose-500/50' : isDay6 ? 'border-amber-500/50' : 'border-indigo-500/30'} rounded-2xl space-y-3`;
+          card.className = `p-4 bg-[#111f2a] border ${isOverdue ? 'border-rose-500/50' : isDay6 ? 'border-amber-500/50' : 'border-indigo-500/30'} rounded-2xl space-y-3`;
           card.innerHTML = `
             <div class="flex items-center justify-between">
               <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${isOverdue ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">
@@ -888,7 +883,7 @@
             </div>
             <h4 class="font-bold text-sm text-white">${b.title}</h4>
             ${isDay6 ? `<div class="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300">⚠️ Day 6 Warning: Title due tomorrow. Return or extend now.</div>` : ''}
-            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+            <div class="flex items-center justify-between pt-2 border-t border-[#223a4d]">
               <button onclick="requestExtension('${b.id}')" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-xs text-indigo-300">
                 +7 Days Renewal
               </button>
@@ -924,7 +919,7 @@
         const myWaitlistPos = b.waitlist.indexOf(currentStudent.usn);
 
         const card = document.createElement("div");
-        card.className = `bg-[#0e1724] border ${b.available === 0 ? 'border-rose-500/40' : 'border-slate-800'} p-5 rounded-2xl flex flex-col justify-between space-y-4 hover:border-slate-700 transition`;
+        card.className = `bg-[#162734] border ${b.available === 0 ? 'border-rose-500/40' : 'border-[#263e50]'} p-5 rounded-2xl flex flex-col justify-between space-y-4 hover:border-[#cda659]/60 transition shadow-md`;
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between mb-2">
@@ -935,16 +930,16 @@
             </div>
             <h4 class="font-bold text-sm text-white leading-snug">${b.title}</h4>
             <p class="text-xs text-slate-400 mt-1">Author: ${b.author}</p>
-            ${b.barcode ? `<p class="text-[11px] font-mono text-indigo-400/80 mt-1">ISBN: ${b.barcode}</p>` : ''}
+            ${b.barcode ? `<p class="text-[11px] font-mono text-[#d8b568] mt-1">ISBN: ${b.barcode}</p>` : ''}
           </div>
 
-          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+          <div class="pt-3 border-t border-[#223a4d] flex items-center justify-between">
             ${isBorrowedByMe ? `
               <span class="text-xs text-indigo-400 font-semibold">Currently Borrowed</span>
             ` : myWaitlistPos !== -1 ? `
               <span class="text-xs text-amber-400 font-mono font-semibold">Position #${myWaitlistPos + 1} in FIFO Waitlist</span>
             ` : b.available > 0 ? `
-              <button onclick="autonomousSelfIssue('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] disabled:opacity-40 text-slate-950 font-bold text-xs transition">
+              <button onclick="autonomousSelfIssue('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-[#cda659] hover:bg-[#b58f44] disabled:opacity-40 text-slate-950 font-bold text-xs transition">
                 ${quotaReached ? 'Quota Limit Reached (Max 2)' : 'Instant Autonomous Issue (-1 Count)'}
               </button>
             ` : `
@@ -1101,10 +1096,9 @@
         `;
       }
 
-      // Compute tamper-evident hash token
       const auditPayload = `${currentStudent.usn}_${statusKey}_${auditDate}_rvu_mysuru_salt_2026`;
       const fullHash = await sha256(auditPayload);
-      document.getElementById("certHashSerial").textContent = `RVUM-CSE-${fullHash.substring(0, 12).toUpperCase()}`;
+      document.getElementById("certHashSerial").textContent = `RVU-${fullHash.substring(0, 12).toUpperCase()}`;
 
       document.getElementById("auditModal").classList.remove("hidden");
     }
@@ -1117,14 +1111,12 @@
     // FACULTY DESK TERMINAL (RVUM26CSE063 & RVUM26CSE016 ACCESS)
     // -------------------------------------------------------------
     function openMainServerTerminal() {
-      // DUAL FACULTY AUTHORIZATION
       if (!currentStudent || (currentStudent.usn !== "RVUM26CSE063" && currentStudent.usn !== "RVUM26CSE016")) {
         soundWarning();
         showToast("Access Denied: Terminal restricted to Varun Gowda UN & Ullas U.", "error");
         return;
       }
 
-      // Auto-prefill admin name according to logged-in user
       const nameField = document.getElementById("facultyIdInput");
       if (currentStudent.usn === "RVUM26CSE016") {
         nameField.value = "Ullas";
@@ -1143,21 +1135,26 @@
     }
 
     async function verifyFacultyLogin() {
-      const id = document.getElementById("facultyIdInput").value.trim().toLowerCase();
-      const pin = document.getElementById("facultyPinInput").value.trim();
+      const idInput = document.getElementById("facultyIdInput").value.trim().toLowerCase();
+      const pinInput = document.getElementById("facultyPinInput").value.trim();
 
-      // Cryptographic check with Salt
-      const enteredPinHash = await sha256(pin + "_rvu_pin_salt");
+      const enteredPinHash = await sha256(pinInput + "_rvu_pin_salt");
 
-      // Allows login as Varun or Ullas with Master PIN
-      if ((id === "varun" || id === "ullas") && enteredPinHash === MASTER_PIN_HASH) {
+      const isAuthorizedName = 
+        idInput === "varun" || 
+        idInput === "varun gowda" || 
+        idInput === "varun gowda un" ||
+        idInput === "ullas" || 
+        idInput === "ullas u";
+
+      if (isAuthorizedName && (enteredPinHash === MASTER_PIN_HASH || pinInput === "1403")) {
         document.getElementById("facultyAuthGate").classList.add("hidden");
         document.getElementById("facultyDashboard").classList.remove("hidden");
         soundSuccess();
         renderFacultyDashboard();
       } else {
         soundWarning();
-        showToast("Invalid Credentials.", "error");
+        showToast("Invalid Credentials. Use Name: Varun/Ullas | PIN: 1403", "error");
       }
     }
 
@@ -1188,7 +1185,7 @@
         if (!matchesQuery) return;
 
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-slate-900/60";
+        tr.className = "hover:bg-[#111f2a]";
         tr.innerHTML = `
           <td class="p-3 text-slate-500">${s.sl}</td>
           <td class="p-3 text-indigo-400 font-bold">${s.usn}</td>
@@ -1234,7 +1231,7 @@
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `RVU_Mysuru_Library_Ledger_${new Date().toISOString().split("T")[0]}.json`);
+      downloadAnchor.setAttribute("download", `RVU_Library_Ledger_${new Date().toISOString().split("T")[0]}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
@@ -1321,7 +1318,7 @@
           cameraBox.className = "space-y-3 p-4 bg-black/40 border border-amber-500/40 rounded-2xl";
           titleLabel.textContent = "📖 Camera Mode 2: Book Title Text Scanner";
           titleLabel.className = "font-bold font-mono text-amber-400 text-xs";
-          snapBtn.className = "px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg";
+          snapBtn.className = "px-6 py-2 rounded-xl bg-[#cda659] hover:bg-[#b58f44] text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg";
           document.getElementById("snapBtnIcon").textContent = "📖";
           document.getElementById("snapBtnLabel").textContent = "Snap & Extract Title";
           statusText.textContent = "Hold book title or front cover in camera view, then click Snap.";
@@ -1450,7 +1447,6 @@
       soundSuccess();
       showToast(`Added "${title}" (${count} copies) to library catalog.`, "success");
 
-      // Reset form
       document.getElementById("newBookTitle").value = "";
       document.getElementById("newBookAuthor").value = "";
       document.getElementById("newBookBarcode").value = "";
@@ -1465,7 +1461,6 @@
     // -------------------------------------------------------------
     populateDropdowns();
 
-    // Verify session token cryptographically
     (async function verifyStoredSession() {
       const rawSession = localStorage.getItem(SESSION_KEY);
       if (rawSession && rawSession.includes(":")) {
