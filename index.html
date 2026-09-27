@@ -38,22 +38,20 @@
           <span class="text-[9px] text-[#c5a059] italic block font-serif tracking-wide">Go, change the world</span>
         </div>
       </div>
-      <div>
-        <span class="hidden md:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
-          Smart Campus Library Desk
-        </span>
-      </div>
+      <span class="hidden md:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+        Autonomous Circulation System
+      </span>
     </div>
 
-    <!-- Active User & Main Server Trigger -->
+    <!-- Active User & Terminal Trigger -->
     <div class="flex items-center gap-3">
       <div id="currentUserBadge" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono">
         <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
       
-      <!-- MAIN SERVER TERMINAL BUTTON (RESTRICTED TO RVUM26CSE063 ONLY) -->
+      <!-- MAIN SERVER DESK BUTTON: ONLY VISIBLE TO RVUM26CSE063 -->
       <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
-        <span>⚡</span> Main Server Desk
+        <span>⚡</span> Central Server Desk
       </button>
 
       <button id="logoutBtn" onclick="handleLogout()" class="hidden px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 text-xs font-semibold text-rose-300 transition">
@@ -62,7 +60,6 @@
     </div>
   </header>
 
-  <!-- NOTIFICATION TOAST -->
   <div id="toastContainer" class="fixed top-16 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
   <!-- MAIN APP CONTAINER -->
@@ -79,7 +76,6 @@
           <p class="text-xs text-slate-400">Select your registered RVU USN to continue</p>
         </div>
 
-        <!-- Mode Toggle Tabs -->
         <div class="flex rounded-xl bg-slate-900 p-1 mb-6 border border-slate-800 text-xs">
           <button id="tabLogin" onclick="setAuthTab('login')" class="flex-1 py-1.5 rounded-lg font-bold bg-[#c5a059] text-slate-950 transition">
             Login
@@ -92,53 +88,46 @@
         <!-- LOGIN FORM -->
         <form id="formLogin" onsubmit="event.preventDefault(); handleStudentLogin();" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Select University Seat Number (USN)</label>
-            <select id="loginUsn" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500">
-              <!-- Dynamically populated with 51 students -->
-            </select>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Select USN</label>
+            <select id="loginUsn" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"></select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Permanent Password</label>
             <div class="relative">
-              <input type="password" id="loginPass" placeholder="Enter your set password" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500 pr-10" />
+              <input type="password" id="loginPass" placeholder="Enter password" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500 pr-10" />
               <button type="button" onclick="togglePasswordVisibility('loginPass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs">👁️</button>
             </div>
           </div>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-amber-500/10">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
             Sign In to Desk
           </button>
         </form>
 
-        <!-- FIRST-TIME SETUP FORM (PHONE NUMBER OTP) -->
+        <!-- SETUP FORM -->
         <form id="formSetup" onsubmit="event.preventDefault();" class="space-y-4 hidden">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Select Your USN</label>
-            <select id="setupUsn" onchange="updateSetupPhone()" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500">
-              <!-- Dynamically populated with 51 students -->
-            </select>
+            <select id="setupUsn" onchange="updateSetupPhone()" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"></select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Phone Number</label>
-            <input type="text" id="setupPhone" placeholder="+91 98801 XXXXX" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500" />
+            <input type="text" id="setupPhone" placeholder="+91 98801 XXXXX" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none" />
           </div>
-          
           <div id="otpSection" class="space-y-3">
             <button type="button" onclick="generateSimulatedOtp()" class="w-full py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-300 font-semibold text-xs transition">
               Send SMS Verification OTP
             </button>
             <div id="otpInputBlock" class="hidden space-y-3 pt-2">
               <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1">4-Digit SMS Verification Code</label>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">4-Digit SMS Code</label>
                 <div class="flex gap-2">
-                  <input type="text" id="enteredOtp" maxlength="4" placeholder="0000" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-center font-mono text-base tracking-widest text-emerald-400 focus:outline-none focus:border-indigo-500" />
-                  <button type="button" onclick="quickFillOtp()" class="px-3 py-2 rounded-xl bg-slate-800 text-[10px] text-slate-300 hover:text-white whitespace-nowrap">
-                    Auto-Fill
-                  </button>
+                  <input type="text" id="enteredOtp" maxlength="4" placeholder="0000" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-center font-mono text-base tracking-widest text-emerald-400 focus:outline-none" />
+                  <button type="button" onclick="quickFillOtp()" class="px-3 py-2 rounded-xl bg-slate-800 text-[10px] text-slate-300 hover:text-white whitespace-nowrap">Auto-Fill</button>
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-1">Create Permanent Password</label>
-                <input type="password" id="newPassword" placeholder="Minimum 4 characters" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                <input type="password" id="newPassword" placeholder="Minimum 4 characters" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
               </div>
               <button type="button" onclick="confirmSetupAccount()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition">
                 Lock Permanent Credentials & Sign In
@@ -146,17 +135,16 @@
             </div>
           </div>
         </form>
-
       </div>
     </section>
 
-    <!-- VIEW 2: STUDENT PORTAL (ACTIVE AFTER LOGIN) -->
+    <!-- VIEW 2: STUDENT PORTAL -->
     <section id="studentView" class="hidden space-y-6">
 
       <!-- Student Quota Status Bar -->
       <div class="bg-[#0e1724] border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-[#d4af37] uppercase tracking-wider block font-bold">Active Academic Profile</span>
+          <span class="text-[10px] font-mono text-[#d4af37] uppercase tracking-wider block font-bold">Active Academic Session</span>
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
             <span id="studentName"></span>
             <span id="studentUsnBadge" class="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 font-mono text-indigo-400 font-semibold"></span>
@@ -170,14 +158,14 @@
             <span id="quotaCount" class="text-lg font-bold font-mono text-emerald-400">0 / 2 Books</span>
           </div>
           <button onclick="openGraduationAudit()" class="px-4 py-2.5 rounded-xl bg-[#c5a059]/10 hover:bg-[#c5a059]/20 border border-[#c5a059]/40 text-xs font-bold text-[#d4af37] transition">
-            🎓 Institutional "NO DUES" Audit
+            🎓 "NO DUES" Audit
           </button>
         </div>
       </div>
 
-      <!-- Active Checkouts and Hold Warnings -->
+      <!-- Active Checkouts -->
       <div id="activeCirculationSection" class="hidden space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Current Borrowings & Queue Positions</h3>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Your Active Borrowings (Autonomous 7-Day Timers)</h3>
         <div id="activeCirculationList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
 
@@ -186,11 +174,11 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h3 class="font-display text-lg font-bold text-white">Live Physical Shelf Catalog</h3>
-            <p class="text-xs text-slate-400">Remote shelf availability updated in real-time before you commute</p>
+            <p class="text-xs text-slate-400">Autonomous count decrementing with instant shelf updates</p>
           </div>
           <div class="flex items-center gap-2">
-            <input type="text" id="catalogSearch" oninput="renderCatalog()" placeholder="Search title or author..." class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
-            <select id="catalogFilter" onchange="renderCatalog()" class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <input type="text" id="catalogSearch" oninput="renderCatalog()" placeholder="Search title or author..." class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none" />
+            <select id="catalogFilter" onchange="renderCatalog()" class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none">
               <option value="all">All Copies</option>
               <option value="available">Available Now</option>
               <option value="queued">Waitlist Open</option>
@@ -203,11 +191,9 @@
 
     </section>
 
-    <!-- FACULTY MODAL (RVUM26CSE063 DESK TERMINAL - PIN LOCKED) -->
+    <!-- FACULTY MODAL (RVUM26CSE063 DESK TERMINAL) -->
     <div id="facultyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
       <div class="bg-[#0e1724] border border-[#c5a059]/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
-        
-        <!-- Faculty Header -->
         <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -216,39 +202,35 @@
           <button onclick="toggleFacultyModal(false)" class="text-slate-400 hover:text-white text-sm">✕</button>
         </div>
 
-        <!-- Faculty Auth Gateway -->
         <div id="facultyAuthGate" class="p-8 max-w-sm mx-auto w-full space-y-4 my-auto">
           <div class="text-center space-y-1">
             <div class="text-3xl">🔐</div>
-            <h4 class="font-bold text-white text-sm">Main Server Access Gate</h4>
-            <p class="text-xs text-slate-400">Authenticated to Host: <code class="text-[#d4af37] font-mono">RVUM26CSE063</code></p>
+            <h4 class="font-bold text-white text-sm">Server Security Gate</h4>
+            <p class="text-xs text-slate-400">Host: <code class="text-[#d4af37] font-mono">RVUM26CSE063</code></p>
           </div>
           <form onsubmit="event.preventDefault(); verifyFacultyLogin();" class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Server Host ID</label>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Server Host</label>
               <input type="text" id="facultyIdInput" value="Varun" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Master Security PIN</label>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Master PIN</label>
               <input type="password" id="facultyPinInput" placeholder="Enter PIN (1403)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
             </div>
             <button type="submit" class="w-full py-2.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
-              Unlock Desk Terminal
+              Unlock Server Controls
             </button>
           </form>
         </div>
 
-        <!-- Faculty Admin Dashboard -->
         <div id="facultyDashboard" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
-          
-          <!-- System Metrics -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-bold block">Active Borrows</span>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Active Circulations</span>
               <span id="statActiveBorrows" class="text-xl font-bold font-mono text-indigo-400">0</span>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-bold block">Pending Holds</span>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Queued on Waitlists</span>
               <span id="statPendingHolds" class="text-xl font-bold font-mono text-amber-400">0</span>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
@@ -256,39 +238,30 @@
               <span id="statOverdues" class="text-xl font-bold font-mono text-rose-400">0</span>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Cohort</span>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Registered Cohort</span>
               <span class="text-xl font-bold font-mono text-[#d4af37]">51</span>
             </div>
           </div>
 
-          <!-- Pending Hold Requests (Physical Handover) -->
-          <div class="space-y-3">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Incoming Remote Hold Requests</h4>
-            <div id="facultyHoldList" class="space-y-2"></div>
-          </div>
-
-          <!-- Active Issued Books & Physical Returns -->
-          <div class="space-y-3">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Checked Out Titles & Return Handler</h4>
-            <div id="facultyActiveCirculationList" class="space-y-2"></div>
-          </div>
-
-          <!-- 51 Student Credential Vault -->
+          <!-- CREDENTIAL VAULT: ALL STUDENT PASSWORDS DISPLAYED DIRECTLY -->
           <div class="space-y-3">
             <div class="flex items-center justify-between">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Cohort Credential Vault (51 Students)</h4>
-              <input type="text" id="vaultSearch" oninput="renderCredentialVault()" placeholder="Search USN or Name..." class="px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white" />
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Cohort Credential Directory (51 Students)</h4>
+                <p class="text-[11px] text-slate-500">All registered passwords visible in plaintext for institutional audit</p>
+              </div>
+              <input type="text" id="vaultSearch" oninput="renderCredentialVault()" placeholder="Search USN, Name, or Password..." class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
             </div>
-            <div class="border border-slate-800 rounded-2xl overflow-hidden max-h-52 overflow-y-auto">
+            <div class="border border-slate-800 rounded-2xl overflow-hidden max-h-64 overflow-y-auto">
               <table class="w-full text-left text-xs text-slate-300">
-                <thead class="bg-slate-900/80 text-[10px] uppercase font-bold text-slate-400 sticky top-0">
+                <thead class="bg-slate-900/90 text-[10px] uppercase font-bold text-slate-400 sticky top-0 border-b border-slate-800">
                   <tr>
-                    <th class="p-2.5">SL</th>
-                    <th class="p-2.5">USN</th>
-                    <th class="p-2.5">Student Name</th>
-                    <th class="p-2.5">Mobile</th>
-                    <th class="p-2.5">Status</th>
-                    <th class="p-2.5 text-right">Credentials</th>
+                    <th class="p-3">SL</th>
+                    <th class="p-3">USN</th>
+                    <th class="p-3">Student Name</th>
+                    <th class="p-3">Mobile Phone</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3 text-right">Plaintext Password</th>
                   </tr>
                 </thead>
                 <tbody id="vaultTableBody" class="divide-y divide-slate-800 font-mono"></tbody>
@@ -296,17 +269,16 @@
             </div>
           </div>
 
-          <!-- Catalog Ingestion Form -->
+          <!-- Ingestion Form -->
           <div class="border border-slate-800 bg-slate-900/40 p-4 rounded-2xl space-y-3">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Inject New Textbook Inventory</h4>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Add New Textbook Inventory</h4>
             <form onsubmit="event.preventDefault(); addNewBook();" class="grid grid-cols-1 md:grid-cols-4 gap-2">
               <input type="text" id="newBookTitle" placeholder="Title" required class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white" />
               <input type="text" id="newBookAuthor" placeholder="Author" required class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white" />
               <input type="number" id="newBookCount" placeholder="Copies" min="1" max="10" required class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white" />
-              <button type="submit" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs text-white">Add to Shelf</button>
+              <button type="submit" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs text-white">Add to Stock</button>
             </form>
           </div>
-
         </div>
       </div>
     </div>
@@ -314,7 +286,6 @@
     <!-- PRINTABLE INSTITUTIONAL NO DUES CERTIFICATE -->
     <div id="auditModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
       <div class="bg-[#0e1724] border border-slate-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl p-6 md:p-8 space-y-6">
-        
         <div id="printableCert" class="bg-white text-slate-900 p-8 rounded-2xl space-y-6 border-4 border-slate-900">
           <div class="border-b-2 border-slate-900 pb-4 text-center space-y-1">
             <h3 class="text-2xl font-black uppercase tracking-tight text-slate-950 font-serif">RV UNIVERSITY</h3>
@@ -332,11 +303,11 @@
               <strong id="certName" class="text-sm text-slate-950"></strong>
             </div>
             <div>
-              <span class="text-slate-500 block text-[10px]">UNIVERSITY SEAT NO (USN):</span>
+              <span class="text-slate-500 block text-[10px]">USN:</span>
               <strong id="certUsn" class="text-sm text-slate-950"></strong>
             </div>
             <div>
-              <span class="text-slate-500 block text-[10px]">PROGRAM OF STUDY:</span>
+              <span class="text-slate-500 block text-[10px]">PROGRAM:</span>
               <span>B.Tech Computer Science & Eng.</span>
             </div>
             <div>
@@ -353,7 +324,7 @@
               <span>Student Signature</span>
             </div>
             <div class="font-mono text-emerald-800 font-bold border border-emerald-600 px-3 py-1 rounded bg-emerald-50 text-[9px]">
-              AUTONOMOUSLY VERIFIED<br/>RVU DESK TERMINAL
+              AUTONOMOUSLY AUDITED<br/>DESK RVUM26CSE063
             </div>
             <div>
               <div class="w-32 border-b border-slate-400 mx-auto mb-1"></div>
@@ -364,17 +335,16 @@
 
         <div class="flex justify-end gap-3">
           <button onclick="toggleAuditModal(false)" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300">Close</button>
-          <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-[#c5a059] text-slate-950 font-bold text-xs">Print / Export PDF</button>
+          <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-[#c5a059] text-slate-950 font-bold text-xs">Print PDF</button>
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- JAVASCRIPT LOGIC -->
   <script>
     // -------------------------------------------------------------
-    // 1. DATABASE INITIALIZATION: 51 REGISTERED STUDENTS (PDF ROSTER)
+    // 1. 51-STUDENT DATASET (OFFICIAL PDF ROSTER)
     // -------------------------------------------------------------
     const INITIAL_STUDENTS = [
       { sl: 1, usn: "RVUM26CSE122", name: "NAVEEN KUMAR B", isConfigured: false, password: "", phone: "+91 98801 12201" },
@@ -438,12 +408,12 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", total: 2, available: 2, waitlist: [] }
     ];
 
-    const STORAGE_KEY = "rvu_smart_library_v51_main_server";
+    const STORAGE_KEY = "rvu_autonomous_desk_passwords_v1";
 
     function loadState() {
       const data = localStorage.getItem(STORAGE_KEY);
       if (!data) {
-        const state = { students: INITIAL_STUDENTS, books: INITIAL_BOOKS, circulations: [], holds: [] };
+        const state = { students: INITIAL_STUDENTS, books: INITIAL_BOOKS, circulations: [] };
         saveState(state);
         return state;
       }
@@ -458,9 +428,6 @@
     let currentStudent = null;
     let pendingOtp = null;
 
-    // -------------------------------------------------------------
-    // 2. UI HELPERS & TOAST ENGINE
-    // -------------------------------------------------------------
     function showToast(message, type = "info") {
       const colors = {
         info: "bg-indigo-600 border-indigo-400 text-white",
@@ -478,18 +445,10 @@
 
     function togglePasswordVisibility(fieldId, btn) {
       const input = document.getElementById(fieldId);
-      if (input.type === "password") {
-        input.type = "text";
-        btn.textContent = "🔒";
-      } else {
-        input.type = "password";
-        btn.textContent = "👁️";
-      }
+      input.type = input.type === "password" ? "text" : "password";
+      btn.textContent = input.type === "password" ? "👁️" : "🔒";
     }
 
-    // -------------------------------------------------------------
-    // 3. AUTHENTICATION & PHONE ONBOARDING (51 STUDENTS)
-    // -------------------------------------------------------------
     function populateDropdowns() {
       const loginSelect = document.getElementById("loginUsn");
       const setupSelect = document.getElementById("setupUsn");
@@ -513,9 +472,7 @@
     function updateSetupPhone() {
       const selectedUsn = document.getElementById("setupUsn").value;
       const student = state.students.find(s => s.usn === selectedUsn);
-      if (student) {
-        document.getElementById("setupPhone").value = student.phone;
-      }
+      if (student) document.getElementById("setupPhone").value = student.phone;
     }
 
     function setAuthTab(tab) {
@@ -543,12 +500,11 @@
       const student = state.students.find(s => s.usn === usn);
 
       if (!phoneInput || phoneInput.length < 8) {
-        showToast("Please enter a valid mobile phone number.", "warning");
+        showToast("Please enter a valid mobile number.", "warning");
         return;
       }
-
       if (student.isConfigured) {
-        showToast("Account already configured. Please Sign In directly.", "warning");
+        showToast("Account already configured. Sign In directly.", "warning");
         setAuthTab("login");
         document.getElementById("loginUsn").value = usn;
         return;
@@ -556,16 +512,13 @@
 
       student.phone = phoneInput;
       saveState(state);
-
       pendingOtp = Math.floor(1000 + Math.random() * 9000).toString();
       document.getElementById("otpInputBlock").classList.remove("hidden");
-      showToast(`SMS to ${student.phone}: Your Verification OTP is ${pendingOtp}`, "info");
+      showToast(`SMS to ${student.phone}: OTP Code is ${pendingOtp}`, "info");
     }
 
     function quickFillOtp() {
-      if (pendingOtp) {
-        document.getElementById("enteredOtp").value = pendingOtp;
-      }
+      if (pendingOtp) document.getElementById("enteredOtp").value = pendingOtp;
     }
 
     function confirmSetupAccount() {
@@ -574,7 +527,7 @@
       const pass = document.getElementById("newPassword").value.trim();
 
       if (otp !== pendingOtp) {
-        showToast("Invalid verification code. Please check your SMS.", "error");
+        showToast("Invalid verification code.", "error");
         return;
       }
       if (pass.length < 4) {
@@ -587,7 +540,7 @@
       student.password = pass;
       saveState(state);
 
-      showToast("Permanent credentials locked. Logging in...", "success");
+      showToast("Account verified. Logging in...", "success");
       currentStudent = student;
       enterStudentPortal();
     }
@@ -598,7 +551,7 @@
       const student = state.students.find(s => s.usn === usn);
 
       if (!student.isConfigured) {
-        showToast("First-time setup required. Redirecting to Phone OTP onboarding...", "warning");
+        showToast("First-time setup required. Redirecting to Phone OTP...", "warning");
         setAuthTab("setup");
         document.getElementById("setupUsn").value = usn;
         updateSetupPhone();
@@ -606,7 +559,7 @@
       }
 
       if (student.password !== pass) {
-        showToast("Incorrect password. Please try again.", "error");
+        showToast("Incorrect password.", "error");
         return;
       }
 
@@ -624,13 +577,11 @@
 
       document.getElementById("studentName").textContent = currentStudent.name;
       document.getElementById("studentUsnBadge").textContent = currentStudent.usn;
-      document.getElementById("studentPhoneDisplay").textContent = `Phone: ${currentStudent.phone}`;
+      document.getElementById("studentPhoneDisplay").textContent = `Mobile: ${currentStudent.phone}`;
 
-      // MAIN SERVER ACCESS CHECK: ONLY DISPLAY FOR RVUM26CSE063
       const mainServerBtn = document.getElementById("mainServerBtn");
       if (currentStudent.usn === "RVUM26CSE063") {
         mainServerBtn.classList.remove("hidden");
-        showToast("Main Server Administrator Authenticated (RVUM26CSE063)", "success");
       } else {
         mainServerBtn.classList.add("hidden");
       }
@@ -649,50 +600,13 @@
     }
 
     // -------------------------------------------------------------
-    // 4. MAIN SERVER DESK SECURITY GATEKEEPER (`RVUM26CSE063`)
-    // -------------------------------------------------------------
-    function openMainServerTerminal() {
-      if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
-        showToast("ACCESS DENIED: Faculty Terminal is restricted exclusively to Main Server (RVUM26CSE063).", "error");
-        return;
-      }
-      toggleFacultyModal(true);
-    }
-
-    function toggleFacultyModal(show) {
-      if (show && (!currentStudent || currentStudent.usn !== "RVUM26CSE063")) {
-        showToast("Access Denied: Main Server authority required.", "error");
-        return;
-      }
-      document.getElementById("facultyModal").classList.toggle("hidden", !show);
-    }
-
-    function verifyFacultyLogin() {
-      if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
-        showToast("Unauthorized Host Machine.", "error");
-        return;
-      }
-      const id = document.getElementById("facultyIdInput").value.trim();
-      const pin = document.getElementById("facultyPinInput").value.trim();
-
-      if (id === "Varun" && pin === "1403") {
-        document.getElementById("facultyAuthGate").classList.add("hidden");
-        document.getElementById("facultyDashboard").classList.remove("hidden");
-        renderFacultyDashboard();
-      } else {
-        showToast("Invalid Staff ID or Master Security PIN.", "error");
-      }
-    }
-
-    // -------------------------------------------------------------
-    // 5. STUDENT DASHBOARD: QUOTAS, CIRCULATION & CATALOG
+    // AUTONOMOUS COUNT & CIRCULATION ENGINE
     // -------------------------------------------------------------
     function renderStudentDashboard() {
       if (!currentStudent) return;
 
       const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
-      const myHolds = state.holds.filter(h => h.usn === currentStudent.usn && h.status === "pending");
-      const totalActive = myBorrows.length + myHolds.length;
+      const totalActive = myBorrows.length;
 
       const quotaElem = document.getElementById("quotaCount");
       quotaElem.textContent = `${totalActive} / 2 Books`;
@@ -704,21 +618,6 @@
 
       if (totalActive > 0) {
         circSection.classList.remove("hidden");
-        
-        myHolds.forEach(h => {
-          const card = document.createElement("div");
-          card.className = "p-4 bg-[#080e18] border border-amber-500/40 rounded-2xl flex items-center justify-between";
-          card.innerHTML = `
-            <div>
-              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Pending Desk Handover</span>
-              <h4 class="font-bold text-sm text-white mt-1">${h.title}</h4>
-              <p class="text-[11px] text-slate-400">Reserved copy waiting at library counter</p>
-            </div>
-            <button onclick="cancelHold('${h.id}')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-rose-300">Cancel</button>
-          `;
-          circList.appendChild(card);
-        });
-
         myBorrows.forEach(b => {
           const now = new Date();
           const due = new Date(b.dueDate);
@@ -730,8 +629,8 @@
           card.className = `p-4 bg-[#080e18] border ${isOverdue ? 'border-rose-500/50' : isDay6 ? 'border-amber-500/50' : 'border-indigo-500/30'} rounded-2xl space-y-3`;
           card.innerHTML = `
             <div class="flex items-center justify-between">
-              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${isOverdue ? 'bg-rose-500/20 text-rose-400' : 'bg-indigo-500/20 text-indigo-400'}">
-                ${isOverdue ? `Overdue: Fine ₹${Math.abs(diffDays) * 5}` : `Loan Active: ${diffDays} Days Left`}
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${isOverdue ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">
+                ${isOverdue ? `Overdue: Fine ₹${Math.abs(diffDays) * 5}` : `Active Loan: ${diffDays} Days Left`}
               </span>
               <span class="text-[11px] font-mono text-slate-400">Due: ${b.dueDate}</span>
             </div>
@@ -741,12 +640,13 @@
               <button onclick="requestExtension('${b.id}')" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-xs text-indigo-300">
                 +7 Days Renewal
               </button>
-              <span class="text-[10px] text-slate-500">Physical return at desk</span>
+              <button onclick="autonomousSelfReturn('${b.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition">
+                Return Copy (Auto-Checkin)
+              </button>
             </div>
           `;
           circList.appendChild(card);
         });
-
       } else {
         circSection.classList.add("hidden");
       }
@@ -761,15 +661,13 @@
       grid.innerHTML = "";
 
       const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
-      const myHolds = state.holds.filter(h => h.usn === currentStudent.usn && h.status === "pending");
-      const quotaReached = (myBorrows.length + myHolds.length) >= 2;
+      const quotaReached = myBorrows.length >= 2;
 
       state.books.forEach(b => {
         if (query && !b.title.toLowerCase().includes(query) && !b.author.toLowerCase().includes(query)) return;
         if (filter === "available" && b.available === 0) return;
         if (filter === "queued" && b.waitlist.length === 0) return;
 
-        const isHeldByMe = myHolds.some(h => h.bookId === b.id);
         const isBorrowedByMe = myBorrows.some(c => c.bookId === b.id);
         const myWaitlistPos = b.waitlist.indexOf(currentStudent.usn);
 
@@ -790,17 +688,15 @@
           <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
             ${isBorrowedByMe ? `
               <span class="text-xs text-indigo-400 font-semibold">Currently Borrowed</span>
-            ` : isHeldByMe ? `
-              <span class="text-xs text-amber-400 font-semibold">Pending Pickup</span>
             ` : myWaitlistPos !== -1 ? `
               <span class="text-xs text-amber-400 font-mono font-semibold">Position #${myWaitlistPos + 1} in FIFO Queue</span>
             ` : b.available > 0 ? `
-              <button onclick="requestHold('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] disabled:opacity-40 disabled:hover:bg-[#c5a059] text-slate-950 font-bold text-xs transition">
-                ${quotaReached ? 'Quota Reached (Max 2)' : 'Ask Teacher to Hold'}
+              <button onclick="autonomousSelfIssue('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] disabled:opacity-40 text-slate-950 font-bold text-xs transition">
+                ${quotaReached ? 'Quota Limit Reached (Max 2)' : 'Instant Autonomous Issue (-1 Count)'}
               </button>
             ` : `
               <button onclick="joinWaitlist('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 disabled:opacity-40 text-indigo-300 font-bold text-xs transition">
-                Join FIFO Waitlist
+                Join FIFO Waitlist (0 Stock)
               </button>
             `}
           </div>
@@ -809,38 +705,68 @@
       });
     }
 
-    function requestHold(bookId) {
+    function autonomousSelfIssue(bookId) {
       const book = state.books.find(b => b.id === bookId);
       if (book.available <= 0) {
-        showToast("Book has 0 shelf stock. Please join waitlist.", "error");
+        showToast("Physical shelf stock depleted. Please join FIFO queue.", "error");
         return;
       }
+
       book.available -= 1;
-      state.holds.push({
-        id: "H" + Date.now(),
+
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 7);
+
+      state.circulations.push({
+        id: "C" + Date.now(),
         bookId: book.id,
         title: book.title,
         usn: currentStudent.usn,
         studentName: currentStudent.name,
-        timestamp: new Date().toLocaleTimeString(),
-        status: "pending"
+        issueDate: new Date().toISOString().split("T")[0],
+        dueDate: dueDate.toISOString().split("T")[0],
+        isReturned: false
       });
+
       saveState(state);
-      showToast(`Hold requested for "${book.title}". Reserved at desk.`, "success");
+      showToast(`Autonomous Checkout Confirmed! Shelf count decremented to ${book.available}.`, "success");
       renderStudentDashboard();
     }
 
-    function cancelHold(holdId) {
-      const holdIndex = state.holds.findIndex(h => h.id === holdId);
-      if (holdIndex !== -1) {
-        const hold = state.holds[holdIndex];
-        const book = state.books.find(b => b.id === hold.bookId);
-        if (book) book.available += 1;
-        state.holds.splice(holdIndex, 1);
-        saveState(state);
-        showToast("Hold reservation cancelled.", "info");
-        renderStudentDashboard();
+    function autonomousSelfReturn(circId) {
+      const circ = state.circulations.find(c => c.id === circId);
+      if (!circ) return;
+      circ.isReturned = true;
+
+      const book = state.books.find(b => b.id === circ.bookId);
+      if (book) {
+        if (book.waitlist.length > 0) {
+          const nextUsn = book.waitlist.shift();
+          const nextStudent = state.students.find(s => s.usn === nextUsn);
+          
+          const dueDate = new Date();
+          dueDate.setDate(dueDate.getDate() + 7);
+
+          state.circulations.push({
+            id: "C" + Date.now(),
+            bookId: book.id,
+            title: book.title,
+            usn: nextUsn,
+            studentName: nextStudent.name,
+            issueDate: new Date().toISOString().split("T")[0],
+            dueDate: dueDate.toISOString().split("T")[0],
+            isReturned: false
+          });
+
+          showToast(`Priority Lock: Returned copy automatically allocated to Waitlist Position #1 (${nextUsn}).`, "warning");
+        } else {
+          book.available += 1;
+          showToast(`Return complete. Shelf stock restored to ${book.available}.`, "success");
+        }
       }
+
+      saveState(state);
+      renderStudentDashboard();
     }
 
     function joinWaitlist(bookId) {
@@ -858,19 +784,19 @@
       const book = state.books.find(b => b.id === circ.bookId);
 
       if (book && book.waitlist.length > 0) {
-        showToast("Cannot extend: Peers are waiting in FIFO queue.", "error");
+        showToast("Cannot extend: Peers are queued on FIFO waitlist.", "error");
         return;
       }
       const curDue = new Date(circ.dueDate);
       curDue.setDate(curDue.getDate() + 7);
       circ.dueDate = curDue.toISOString().split("T")[0];
       saveState(state);
-      showToast("+7 Days extension granted successfully.", "success");
+      showToast("+7 Days autonomous renewal applied.", "success");
       renderStudentDashboard();
     }
 
     // -------------------------------------------------------------
-    // 6. INSTITUTIONAL "NO DUES" AUDIT GENERATOR
+    // NO DUES AUDIT
     // -------------------------------------------------------------
     function openGraduationAudit() {
       const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
@@ -880,9 +806,7 @@
       myBorrows.forEach(b => {
         const due = new Date(b.dueDate);
         const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-        if (diffDays < 0) {
-          totalFine += Math.abs(diffDays) * 5;
-        }
+        if (diffDays < 0) totalFine += Math.abs(diffDays) * 5;
       });
 
       document.getElementById("certName").textContent = currentStudent.name;
@@ -894,14 +818,14 @@
         resBox.className = "p-4 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-950 text-xs";
         resBox.innerHTML = `
           <strong class="block text-sm font-bold text-emerald-800">STATUS: OFFICIAL "NO DUES" CLEARED ✓</strong>
-          <span>The candidate holds zero unreturned university assets and has zero overdue monetary liability. All library clearance criteria are satisfied for semester records.</span>
+          <span>The candidate holds zero unreturned university assets and has zero overdue monetary liability. All criteria satisfied.</span>
         `;
       } else {
         resBox.className = "p-4 rounded-xl border border-rose-500 bg-rose-50 text-rose-950 text-xs";
         resBox.innerHTML = `
           <strong class="block text-sm font-bold text-rose-800">STATUS: CLEARANCE WITHHELD ✕</strong>
-          <span>Active Borrowings: <strong>${myBorrows.length} Title(s)</strong> | Total Overdue Penalties: <strong>₹${totalFine}</strong></span>
-          <p class="mt-1 text-[11px] text-rose-700">Please return all physical copies to Desk RVUM26CSE063 to enable clearance certificate.</p>
+          <span>Active Borrowings: <strong>${myBorrows.length} Title(s)</strong> | Overdue Fines: <strong>₹${totalFine}</strong></span>
+          <p class="mt-1 text-[11px] text-rose-700">Please return all active copies to enable clearance certificate.</p>
         `;
       }
 
@@ -913,11 +837,36 @@
     }
 
     // -------------------------------------------------------------
-    // 7. FACULTY MAIN SERVER DASHBOARD EXECUTION
+    // MAIN SERVER DESK (RVUM26CSE063 ONLY)
     // -------------------------------------------------------------
+    function openMainServerTerminal() {
+      if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
+        showToast("Access Denied: Terminal restricted to RVUM26CSE063.", "error");
+        return;
+      }
+      toggleFacultyModal(true);
+    }
+
+    function toggleFacultyModal(show) {
+      document.getElementById("facultyModal").classList.toggle("hidden", !show);
+    }
+
+    function verifyFacultyLogin() {
+      const id = document.getElementById("facultyIdInput").value.trim();
+      const pin = document.getElementById("facultyPinInput").value.trim();
+
+      if (id === "Varun" && pin === "1403") {
+        document.getElementById("facultyAuthGate").classList.add("hidden");
+        document.getElementById("facultyDashboard").classList.remove("hidden");
+        renderFacultyDashboard();
+      } else {
+        showToast("Invalid Credentials.", "error");
+      }
+    }
+
     function renderFacultyDashboard() {
       const activeBorrows = state.circulations.filter(c => !c.isReturned);
-      const pendingHolds = state.holds.filter(h => h.status === "pending");
+      const queuedTotal = state.books.reduce((acc, b) => acc + b.waitlist.length, 0);
       let overdueCount = 0;
       const now = new Date();
       activeBorrows.forEach(b => {
@@ -925,130 +874,45 @@
       });
 
       document.getElementById("statActiveBorrows").textContent = activeBorrows.length;
-      document.getElementById("statPendingHolds").textContent = pendingHolds.length;
+      document.getElementById("statPendingHolds").textContent = queuedTotal;
       document.getElementById("statOverdues").textContent = overdueCount;
-
-      const holdContainer = document.getElementById("facultyHoldList");
-      holdContainer.innerHTML = "";
-      if (pendingHolds.length === 0) {
-        holdContainer.innerHTML = `<p class="text-xs text-slate-500 italic">No pending remote hold requests.</p>`;
-      } else {
-        pendingHolds.forEach(h => {
-          const div = document.createElement("div");
-          div.className = "p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between text-xs";
-          div.innerHTML = `
-            <div>
-              <strong class="text-white">${h.title}</strong>
-              <p class="text-[11px] text-slate-400">Student: ${h.studentName} (<span class="font-mono text-indigo-400">${h.usn}</span>)</p>
-            </div>
-            <button onclick="confirmHandover('${h.id}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">
-              Confirm Handover
-            </button>
-          `;
-          holdContainer.appendChild(div);
-        });
-      }
-
-      const circContainer = document.getElementById("facultyActiveCirculationList");
-      circContainer.innerHTML = "";
-      if (activeBorrows.length === 0) {
-        circContainer.innerHTML = `<p class="text-xs text-slate-500 italic">No books currently out on loan.</p>`;
-      } else {
-        activeBorrows.forEach(b => {
-          const div = document.createElement("div");
-          div.className = "p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between text-xs";
-          div.innerHTML = `
-            <div>
-              <strong class="text-white">${b.title}</strong>
-              <p class="text-[11px] text-slate-400">Holder: ${b.studentName} (<span class="font-mono">${b.usn}</span>) | Due: ${b.dueDate}</p>
-            </div>
-            <button onclick="processReturn('${b.id}')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs">
-              Mark Returned
-            </button>
-          `;
-          circContainer.appendChild(div);
-        });
-      }
 
       renderCredentialVault();
     }
 
-    function confirmHandover(holdId) {
-      const holdIndex = state.holds.findIndex(h => h.id === holdId);
-      if (holdIndex === -1) return;
-      const hold = state.holds[holdIndex];
-
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + 7);
-
-      state.circulations.push({
-        id: "C" + Date.now(),
-        bookId: hold.bookId,
-        title: hold.title,
-        usn: hold.usn,
-        studentName: hold.studentName,
-        issueDate: new Date().toISOString().split("T")[0],
-        dueDate: dueDate.toISOString().split("T")[0],
-        isReturned: false
-      });
-
-      state.holds.splice(holdIndex, 1);
-      saveState(state);
-      showToast(`Physical copy issued to ${hold.usn}. 7-day timer active.`, "success");
-      renderFacultyDashboard();
-      if (currentStudent) renderStudentDashboard();
-    }
-
-    function processReturn(circId) {
-      const circ = state.circulations.find(c => c.id === circId);
-      if (!circ) return;
-      circ.isReturned = true;
-
-      const book = state.books.find(b => b.id === circ.bookId);
-      if (book) {
-        if (book.waitlist.length > 0) {
-          const nextUsn = book.waitlist.shift();
-          const nextStudent = state.students.find(s => s.usn === nextUsn);
-          state.holds.push({
-            id: "H" + Date.now(),
-            bookId: book.id,
-            title: book.title,
-            usn: nextUsn,
-            studentName: nextStudent.name,
-            timestamp: new Date().toLocaleTimeString(),
-            status: "pending"
-          });
-          showToast(`Priority Lock: Returned copy locked exclusively for FIFO Next (${nextUsn}).`, "warning");
-        } else {
-          book.available += 1;
-        }
-      }
-
-      saveState(state);
-      showToast("Book return recorded in circulation log.", "info");
-      renderFacultyDashboard();
-      if (currentStudent) renderStudentDashboard();
-    }
-
+    // RENDERS ALL 51 PASSWORDS DIRECTLY IN MONOSPACE PLAINTEXT
     function renderCredentialVault() {
       const q = document.getElementById("vaultSearch").value.toLowerCase();
       const tbody = document.getElementById("vaultTableBody");
       tbody.innerHTML = "";
 
       state.students.forEach(s => {
-        if (q && !s.usn.toLowerCase().includes(q) && !s.name.toLowerCase().includes(q)) return;
+        const matchesQuery = !q || 
+          s.usn.toLowerCase().includes(q) || 
+          s.name.toLowerCase().includes(q) || 
+          s.phone.toLowerCase().includes(q) ||
+          (s.password && s.password.toLowerCase().includes(q));
+
+        if (!matchesQuery) return;
+
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-900/60";
         tr.innerHTML = `
-          <td class="p-2.5 text-slate-500">${s.sl}</td>
-          <td class="p-2.5 text-indigo-400 font-bold">${s.usn}</td>
-          <td class="p-2.5 text-white">${s.name}</td>
-          <td class="p-2.5 text-slate-400">${s.phone}</td>
-          <td class="p-2.5">
-            ${s.isConfigured ? '<span class="text-emerald-400">Configured</span>' : '<span class="text-amber-400">Unconfigured</span>'}
+          <td class="p-3 text-slate-500">${s.sl}</td>
+          <td class="p-3 text-indigo-400 font-bold">${s.usn}</td>
+          <td class="p-3 text-white font-sans">${s.name}</td>
+          <td class="p-3 text-slate-400">${s.phone}</td>
+          <td class="p-3">
+            ${s.isConfigured 
+              ? '<span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Configured</span>' 
+              : '<span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20">Unconfigured</span>'
+            }
           </td>
-          <td class="p-2.5 text-right">
-            ${s.isConfigured ? `<span class="text-slate-400 font-mono">${s.password}</span>` : '<span class="text-slate-600">—</span>'}
+          <td class="p-3 text-right">
+            ${s.isConfigured 
+              ? `<span class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs">${s.password}</span>` 
+              : '<span class="text-slate-600 italic text-[11px]">Not set yet</span>'
+            }
           </td>
         `;
         tbody.appendChild(tr);
@@ -1069,14 +933,13 @@
         waitlist: []
       });
       saveState(state);
-      showToast(`Added "${title}" (${count} copies) to shelf catalog.`, "success");
+      showToast(`Added "${title}" (${count} copies) to inventory.`, "success");
       document.getElementById("newBookTitle").value = "";
       document.getElementById("newBookAuthor").value = "";
       document.getElementById("newBookCount").value = "";
       if (currentStudent) renderStudentDashboard();
     }
 
-    // Initialize application on load
     populateDropdowns();
   </script>
 </body>
