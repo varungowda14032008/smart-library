@@ -243,12 +243,12 @@
             </div>
           </div>
 
-          <!-- BOOK INGESTION SECTION: BARCODE SCANNER + MANUAL FALLBACK -->
+          <!-- BOOK INGESTION SECTION: BARCODE SCANNER + MULTI-REGISTRY METADATA RESOLVER -->
           <div class="border border-slate-800 bg-slate-900/50 p-5 rounded-2xl space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
               <div>
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Add Book to Library Inventory</h4>
-                <p class="text-[11px] text-slate-500">Scan barcode to auto-detect title, or enter details manually</p>
+                <p class="text-[11px] text-slate-500">Scan any barcode/ISBN to automatically fetch book title and author metadata</p>
               </div>
               <button type="button" id="scannerToggleBtn" onclick="toggleBarcodeScanner()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
                 <span>📷</span> Scan Book Barcode
@@ -268,27 +268,38 @@
             <!-- INGESTION FORM -->
             <form onsubmit="event.preventDefault(); addNewBook();" class="space-y-3">
               <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <div>
-                  <label class="block text-[11px] text-slate-400 mb-1">Book Title *</label>
-                  <input type="text" id="newBookTitle" placeholder="e.g. Operating System Concepts" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                <div class="md:col-span-2">
+                  <label class="block text-[11px] text-slate-400 mb-1 flex items-center justify-between">
+                    <span>Book Title *</span>
+                    <span id="titleFetchBadge" class="hidden text-[10px] text-emerald-400 font-mono">✓ Auto-Fetched</span>
+                  </label>
+                  <input type="text" id="newBookTitle" placeholder="Scan barcode to auto-detect, or type title..." required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-400 mb-1">Author(s) *</label>
-                  <input type="text" id="newBookAuthor" placeholder="e.g. Silberschatz, Galvin" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
-                </div>
-                <div>
-                  <label class="block text-[11px] text-slate-400 mb-1">Scanned ISBN / Barcode</label>
-                  <input type="text" id="newBookBarcode" placeholder="Barcode number appears here" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
+                  <input type="text" id="newBookAuthor" placeholder="Author name" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
                 </div>
                 <div>
                   <label class="block text-[11px] text-slate-400 mb-1">Total Copies *</label>
                   <input type="number" id="newBookCount" placeholder="Copies" min="1" max="50" value="1" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
                 </div>
               </div>
-              <div class="flex justify-end pt-1">
-                <button type="submit" class="px-5 py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
-                  Save Book to Database
-                </button>
+              
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                <div class="md:col-span-2">
+                  <label class="block text-[11px] text-slate-400 mb-1">Scanned ISBN / Barcode Number</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="newBookBarcode" placeholder="Scan camera or type ISBN manually" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
+                    <button type="button" onclick="fetchMetadataByInput()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 whitespace-nowrap">
+                      Lookup ISBN
+                    </button>
+                  </div>
+                </div>
+                <div class="flex justify-end">
+                  <button type="submit" class="w-full md:w-auto px-6 py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+                    Save Book to Database
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -451,7 +462,7 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1 }
     ];
 
-    const STORAGE_KEY = "rvu_smart_library_scanned_v2";
+    const STORAGE_KEY = "rvu_smart_library_multi_api_v3";
     const SESSION_KEY = "rvu_active_session_usn";
 
     function loadState() {
@@ -789,7 +800,78 @@
     }
 
     // -------------------------------------------------------------
-    // BARCODE SCANNER INTEGRATION & METADATA FETCH
+    // MULTI-REGISTRY ISBN AUTO-RESOLVER (GOOGLE BOOKS + OPEN LIBRARY)
+    // -------------------------------------------------------------
+    async function resolveBookMetadata(isbn) {
+      const cleanIsbn = isbn.replace(/[^0-9X]/gi, "");
+      const badge = document.getElementById("titleFetchBadge");
+      badge.classList.add("hidden");
+
+      if (!cleanIsbn || cleanIsbn.length < 9) {
+        showToast("Please enter a valid 10 or 13-digit ISBN.", "warning");
+        return;
+      }
+
+      showToast(`Searching global textbook registries for ISBN ${cleanIsbn}...`, "info");
+
+      // Provider 1: Google Books API (Best for Indian curriculum & engineering texts)
+      try {
+        const gRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${cleanIsbn}`);
+        const gData = await gRes.json();
+        
+        if (gData.totalItems > 0 && gData.items[0]?.volumeInfo) {
+          const info = gData.items[0].volumeInfo;
+          if (info.title) {
+            document.getElementById("newBookTitle").value = info.title + (info.subtitle ? `: ${info.subtitle}` : "");
+            if (info.authors && info.authors.length > 0) {
+              document.getElementById("newBookAuthor").value = info.authors.join(", ");
+            }
+            badge.classList.remove("hidden");
+            showToast(`Auto-Resolved: ${info.title}`, "success");
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Google Books registry search failed, trying fallback...", err);
+      }
+
+      // Provider 2: Open Library API (Global fallback)
+      try {
+        const oRes = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${cleanIsbn}&jscmd=data&format=json`);
+        const oData = await oRes.json();
+        const bookKey = `ISBN:${cleanIsbn}`;
+
+        if (oData[bookKey]?.title) {
+          const info = oData[bookKey];
+          document.getElementById("newBookTitle").value = info.title;
+          if (info.authors && info.authors.length > 0) {
+            document.getElementById("newBookAuthor").value = info.authors.map(a => a.name).join(", ");
+          }
+          badge.classList.remove("hidden");
+          showToast(`Auto-Resolved: ${info.title}`, "success");
+          return;
+        }
+      } catch (err) {
+        console.warn("Open Library registry search failed.", err);
+      }
+
+      // Fallback: When ISBN is not indexed in global registries
+      showToast("ISBN recognized, but book title is not indexed in online registries. Please type title manually.", "warning");
+      document.getElementById("newBookTitle").value = "";
+      document.getElementById("newBookTitle").focus();
+    }
+
+    function fetchMetadataByInput() {
+      const code = document.getElementById("newBookBarcode").value.trim();
+      if (code) {
+        resolveBookMetadata(code);
+      } else {
+        showToast("Enter an ISBN number in the barcode field first.", "warning");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // BARCODE SCANNER INTEGRATION
     // -------------------------------------------------------------
     function toggleBarcodeScanner() {
       const container = document.getElementById("scannerContainer");
@@ -807,48 +889,27 @@
       status.textContent = "Requesting camera permissions...";
       
       html5QrScanner = new Html5Qrcode("reader");
-      const config = { fps: 10, qrbox: { width: 250, height: 160 } };
+      const config = { fps: 15, qrbox: { width: 280, height: 160 } };
 
       html5QrScanner.start(
         { facingMode: "environment" },
         config,
         async (decodedText) => {
-          // Success callback: place barcode ONLY in the barcode input
-          const cleanIsbn = decodedText.replace(/[^0-9X]/gi, "");
-          document.getElementById("newBookBarcode").value = cleanIsbn;
-          showToast(`Scanned Barcode: ${cleanIsbn}`, "success");
+          // Success: Set barcode field
+          const cleanCode = decodedText.replace(/[^0-9X]/gi, "");
+          document.getElementById("newBookBarcode").value = cleanCode;
+          showToast(`Scanned Code: ${cleanCode}`, "info");
           toggleBarcodeScanner();
 
-          // Attempt to fetch book title and author using Open Library API
-          showToast("Fetching book title and author...", "info");
-          try {
-            const res = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${cleanIsbn}&jscmd=data&format=json`);
-            const data = await res.json();
-            const bookKey = `ISBN:${cleanIsbn}`;
-            if (data[bookKey]) {
-              const bookInfo = data[bookKey];
-              if (bookInfo.title) {
-                document.getElementById("newBookTitle").value = bookInfo.title;
-              }
-              if (bookInfo.authors && bookInfo.authors.length > 0) {
-                document.getElementById("newBookAuthor").value = bookInfo.authors.map(a => a.name).join(", ");
-              }
-              showToast(`Found: ${bookInfo.title}`, "success");
-            } else {
-              showToast("Metadata not in online index. Please type title manually.", "warning");
-              document.getElementById("newBookTitle").focus();
-            }
-          } catch (e) {
-            showToast("Offline or fetch failed. Please enter title manually.", "info");
-            document.getElementById("newBookTitle").focus();
-          }
+          // Auto-trigger Multi-Registry Metadata Resolver
+          await resolveBookMetadata(cleanCode);
         },
         (errorMessage) => {
-          status.textContent = "Scanning active... Align barcode in view.";
+          status.textContent = "Scanning active... Align barcode in camera frame.";
         }
       ).catch((err) => {
-        status.textContent = "Camera access denied or unavailable. Please use manual input below.";
-        showToast("Camera scanner unavailable. Enter book details manually.", "warning");
+        status.textContent = "Camera access denied or unavailable. Enter details manually.";
+        showToast("Camera scanner unavailable. Enter details manually.", "warning");
       });
     }
 
@@ -883,6 +944,7 @@
       document.getElementById("newBookAuthor").value = "";
       document.getElementById("newBookBarcode").value = "";
       document.getElementById("newBookCount").value = "1";
+      document.getElementById("titleFetchBadge").classList.add("hidden");
 
       renderFacultyDashboard();
       if (currentStudent) renderCatalog();
