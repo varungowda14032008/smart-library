@@ -571,21 +571,9 @@
     // ZERO SAMPLE BOOKS
     const INITIAL_BOOKS = [];
 
-    // PERMANENT MASTER KEYS (NEVER CHANGED ACROSS COMMITS)
+    // PERMANENT STORAGE ENGINE
     const MASTER_STORAGE_KEY = "rvu_master_database_permanent";
     const SESSION_KEY = "rvu_active_session_token";
-
-    // Legacy test keys checked once for recovery
-    const LEGACY_STORAGE_KEYS = [
-      "rvu_secure_vault_prod_v6",
-      "rvu_secure_vault_prod_v5",
-      "rvu_secure_vault_prod_v4",
-      "rvu_secure_vault_prod_v3",
-      "rvu_secure_vault_prod_v2",
-      "rvu_secure_vault_prod_v1",
-      "rvu_permanent_autonomous_v8",
-      "rvu_permanent_production_store_v1"
-    ];
 
     function loadState() {
       let state = {
@@ -594,42 +582,6 @@
         circulations: []
       };
 
-      // 1. Recover from any legacy test key if present
-      LEGACY_STORAGE_KEYS.forEach(k => {
-        const raw = localStorage.getItem(k);
-        if (raw) {
-          try {
-            const data = JSON.parse(raw);
-            if (data.students && Array.isArray(data.students)) {
-              data.students.forEach(ls => {
-                if (ls.usn === "RVUM26CSE016") return; // keep Ullas reset
-                const cur = state.students.find(s => s.usn === ls.usn);
-                if (cur && ls.isConfigured && (ls.passHash || ls.password)) {
-                  cur.isConfigured = true;
-                  cur.passHash = ls.passHash || cur.passHash;
-                  if (ls.phone) cur.phone = ls.phone;
-                }
-              });
-            }
-            if (data.books && Array.isArray(data.books)) {
-              data.books.forEach(b => {
-                if (!state.books.some(ex => ex.barcode === b.barcode && ex.title === b.title)) {
-                  state.books.push(b);
-                }
-              });
-            }
-            if (data.circulations && Array.isArray(data.circulations)) {
-              data.circulations.forEach(c => {
-                if (!state.circulations.some(ex => ex.id === c.id)) {
-                  state.circulations.push(c);
-                }
-              });
-            }
-          } catch(e) {}
-        }
-      });
-
-      // 2. Read permanent master store
       const masterRaw = localStorage.getItem(MASTER_STORAGE_KEY);
       if (masterRaw) {
         try {
@@ -645,15 +597,16 @@
             });
           }
           if (masterData.books && Array.isArray(masterData.books)) {
-            state.books = masterData.books;
+            // Keep user-ingested books, discarding sample books B1 through B5
+            state.books = masterData.books.filter(b => !["B1", "B2", "B3", "B4", "B5"].includes(b.id));
           }
           if (masterData.circulations && Array.isArray(masterData.circulations)) {
-            state.circulations = masterData.circulations;
+            state.circulations = masterData.circulations.filter(c => !["B1", "B2", "B3", "B4", "B5"].includes(c.bookId));
           }
         } catch(e) {}
       }
 
-      // 3. Keep Ullas U reset until he completes first-time setup
+      // Keep Ullas U reset until he completes first-time setup
       const ullas = state.students.find(s => s.usn === "RVUM26CSE016");
       if (ullas && !ullas.passHash) {
         ullas.isConfigured = false;
@@ -862,7 +815,6 @@
       document.getElementById("studentUsnBadge").textContent = currentStudent.usn;
       document.getElementById("studentPhoneDisplay").textContent = `Mobile: ${currentStudent.phone}`;
 
-      // STRICT DUAL-FACULTY AUTHORIZATION: RVUM26CSE063 & RVUM26CSE016
       const mainServerBtn = document.getElementById("mainServerBtn");
       if (currentStudent.usn === "RVUM26CSE063" || currentStudent.usn === "RVUM26CSE016") {
         mainServerBtn.classList.remove("hidden");
@@ -1484,7 +1436,7 @@
       const count = parseInt(document.getElementById("newBookCount").value, 10);
 
       state.books.push({
-        id: "B" + (state.books.length + 1),
+        id: "B" + Date.now().toString().slice(-6),
         title: title,
         author: author,
         barcode: barcode || "REF-" + Date.now().toString().slice(-6),
