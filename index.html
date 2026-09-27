@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Campus Library Desk - RV University</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- HTML5 QR/Barcode Scanner Library -->
+  <!-- HTML5 Barcode/QR Scanner Library -->
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -23,10 +23,9 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased">
 
-  <!-- TOP NAVIGATION HEADER -->
+  <!-- TOP HEADER -->
   <header class="px-6 py-3.5 border-b border-slate-800/90 bg-[#0e1724]/95 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
     <div class="flex items-center gap-3.5">
-      <!-- RV University Emblem Badge -->
       <div class="h-11 px-3 py-1 rounded-xl bg-[#09101a] border border-[#c5a059]/40 flex items-center gap-2.5 shadow-sm">
         <svg class="h-8 w-8 text-[#d4af37]" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
           <path d="M50 8 C35 8 20 22 20 40 C20 65 50 88 50 88 C50 88 80 65 80 40 C80 22 65 8 50 8 Z" stroke="#c5a059" fill="#0b131e"/>
@@ -46,13 +45,12 @@
       </span>
     </div>
 
-    <!-- Active User & Terminal Triggers -->
     <div class="flex items-center gap-3">
       <div id="currentUserBadge" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono">
         <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
       
-      <!-- MAIN SERVER TERMINAL BUTTON (RESTRICTED TO RVUM26CSE063) -->
+      <!-- FACULTY TERMINAL (RVUM26CSE063 ONLY) -->
       <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
         <span>⚡</span> Central Server Desk
       </button>
@@ -63,10 +61,9 @@
     </div>
   </header>
 
-  <!-- NOTIFICATION TOAST -->
   <div id="toastContainer" class="fixed top-16 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
-  <!-- MAIN APP CONTAINER -->
+  <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 space-y-6">
 
     <!-- VIEW 1: AUTHENTICATION SCREEN -->
@@ -144,8 +141,6 @@
 
     <!-- VIEW 2: STUDENT PORTAL (VIEW-ONLY INVENTORY STATUS) -->
     <section id="studentView" class="hidden space-y-6">
-
-      <!-- Student Profile Card -->
       <div class="bg-[#0e1724] border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span class="text-[10px] font-mono text-[#d4af37] uppercase tracking-wider block font-bold">Authenticated Student Session</span>
@@ -167,15 +162,14 @@
         </div>
       </div>
 
-      <!-- Real-Time Catalog (View-Only Stock Counts) -->
       <div class="space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h3 class="font-display text-lg font-bold text-white">Live Physical Shelf Availability</h3>
-            <p class="text-xs text-slate-400">Verify available shelf copies remotely before visiting the library desk</p>
+            <h3 class="font-display text-lg font-bold text-white">Live Shelf Stock Telemetry</h3>
+            <p class="text-xs text-slate-400">View real-time physical availability without walking to the library desk</p>
           </div>
           <div class="flex items-center gap-2">
-            <input type="text" id="catalogSearch" oninput="renderCatalog()" placeholder="Search title or author..." class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none" />
+            <input type="text" id="catalogSearch" oninput="renderCatalog()" placeholder="Search title, author, ISBN..." class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none" />
             <select id="catalogFilter" onchange="renderCatalog()" class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none">
               <option value="all">All Copies</option>
               <option value="available">Available on Shelf (>0)</option>
@@ -186,7 +180,6 @@
 
         <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </div>
-
     </section>
 
     <!-- FACULTY MODAL (RVUM26CSE063 DESK TERMINAL) -->
@@ -200,7 +193,7 @@
           <button onclick="toggleFacultyModal(false)" class="text-slate-400 hover:text-white text-sm">✕</button>
         </div>
 
-        <!-- Faculty Security Gate -->
+        <!-- AUTH GATE -->
         <div id="facultyAuthGate" class="p-8 max-w-sm mx-auto w-full space-y-4 my-auto">
           <div class="text-center space-y-1">
             <div class="text-3xl">🔐</div>
@@ -222,7 +215,7 @@
           </form>
         </div>
 
-        <!-- Faculty Admin Dashboard -->
+        <!-- FACULTY DASHBOARD -->
         <div id="facultyDashboard" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
@@ -243,73 +236,74 @@
             </div>
           </div>
 
-          <!-- BOOK INGESTION SECTION: BARCODE SCANNER + MULTI-REGISTRY METADATA RESOLVER -->
+          <!-- SCANNER & INGESTION FORM -->
           <div class="border border-slate-800 bg-slate-900/50 p-5 rounded-2xl space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
               <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Add Book to Library Inventory</h4>
-                <p class="text-[11px] text-slate-500">Scan any barcode/ISBN to automatically fetch book title and author metadata</p>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Scan & Register Textbook</h4>
+                <p class="text-[11px] text-slate-500">Scan barcode or ISBN to fetch official title & authors automatically</p>
               </div>
               <button type="button" id="scannerToggleBtn" onclick="toggleBarcodeScanner()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
-                <span>📷</span> Scan Book Barcode
+                <span>📷</span> Open Barcode Scanner
               </button>
             </div>
 
-            <!-- CAMERA SCANNER CONTAINER (COLLAPSIBLE) -->
+            <!-- SCANNER CAMERA VIEWPORT -->
             <div id="scannerContainer" class="hidden space-y-3 p-4 bg-black/40 border border-indigo-500/30 rounded-2xl">
               <div class="flex items-center justify-between text-xs text-indigo-300">
-                <span>Point camera steadily at book barcode / ISBN label</span>
+                <span>Point camera at the barcode on the back of the book</span>
                 <button type="button" onclick="toggleBarcodeScanner()" class="text-slate-400 hover:text-white">✕ Close Camera</button>
               </div>
               <div id="reader" class="overflow-hidden rounded-xl max-w-sm mx-auto"></div>
-              <p id="scannerStatus" class="text-[11px] font-mono text-center text-slate-400">Initializing camera feed...</p>
+              <p id="scannerStatus" class="text-[11px] font-mono text-center text-slate-400">Starting optical scanner feed...</p>
             </div>
 
-            <!-- INGESTION FORM -->
-            <form onsubmit="event.preventDefault(); addNewBook();" class="space-y-3">
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <!-- BOOK INGESTION FORM -->
+            <form onsubmit="event.preventDefault(); addNewBook();" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="md:col-span-2">
                   <label class="block text-[11px] text-slate-400 mb-1 flex items-center justify-between">
-                    <span>Book Title *</span>
-                    <span id="titleFetchBadge" class="hidden text-[10px] text-emerald-400 font-mono">✓ Auto-Fetched</span>
+                    <span>Scanned Barcode / ISBN *</span>
+                    <span id="lookupStatusBadge" class="hidden text-[10px] font-mono"></span>
                   </label>
-                  <input type="text" id="newBookTitle" placeholder="Scan barcode to auto-detect, or type title..." required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
-                </div>
-                <div>
-                  <label class="block text-[11px] text-slate-400 mb-1">Author(s) *</label>
-                  <input type="text" id="newBookAuthor" placeholder="Author name" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
-                </div>
-                <div>
-                  <label class="block text-[11px] text-slate-400 mb-1">Total Copies *</label>
-                  <input type="number" id="newBookCount" placeholder="Copies" min="1" max="50" value="1" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
-                </div>
-              </div>
-              
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
-                <div class="md:col-span-2">
-                  <label class="block text-[11px] text-slate-400 mb-1">Scanned ISBN / Barcode Number</label>
                   <div class="flex gap-2">
-                    <input type="text" id="newBookBarcode" placeholder="Scan camera or type ISBN manually" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
-                    <button type="button" onclick="fetchMetadataByInput()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 whitespace-nowrap">
-                      Lookup ISBN
+                    <input type="text" id="newBookBarcode" placeholder="Scan barcode or type 10/13 digit ISBN" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
+                    <button type="button" onclick="triggerManualLookup()" class="px-4 py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-xs text-indigo-300 font-semibold whitespace-nowrap">
+                      Fetch Details
                     </button>
                   </div>
                 </div>
-                <div class="flex justify-end">
-                  <button type="submit" class="w-full md:w-auto px-6 py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
-                    Save Book to Database
-                  </button>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Copies on Shelf *</label>
+                  <input type="number" id="newBookCount" placeholder="Copies" min="1" max="50" value="1" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
                 </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Book Title (Auto-Fetched from ISBN) *</label>
+                  <input type="text" id="newBookTitle" placeholder="Auto-fills from Google/OpenLibrary, or type manually" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Author(s) (Auto-Fetched from ISBN) *</label>
+                  <input type="text" id="newBookAuthor" placeholder="Auto-fills from Google/OpenLibrary, or type manually" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+              </div>
+
+              <div class="flex justify-end pt-1">
+                <button type="submit" class="px-6 py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+                  Confirm & Ingest to Shelf Stock
+                </button>
               </div>
             </form>
           </div>
 
-          <!-- CREDENTIAL VAULT: ALL 51 STUDENT PASSWORDS DISPLAYED DIRECTLY -->
+          <!-- CREDENTIAL VAULT: 51 PASSWORDS IN MONOSPACE -->
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <div>
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Cohort Credential Directory (51 Students)</h4>
-                <p class="text-[11px] text-slate-500">All registered passwords visible in plaintext for institutional audit</p>
+                <p class="text-[11px] text-slate-500">Live credentials visible in plaintext for institutional desk audits</p>
               </div>
               <input type="text" id="vaultSearch" oninput="renderCredentialVault()" placeholder="Search USN, Name, or Password..." class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
             </div>
@@ -334,7 +328,7 @@
       </div>
     </div>
 
-    <!-- PRINTABLE INSTITUTIONAL NO DUES CERTIFICATE -->
+    <!-- PRINTABLE NO DUES CERTIFICATE -->
     <div id="auditModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
       <div class="bg-[#0e1724] border border-slate-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl p-6 md:p-8 space-y-6">
         <div id="printableCert" class="bg-white text-slate-900 p-8 rounded-2xl space-y-6 border-4 border-slate-900">
@@ -462,7 +456,7 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1 }
     ];
 
-    const STORAGE_KEY = "rvu_smart_library_multi_api_v3";
+    const STORAGE_KEY = "rvu_smart_library_multi_api_v4";
     const SESSION_KEY = "rvu_active_session_usn";
 
     function loadState() {
@@ -660,7 +654,7 @@
     }
 
     // -------------------------------------------------------------
-    // STUDENT VIEW: STRICT VIEW-ONLY CATALOG COUNTS
+    // STUDENT VIEW: REAL-TIME COUNTS (VIEW-ONLY)
     // -------------------------------------------------------------
     function renderCatalog() {
       const query = document.getElementById("catalogSearch").value.toLowerCase();
@@ -719,7 +713,7 @@
     }
 
     // -------------------------------------------------------------
-    // FACULTY DESK TERMINAL (RVUM26CSE063 HOST ONLY)
+    // MAIN SERVER DESK (RVUM26CSE063 ONLY)
     // -------------------------------------------------------------
     function openMainServerTerminal() {
       if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
@@ -760,7 +754,6 @@
       renderCredentialVault();
     }
 
-    // RENDERS ALL 51 PASSWORDS DIRECTLY IN MONOSPACE PLAINTEXT
     function renderCredentialVault() {
       const q = document.getElementById("vaultSearch").value.toLowerCase();
       const tbody = document.getElementById("vaultTableBody");
@@ -800,78 +793,92 @@
     }
 
     // -------------------------------------------------------------
-    // MULTI-REGISTRY ISBN AUTO-RESOLVER (GOOGLE BOOKS + OPEN LIBRARY)
+    // AUTOMATIC ISBN METADATA ENGINE (GOOGLE BOOKS + OPEN LIBRARY)
     // -------------------------------------------------------------
-    async function resolveBookMetadata(isbn) {
-      const cleanIsbn = isbn.replace(/[^0-9X]/gi, "");
-      const badge = document.getElementById("titleFetchBadge");
-      badge.classList.add("hidden");
+    async function fetchBookByIsbn(rawCode) {
+      const isbn = rawCode.replace(/[^0-9X]/gi, "");
+      const badge = document.getElementById("lookupStatusBadge");
+      const titleInput = document.getElementById("newBookTitle");
+      const authorInput = document.getElementById("newBookAuthor");
 
-      if (!cleanIsbn || cleanIsbn.length < 9) {
-        showToast("Please enter a valid 10 or 13-digit ISBN.", "warning");
+      if (!isbn || (isbn.length !== 10 && isbn.length !== 13)) {
+        showToast("Invalid ISBN format. Barcode must be 10 or 13 digits.", "warning");
         return;
       }
 
-      showToast(`Searching global textbook registries for ISBN ${cleanIsbn}...`, "info");
+      badge.classList.remove("hidden");
+      badge.className = "text-[10px] font-mono text-amber-400 animate-pulse";
+      badge.textContent = "Querying ISBN registries...";
+      showToast(`Searching registry for ISBN ${isbn}...`, "info");
 
-      // Provider 1: Google Books API (Best for Indian curriculum & engineering texts)
+      // 1. Check Google Books API
       try {
-        const gRes = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${cleanIsbn}`);
-        const gData = await gRes.json();
-        
-        if (gData.totalItems > 0 && gData.items[0]?.volumeInfo) {
-          const info = gData.items[0].volumeInfo;
-          if (info.title) {
-            document.getElementById("newBookTitle").value = info.title + (info.subtitle ? `: ${info.subtitle}` : "");
-            if (info.authors && info.authors.length > 0) {
-              document.getElementById("newBookAuthor").value = info.authors.join(", ");
-            }
-            badge.classList.remove("hidden");
-            showToast(`Auto-Resolved: ${info.title}`, "success");
+        const gUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
+        const gResponse = await fetch(gUrl);
+        if (gResponse.ok) {
+          const gData = await gResponse.json();
+          if (gData.totalItems > 0 && gData.items && gData.items[0]?.volumeInfo) {
+            const vol = gData.items[0].volumeInfo;
+            const fetchedTitle = vol.title + (vol.subtitle ? `: ${vol.subtitle}` : "");
+            const fetchedAuthor = vol.authors && vol.authors.length > 0 ? vol.authors.join(", ") : "Unknown Author";
+
+            titleInput.value = fetchedTitle;
+            authorInput.value = fetchedAuthor;
+
+            badge.className = "text-[10px] font-mono text-emerald-400";
+            badge.textContent = "✓ Verified via Google Books";
+            showToast(`Auto-Identified: "${fetchedTitle}"`, "success");
             return;
           }
         }
       } catch (err) {
-        console.warn("Google Books registry search failed, trying fallback...", err);
+        console.warn("Google Books registry timeout, attempting OpenLibrary...", err);
       }
 
-      // Provider 2: Open Library API (Global fallback)
+      // 2. Fallback: Open Library API
       try {
-        const oRes = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${cleanIsbn}&jscmd=data&format=json`);
-        const oData = await oRes.json();
-        const bookKey = `ISBN:${cleanIsbn}`;
+        const oUrl = `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&jscmd=data&format=json`;
+        const oResponse = await fetch(oUrl);
+        if (oResponse.ok) {
+          const oData = await oResponse.json();
+          const bookKey = `ISBN:${isbn}`;
+          if (oData[bookKey]) {
+            const b = oData[bookKey];
+            const fetchedTitle = b.title || "";
+            const fetchedAuthor = b.authors && b.authors.length > 0 ? b.authors.map(a => a.name).join(", ") : "Unknown Author";
 
-        if (oData[bookKey]?.title) {
-          const info = oData[bookKey];
-          document.getElementById("newBookTitle").value = info.title;
-          if (info.authors && info.authors.length > 0) {
-            document.getElementById("newBookAuthor").value = info.authors.map(a => a.name).join(", ");
+            titleInput.value = fetchedTitle;
+            authorInput.value = fetchedAuthor;
+
+            badge.className = "text-[10px] font-mono text-emerald-400";
+            badge.textContent = "✓ Verified via Open Library";
+            showToast(`Auto-Identified: "${fetchedTitle}"`, "success");
+            return;
           }
-          badge.classList.remove("hidden");
-          showToast(`Auto-Resolved: ${info.title}`, "success");
-          return;
         }
       } catch (err) {
-        console.warn("Open Library registry search failed.", err);
+        console.warn("Open Library registry failed.", err);
       }
 
-      // Fallback: When ISBN is not indexed in global registries
-      showToast("ISBN recognized, but book title is not indexed in online registries. Please type title manually.", "warning");
-      document.getElementById("newBookTitle").value = "";
-      document.getElementById("newBookTitle").focus();
+      // 3. Fallback when ISBN is valid but unlisted
+      badge.className = "text-[10px] font-mono text-amber-300";
+      badge.textContent = "⚠️ Unlisted ISBN - Type Title Below";
+      showToast("ISBN not listed in global database. Please type book title manually.", "warning");
+      titleInput.value = "";
+      titleInput.focus();
     }
 
-    function fetchMetadataByInput() {
+    function triggerManualLookup() {
       const code = document.getElementById("newBookBarcode").value.trim();
       if (code) {
-        resolveBookMetadata(code);
+        fetchBookByIsbn(code);
       } else {
-        showToast("Enter an ISBN number in the barcode field first.", "warning");
+        showToast("Scan a barcode or enter an ISBN number first.", "warning");
       }
     }
 
     // -------------------------------------------------------------
-    // BARCODE SCANNER INTEGRATION
+    // OPTICAL BARCODE SCANNER LOGIC
     // -------------------------------------------------------------
     function toggleBarcodeScanner() {
       const container = document.getElementById("scannerContainer");
@@ -886,7 +893,7 @@
 
     function startBarcodeScanner() {
       const status = document.getElementById("scannerStatus");
-      status.textContent = "Requesting camera permissions...";
+      status.textContent = "Accessing camera sensors...";
       
       html5QrScanner = new Html5Qrcode("reader");
       const config = { fps: 15, qrbox: { width: 280, height: 160 } };
@@ -895,17 +902,16 @@
         { facingMode: "environment" },
         config,
         async (decodedText) => {
-          // Success: Set barcode field
           const cleanCode = decodedText.replace(/[^0-9X]/gi, "");
           document.getElementById("newBookBarcode").value = cleanCode;
-          showToast(`Scanned Code: ${cleanCode}`, "info");
           toggleBarcodeScanner();
+          showToast(`Scanned Code: ${cleanCode}`, "info");
 
-          // Auto-trigger Multi-Registry Metadata Resolver
-          await resolveBookMetadata(cleanCode);
+          // Automatically fetch book title and author using the scanned ISBN
+          await fetchBookByIsbn(cleanCode);
         },
         (errorMessage) => {
-          status.textContent = "Scanning active... Align barcode in camera frame.";
+          status.textContent = "Point camera steadily at book barcode/ISBN.";
         }
       ).catch((err) => {
         status.textContent = "Camera access denied or unavailable. Enter details manually.";
@@ -944,7 +950,7 @@
       document.getElementById("newBookAuthor").value = "";
       document.getElementById("newBookBarcode").value = "";
       document.getElementById("newBookCount").value = "1";
-      document.getElementById("titleFetchBadge").classList.add("hidden");
+      document.getElementById("lookupStatusBadge").classList.add("hidden");
 
       renderFacultyDashboard();
       if (currentStudent) renderCatalog();
