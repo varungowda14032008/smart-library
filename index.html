@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Campus Library Desk - RV University</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- HTML5 QR/Barcode Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b131e; }
     .font-display { font-family: 'Space Grotesk', sans-serif; }
+    #reader video { border-radius: 1rem; width: 100% !important; }
     @media print {
       body * { visibility: hidden; }
       #printableCert, #printableCert * { visibility: visible; }
@@ -20,7 +23,7 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased">
 
-  <!-- TOP BRANDING NAVIGATION -->
+  <!-- TOP NAVIGATION HEADER -->
   <header class="px-6 py-3.5 border-b border-slate-800/90 bg-[#0e1724]/95 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
     <div class="flex items-center gap-3.5">
       <!-- RV University Emblem Badge -->
@@ -38,18 +41,18 @@
           <span class="text-[9px] text-[#c5a059] italic block font-serif tracking-wide">Go, change the world</span>
         </div>
       </div>
-      <span class="hidden md:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
-        Autonomous Circulation System
+      <span class="hidden md:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+        Campus Shelf Telemetry Desk
       </span>
     </div>
 
-    <!-- Active User & Terminal Trigger -->
+    <!-- Active User & Terminal Triggers -->
     <div class="flex items-center gap-3">
       <div id="currentUserBadge" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono">
         <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
       
-      <!-- MAIN SERVER DESK BUTTON: ONLY VISIBLE TO RVUM26CSE063 -->
+      <!-- MAIN SERVER TERMINAL BUTTON (RESTRICTED TO RVUM26CSE063) -->
       <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
         <span>⚡</span> Central Server Desk
       </button>
@@ -60,6 +63,7 @@
     </div>
   </header>
 
+  <!-- NOTIFICATION TOAST -->
   <div id="toastContainer" class="fixed top-16 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
   <!-- MAIN APP CONTAINER -->
@@ -138,13 +142,13 @@
       </div>
     </section>
 
-    <!-- VIEW 2: STUDENT PORTAL -->
+    <!-- VIEW 2: STUDENT PORTAL (VIEW-ONLY INVENTORY STATUS) -->
     <section id="studentView" class="hidden space-y-6">
 
-      <!-- Student Quota Status Bar -->
+      <!-- Student Profile Card -->
       <div class="bg-[#0e1724] border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-[#d4af37] uppercase tracking-wider block font-bold">Active Academic Session</span>
+          <span class="text-[10px] font-mono text-[#d4af37] uppercase tracking-wider block font-bold">Authenticated Student Session</span>
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
             <span id="studentName"></span>
             <span id="studentUsnBadge" class="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 font-mono text-indigo-400 font-semibold"></span>
@@ -154,34 +158,28 @@
 
         <div class="flex items-center gap-3">
           <div class="bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl text-center">
-            <span class="text-[10px] text-slate-400 uppercase font-bold block">Anti-Hoarding Quota</span>
-            <span id="quotaCount" class="text-lg font-bold font-mono text-emerald-400">0 / 2 Books</span>
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Circulation Policy</span>
+            <span class="text-sm font-bold font-mono text-indigo-300">Desk Issue Only</span>
           </div>
           <button onclick="openGraduationAudit()" class="px-4 py-2.5 rounded-xl bg-[#c5a059]/10 hover:bg-[#c5a059]/20 border border-[#c5a059]/40 text-xs font-bold text-[#d4af37] transition">
-            🎓 "NO DUES" Audit
+            🎓 Institutional "NO DUES" Audit
           </button>
         </div>
       </div>
 
-      <!-- Active Checkouts -->
-      <div id="activeCirculationSection" class="hidden space-y-3">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Your Active Borrowings (Autonomous 7-Day Timers)</h3>
-        <div id="activeCirculationList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
-
-      <!-- Real-Time Catalog -->
+      <!-- Real-Time Catalog (View-Only Stock Counts) -->
       <div class="space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
-            <h3 class="font-display text-lg font-bold text-white">Live Physical Shelf Catalog</h3>
-            <p class="text-xs text-slate-400">Autonomous count decrementing with instant shelf updates</p>
+            <h3 class="font-display text-lg font-bold text-white">Live Physical Shelf Availability</h3>
+            <p class="text-xs text-slate-400">Verify available shelf copies remotely before visiting the library desk</p>
           </div>
           <div class="flex items-center gap-2">
             <input type="text" id="catalogSearch" oninput="renderCatalog()" placeholder="Search title or author..." class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none" />
             <select id="catalogFilter" onchange="renderCatalog()" class="px-3 py-1.5 rounded-xl bg-[#0e1724] border border-slate-800 text-xs text-white focus:outline-none">
               <option value="all">All Copies</option>
-              <option value="available">Available Now</option>
-              <option value="queued">Waitlist Open</option>
+              <option value="available">Available on Shelf (>0)</option>
+              <option value="out">Depleted (0 Stock)</option>
             </select>
           </div>
         </div>
@@ -202,11 +200,12 @@
           <button onclick="toggleFacultyModal(false)" class="text-slate-400 hover:text-white text-sm">✕</button>
         </div>
 
+        <!-- Faculty Security Gate -->
         <div id="facultyAuthGate" class="p-8 max-w-sm mx-auto w-full space-y-4 my-auto">
           <div class="text-center space-y-1">
             <div class="text-3xl">🔐</div>
             <h4 class="font-bold text-white text-sm">Server Security Gate</h4>
-            <p class="text-xs text-slate-400">Host: <code class="text-[#d4af37] font-mono">RVUM26CSE063</code></p>
+            <p class="text-xs text-slate-400">Authenticated to Host: <code class="text-[#d4af37] font-mono">RVUM26CSE063</code></p>
           </div>
           <form onsubmit="event.preventDefault(); verifyFacultyLogin();" class="space-y-3">
             <div>
@@ -223,19 +222,20 @@
           </form>
         </div>
 
+        <!-- Faculty Admin Dashboard -->
         <div id="facultyDashboard" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-bold block">Active Circulations</span>
-              <span id="statActiveBorrows" class="text-xl font-bold font-mono text-indigo-400">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Titles</span>
+              <span id="statTotalBooks" class="text-xl font-bold font-mono text-indigo-400">0</span>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-bold block">Queued on Waitlists</span>
-              <span id="statPendingHolds" class="text-xl font-bold font-mono text-amber-400">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Physical Copies</span>
+              <span id="statTotalCopies" class="text-xl font-bold font-mono text-amber-400">0</span>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
-              <span class="text-[10px] text-slate-400 uppercase font-bold block">Overdue Titles</span>
-              <span id="statOverdues" class="text-xl font-bold font-mono text-rose-400">0</span>
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Available on Shelf</span>
+              <span id="statAvailableCopies" class="text-xl font-bold font-mono text-emerald-400">0</span>
             </div>
             <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Registered Cohort</span>
@@ -243,7 +243,57 @@
             </div>
           </div>
 
-          <!-- CREDENTIAL VAULT: ALL STUDENT PASSWORDS DISPLAYED DIRECTLY -->
+          <!-- BOOK INGESTION SECTION: BARCODE SCANNER + MANUAL FALLBACK -->
+          <div class="border border-slate-800 bg-slate-900/50 p-5 rounded-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+              <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Add Book to Library Inventory</h4>
+                <p class="text-[11px] text-slate-500">Scan barcode directly via camera or use manual input for damaged barcodes</p>
+              </div>
+              <button type="button" id="scannerToggleBtn" onclick="toggleBarcodeScanner()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition">
+                <span>📷</span> Scan Book Barcode
+              </button>
+            </div>
+
+            <!-- CAMERA SCANNER CONTAINER (COLLAPSIBLE) -->
+            <div id="scannerContainer" class="hidden space-y-3 p-4 bg-black/40 border border-indigo-500/30 rounded-2xl">
+              <div class="flex items-center justify-between text-xs text-indigo-300">
+                <span>Point camera steadily at book barcode / ISBN label</span>
+                <button type="button" onclick="toggleBarcodeScanner()" class="text-slate-400 hover:text-white">✕ Close Camera</button>
+              </div>
+              <div id="reader" class="overflow-hidden rounded-xl max-w-sm mx-auto"></div>
+              <p id="scannerStatus" class="text-[11px] font-mono text-center text-slate-400">Initializing camera feed...</p>
+            </div>
+
+            <!-- INGESTION FORM (AUTO-FILLED BY SCANNER OR ENTERED MANUALLY) -->
+            <form onsubmit="event.preventDefault(); addNewBook();" class="space-y-3">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Book Title *</label>
+                  <input type="text" id="newBookTitle" placeholder="e.g. Clean Code" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Author(s) *</label>
+                  <input type="text" id="newBookAuthor" placeholder="e.g. Robert C. Martin" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Scanned ISBN / Barcode</label>
+                  <input type="text" id="newBookBarcode" placeholder="Auto-fills from camera" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-indigo-300 focus:outline-none focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-400 mb-1">Total Copies *</label>
+                  <input type="number" id="newBookCount" placeholder="Copies" min="1" max="50" value="1" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+              </div>
+              <div class="flex justify-end pt-1">
+                <button type="submit" class="px-5 py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+                  Save Book to Database
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- CREDENTIAL VAULT: ALL 51 STUDENT PASSWORDS DISPLAYED DIRECTLY -->
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <div>
@@ -269,16 +319,6 @@
             </div>
           </div>
 
-          <!-- Ingestion Form -->
-          <div class="border border-slate-800 bg-slate-900/40 p-4 rounded-2xl space-y-3">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Add New Textbook Inventory</h4>
-            <form onsubmit="event.preventDefault(); addNewBook();" class="grid grid-cols-1 md:grid-cols-4 gap-2">
-              <input type="text" id="newBookTitle" placeholder="Title" required class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white" />
-              <input type="text" id="newBookAuthor" placeholder="Author" required class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white" />
-              <input type="number" id="newBookCount" placeholder="Copies" min="1" max="10" required class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white" />
-              <button type="submit" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs text-white">Add to Stock</button>
-            </form>
-          </div>
         </div>
       </div>
     </div>
@@ -316,7 +356,10 @@
             </div>
           </div>
 
-          <div id="certAuditResult" class="p-4 rounded-xl border"></div>
+          <div id="certAuditResult" class="p-4 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-950 text-xs">
+            <strong class="block text-sm font-bold text-emerald-800">STATUS: OFFICIAL "NO DUES" CLEARED ✓</strong>
+            <span>Candidate holds zero overdue monetary penalties and zero unreturned campus library assets. All institutional criteria satisfied.</span>
+          </div>
 
           <div class="pt-6 border-t border-dashed border-slate-400 flex justify-between items-end text-center text-[10px]">
             <div>
@@ -401,19 +444,20 @@
     ];
 
     const INITIAL_BOOKS = [
-      { id: "B1", title: "Design Thinking: Understanding How Designers Think and Work", author: "Nigel Cross", total: 4, available: 4, waitlist: [] },
-      { id: "B2", title: "Introduction to Algorithms (CLRS 4th Edition)", author: "Cormen, Leiserson, Rivest, Stein", total: 3, available: 3, waitlist: [] },
-      { id: "B3", title: "Computer Organization & Architecture (11th Ed)", author: "William Stallings", total: 3, available: 3, waitlist: [] },
-      { id: "B4", title: "Discrete Mathematics and Its Applications", author: "Kenneth H. Rosen", total: 4, available: 4, waitlist: [] },
-      { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", total: 2, available: 2, waitlist: [] }
+      { id: "B1", title: "Design Thinking: Understanding How Designers Think and Work", author: "Nigel Cross", barcode: "9781847886361", total: 4, available: 4 },
+      { id: "B2", title: "Introduction to Algorithms (CLRS 4th Edition)", author: "Cormen, Leiserson, Rivest, Stein", barcode: "9780262046305", total: 3, available: 2 },
+      { id: "B3", title: "Computer Organization & Architecture (11th Ed)", author: "William Stallings", barcode: "9780134997193", total: 3, available: 3 },
+      { id: "B4", title: "Discrete Mathematics and Its Applications", author: "Kenneth H. Rosen", barcode: "9781259676512", total: 4, available: 0 },
+      { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1 }
     ];
 
-    const STORAGE_KEY = "rvu_autonomous_desk_passwords_v1";
+    const STORAGE_KEY = "rvu_smart_library_scanned_v1";
+    const SESSION_KEY = "rvu_active_session_usn";
 
     function loadState() {
       const data = localStorage.getItem(STORAGE_KEY);
       if (!data) {
-        const state = { students: INITIAL_STUDENTS, books: INITIAL_BOOKS, circulations: [] };
+        const state = { students: INITIAL_STUDENTS, books: INITIAL_BOOKS };
         saveState(state);
         return state;
       }
@@ -427,6 +471,7 @@
     let state = loadState();
     let currentStudent = null;
     let pendingOtp = null;
+    let html5QrScanner = null;
 
     function showToast(message, type = "info") {
       const colors = {
@@ -542,6 +587,7 @@
 
       showToast("Account verified. Logging in...", "success");
       currentStudent = student;
+      localStorage.setItem(SESSION_KEY, currentStudent.usn);
       enterStudentPortal();
     }
 
@@ -564,6 +610,7 @@
       }
 
       currentStudent = student;
+      localStorage.setItem(SESSION_KEY, currentStudent.usn);
       enterStudentPortal();
     }
 
@@ -586,249 +633,73 @@
         mainServerBtn.classList.add("hidden");
       }
 
-      renderStudentDashboard();
+      renderCatalog();
     }
 
     function handleLogout() {
       currentStudent = null;
+      localStorage.removeItem(SESSION_KEY);
       document.getElementById("authView").classList.remove("hidden");
       document.getElementById("studentView").classList.add("hidden");
       document.getElementById("currentUserBadge").classList.add("hidden");
       document.getElementById("logoutBtn").classList.add("hidden");
       document.getElementById("mainServerBtn").classList.add("hidden");
       document.getElementById("loginPass").value = "";
+      showToast("Session ended. Logged out.", "info");
     }
 
     // -------------------------------------------------------------
-    // AUTONOMOUS COUNT & CIRCULATION ENGINE
+    // STUDENT VIEW: STRICT VIEW-ONLY CATALOG COUNTS
     // -------------------------------------------------------------
-    function renderStudentDashboard() {
-      if (!currentStudent) return;
-
-      const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
-      const totalActive = myBorrows.length;
-
-      const quotaElem = document.getElementById("quotaCount");
-      quotaElem.textContent = `${totalActive} / 2 Books`;
-      quotaElem.className = totalActive >= 2 ? "text-lg font-bold font-mono text-rose-400" : "text-lg font-bold font-mono text-emerald-400";
-
-      const circSection = document.getElementById("activeCirculationSection");
-      const circList = document.getElementById("activeCirculationList");
-      circList.innerHTML = "";
-
-      if (totalActive > 0) {
-        circSection.classList.remove("hidden");
-        myBorrows.forEach(b => {
-          const now = new Date();
-          const due = new Date(b.dueDate);
-          const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-          const isOverdue = diffDays < 0;
-          const isDay6 = diffDays === 1;
-
-          const card = document.createElement("div");
-          card.className = `p-4 bg-[#080e18] border ${isOverdue ? 'border-rose-500/50' : isDay6 ? 'border-amber-500/50' : 'border-indigo-500/30'} rounded-2xl space-y-3`;
-          card.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${isOverdue ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'}">
-                ${isOverdue ? `Overdue: Fine ₹${Math.abs(diffDays) * 5}` : `Active Loan: ${diffDays} Days Left`}
-              </span>
-              <span class="text-[11px] font-mono text-slate-400">Due: ${b.dueDate}</span>
-            </div>
-            <h4 class="font-bold text-sm text-white">${b.title}</h4>
-            ${isDay6 ? `<div class="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300">⚠️ Day 6 Warning: Title due tomorrow. Return or extend now.</div>` : ''}
-            <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-              <button onclick="requestExtension('${b.id}')" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-xs text-indigo-300">
-                +7 Days Renewal
-              </button>
-              <button onclick="autonomousSelfReturn('${b.id}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white transition">
-                Return Copy (Auto-Checkin)
-              </button>
-            </div>
-          `;
-          circList.appendChild(card);
-        });
-      } else {
-        circSection.classList.add("hidden");
-      }
-
-      renderCatalog();
-    }
-
     function renderCatalog() {
       const query = document.getElementById("catalogSearch").value.toLowerCase();
       const filter = document.getElementById("catalogFilter").value;
       const grid = document.getElementById("catalogGrid");
       grid.innerHTML = "";
 
-      const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
-      const quotaReached = myBorrows.length >= 2;
-
       state.books.forEach(b => {
-        if (query && !b.title.toLowerCase().includes(query) && !b.author.toLowerCase().includes(query)) return;
+        if (query && !b.title.toLowerCase().includes(query) && !b.author.toLowerCase().includes(query) && (!b.barcode || !b.barcode.includes(query))) return;
         if (filter === "available" && b.available === 0) return;
-        if (filter === "queued" && b.waitlist.length === 0) return;
+        if (filter === "out" && b.available > 0) return;
 
-        const isBorrowedByMe = myBorrows.some(c => c.bookId === b.id);
-        const myWaitlistPos = b.waitlist.indexOf(currentStudent.usn);
+        const borrowedCount = b.total - b.available;
+        const isDepleted = b.available === 0;
 
         const card = document.createElement("div");
-        card.className = "bg-[#0e1724] border border-slate-800 p-5 rounded-2xl flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
+        card.className = `bg-[#0e1724] border ${isDepleted ? 'border-rose-500/40' : 'border-slate-800'} p-5 rounded-2xl flex flex-col justify-between space-y-4 hover:border-slate-700 transition`;
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-mono font-bold ${b.available > 0 ? 'text-emerald-400' : 'text-rose-400'}">
-                ● ${b.available} / ${b.total} Available
+                ● ${b.available} Available on Shelf
               </span>
-              ${b.waitlist.length > 0 ? `<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono">Waitlist: ${b.waitlist.length}</span>` : ''}
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">
+                Total: ${b.total} Copies
+              </span>
             </div>
             <h4 class="font-bold text-sm text-white leading-snug">${b.title}</h4>
             <p class="text-xs text-slate-400 mt-1">Author: ${b.author}</p>
+            ${b.barcode ? `<p class="text-[11px] font-mono text-indigo-400/80 mt-1">ISBN: ${b.barcode}</p>` : ''}
           </div>
 
-          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-            ${isBorrowedByMe ? `
-              <span class="text-xs text-indigo-400 font-semibold">Currently Borrowed</span>
-            ` : myWaitlistPos !== -1 ? `
-              <span class="text-xs text-amber-400 font-mono font-semibold">Position #${myWaitlistPos + 1} in FIFO Queue</span>
-            ` : b.available > 0 ? `
-              <button onclick="autonomousSelfIssue('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] disabled:opacity-40 text-slate-950 font-bold text-xs transition">
-                ${quotaReached ? 'Quota Limit Reached (Max 2)' : 'Instant Autonomous Issue (-1 Count)'}
-              </button>
-            ` : `
-              <button onclick="joinWaitlist('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 disabled:opacity-40 text-indigo-300 font-bold text-xs transition">
-                Join FIFO Waitlist (0 Stock)
-              </button>
-            `}
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+            <span class="text-slate-400">Issued / On Loan:</span>
+            <span class="font-mono font-bold ${borrowedCount > 0 ? 'text-amber-400' : 'text-slate-500'}">
+              ${borrowedCount} Copies
+            </span>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    function autonomousSelfIssue(bookId) {
-      const book = state.books.find(b => b.id === bookId);
-      if (book.available <= 0) {
-        showToast("Physical shelf stock depleted. Please join FIFO queue.", "error");
-        return;
-      }
-
-      book.available -= 1;
-
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + 7);
-
-      state.circulations.push({
-        id: "C" + Date.now(),
-        bookId: book.id,
-        title: book.title,
-        usn: currentStudent.usn,
-        studentName: currentStudent.name,
-        issueDate: new Date().toISOString().split("T")[0],
-        dueDate: dueDate.toISOString().split("T")[0],
-        isReturned: false
-      });
-
-      saveState(state);
-      showToast(`Autonomous Checkout Confirmed! Shelf count decremented to ${book.available}.`, "success");
-      renderStudentDashboard();
-    }
-
-    function autonomousSelfReturn(circId) {
-      const circ = state.circulations.find(c => c.id === circId);
-      if (!circ) return;
-      circ.isReturned = true;
-
-      const book = state.books.find(b => b.id === circ.bookId);
-      if (book) {
-        if (book.waitlist.length > 0) {
-          const nextUsn = book.waitlist.shift();
-          const nextStudent = state.students.find(s => s.usn === nextUsn);
-          
-          const dueDate = new Date();
-          dueDate.setDate(dueDate.getDate() + 7);
-
-          state.circulations.push({
-            id: "C" + Date.now(),
-            bookId: book.id,
-            title: book.title,
-            usn: nextUsn,
-            studentName: nextStudent.name,
-            issueDate: new Date().toISOString().split("T")[0],
-            dueDate: dueDate.toISOString().split("T")[0],
-            isReturned: false
-          });
-
-          showToast(`Priority Lock: Returned copy automatically allocated to Waitlist Position #1 (${nextUsn}).`, "warning");
-        } else {
-          book.available += 1;
-          showToast(`Return complete. Shelf stock restored to ${book.available}.`, "success");
-        }
-      }
-
-      saveState(state);
-      renderStudentDashboard();
-    }
-
-    function joinWaitlist(bookId) {
-      const book = state.books.find(b => b.id === bookId);
-      if (!book.waitlist.includes(currentStudent.usn)) {
-        book.waitlist.push(currentStudent.usn);
-        saveState(state);
-        showToast(`Joined FIFO waitlist for "${book.title}". Position: #${book.waitlist.length}`, "success");
-        renderStudentDashboard();
-      }
-    }
-
-    function requestExtension(circId) {
-      const circ = state.circulations.find(c => c.id === circId);
-      const book = state.books.find(b => b.id === circ.bookId);
-
-      if (book && book.waitlist.length > 0) {
-        showToast("Cannot extend: Peers are queued on FIFO waitlist.", "error");
-        return;
-      }
-      const curDue = new Date(circ.dueDate);
-      curDue.setDate(curDue.getDate() + 7);
-      circ.dueDate = curDue.toISOString().split("T")[0];
-      saveState(state);
-      showToast("+7 Days autonomous renewal applied.", "success");
-      renderStudentDashboard();
-    }
-
     // -------------------------------------------------------------
     // NO DUES AUDIT
     // -------------------------------------------------------------
     function openGraduationAudit() {
-      const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
-      const now = new Date();
-      let totalFine = 0;
-
-      myBorrows.forEach(b => {
-        const due = new Date(b.dueDate);
-        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
-        if (diffDays < 0) totalFine += Math.abs(diffDays) * 5;
-      });
-
       document.getElementById("certName").textContent = currentStudent.name;
       document.getElementById("certUsn").textContent = currentStudent.usn;
       document.getElementById("certDate").textContent = new Date().toLocaleDateString("en-IN", { day: 'numeric', month: 'long', year: 'numeric' });
-
-      const resBox = document.getElementById("certAuditResult");
-      if (myBorrows.length === 0 && totalFine === 0) {
-        resBox.className = "p-4 rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-950 text-xs";
-        resBox.innerHTML = `
-          <strong class="block text-sm font-bold text-emerald-800">STATUS: OFFICIAL "NO DUES" CLEARED ✓</strong>
-          <span>The candidate holds zero unreturned university assets and has zero overdue monetary liability. All criteria satisfied.</span>
-        `;
-      } else {
-        resBox.className = "p-4 rounded-xl border border-rose-500 bg-rose-50 text-rose-950 text-xs";
-        resBox.innerHTML = `
-          <strong class="block text-sm font-bold text-rose-800">STATUS: CLEARANCE WITHHELD ✕</strong>
-          <span>Active Borrowings: <strong>${myBorrows.length} Title(s)</strong> | Overdue Fines: <strong>₹${totalFine}</strong></span>
-          <p class="mt-1 text-[11px] text-rose-700">Please return all active copies to enable clearance certificate.</p>
-        `;
-      }
-
       document.getElementById("auditModal").classList.remove("hidden");
     }
 
@@ -837,7 +708,7 @@
     }
 
     // -------------------------------------------------------------
-    // MAIN SERVER DESK (RVUM26CSE063 ONLY)
+    // FACULTY DESK TERMINAL (RVUM26CSE063 HOST ONLY)
     // -------------------------------------------------------------
     function openMainServerTerminal() {
       if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
@@ -848,6 +719,9 @@
     }
 
     function toggleFacultyModal(show) {
+      if (!show && html5QrScanner) {
+        stopBarcodeScanner();
+      }
       document.getElementById("facultyModal").classList.toggle("hidden", !show);
     }
 
@@ -865,17 +739,12 @@
     }
 
     function renderFacultyDashboard() {
-      const activeBorrows = state.circulations.filter(c => !c.isReturned);
-      const queuedTotal = state.books.reduce((acc, b) => acc + b.waitlist.length, 0);
-      let overdueCount = 0;
-      const now = new Date();
-      activeBorrows.forEach(b => {
-        if (new Date(b.dueDate) < now) overdueCount++;
-      });
+      const totalCopies = state.books.reduce((acc, b) => acc + b.total, 0);
+      const availableCopies = state.books.reduce((acc, b) => acc + b.available, 0);
 
-      document.getElementById("statActiveBorrows").textContent = activeBorrows.length;
-      document.getElementById("statPendingHolds").textContent = queuedTotal;
-      document.getElementById("statOverdues").textContent = overdueCount;
+      document.getElementById("statTotalBooks").textContent = state.books.length;
+      document.getElementById("statTotalCopies").textContent = totalCopies;
+      document.getElementById("statAvailableCopies").textContent = availableCopies;
 
       renderCredentialVault();
     }
@@ -919,28 +788,101 @@
       });
     }
 
+    // -------------------------------------------------------------
+    // BARCODE SCANNER INTEGRATION & MANUAL FALLBACK
+    // -------------------------------------------------------------
+    function toggleBarcodeScanner() {
+      const container = document.getElementById("scannerContainer");
+      if (container.classList.contains("hidden")) {
+        container.classList.remove("hidden");
+        startBarcodeScanner();
+      } else {
+        container.classList.add("hidden");
+        stopBarcodeScanner();
+      }
+    }
+
+    function startBarcodeScanner() {
+      const status = document.getElementById("scannerStatus");
+      status.textContent = "Requesting camera permissions...";
+      
+      html5QrScanner = new Html5Qrcode("reader");
+      const config = { fps: 10, qrbox: { width: 250, height: 160 } };
+
+      html5QrScanner.start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          // Success callback
+          document.getElementById("newBookBarcode").value = decodedText;
+          showToast(`Barcode Scanned: ${decodedText}`, "success");
+          
+          // Pre-populate title with barcode label if empty
+          if (!document.getElementById("newBookTitle").value) {
+            document.getElementById("newBookTitle").value = `Cataloged ISBN ${decodedText}`;
+          }
+          toggleBarcodeScanner();
+        },
+        (errorMessage) => {
+          status.textContent = "Scanning active... Align barcode in view.";
+        }
+      ).catch((err) => {
+        status.textContent = "Camera access denied or unavailable. Please use manual input below.";
+        showToast("Camera scanner unavailable. Enter book details manually.", "warning");
+      });
+    }
+
+    function stopBarcodeScanner() {
+      if (html5QrScanner) {
+        html5QrScanner.stop().then(() => {
+          html5QrScanner.clear();
+          html5QrScanner = null;
+        }).catch(() => {});
+      }
+    }
+
     function addNewBook() {
       const title = document.getElementById("newBookTitle").value.trim();
       const author = document.getElementById("newBookAuthor").value.trim();
+      const barcode = document.getElementById("newBookBarcode").value.trim();
       const count = parseInt(document.getElementById("newBookCount").value, 10);
 
       state.books.push({
         id: "B" + (state.books.length + 1),
         title: title,
         author: author,
+        barcode: barcode || "MANUAL-" + Date.now().toString().slice(-6),
         total: count,
-        available: count,
-        waitlist: []
+        available: count
       });
       saveState(state);
-      showToast(`Added "${title}" (${count} copies) to inventory.`, "success");
+      showToast(`Added "${title}" (${count} copies) to library catalog.`, "success");
+
+      // Reset form
       document.getElementById("newBookTitle").value = "";
       document.getElementById("newBookAuthor").value = "";
-      document.getElementById("newBookCount").value = "";
-      if (currentStudent) renderStudentDashboard();
+      document.getElementById("newBookBarcode").value = "";
+      document.getElementById("newBookCount").value = "1";
+
+      renderFacultyDashboard();
+      if (currentStudent) renderCatalog();
     }
 
+    // -------------------------------------------------------------
+    // INITIALIZATION & SESSION RESTORATION ON REFRESH
+    // -------------------------------------------------------------
     populateDropdowns();
+
+    const savedSessionUsn = localStorage.getItem(SESSION_KEY);
+    if (savedSessionUsn) {
+      const matched = state.students.find(s => s.usn === savedSessionUsn);
+      if (matched && matched.isConfigured) {
+        currentStudent = matched;
+        enterStudentPortal();
+      } else {
+        localStorage.removeItem(SESSION_KEY);
+      }
+    }
   </script>
 </body>
 </html>
