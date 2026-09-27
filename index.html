@@ -117,7 +117,7 @@
         <span>⚡</span> Central Server Desk
       </button>
 
-      <button id="logoutBtn" onclick="handleLogout()" class="hidden px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 text-xs font-semibold text-rose-300 transition">
+      <button id="logoutBtn" onclick="handleLogout()" class="hidden px-3.5 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 text-xs font-semibold text-rose-300 transition">
         Exit Desk
       </button>
     </div>
@@ -588,15 +588,10 @@
       { sl: 51, usn: "RVUM26CSE143", name: "VIKAS MAHADEV PATTAR", isConfigured: false, passHash: "", phone: "+91 98801 14351" }
     ];
 
-    const INITIAL_BOOKS = [
-      { id: "B1", title: "Design Thinking: Understanding How Designers Think and Work", author: "Nigel Cross", barcode: "9781847886361", total: 4, available: 4, waitlist: [] },
-      { id: "B2", title: "Introduction to Algorithms (CLRS 4th Edition)", author: "Cormen, Leiserson, Rivest, Stein", barcode: "9780262046305", total: 3, available: 2, waitlist: [] },
-      { id: "B3", title: "Computer Organization & Architecture (11th Ed)", author: "William Stallings", barcode: "9780134997193", total: 3, available: 3, waitlist: [] },
-      { id: "B4", title: "Discrete Mathematics and Its Applications", author: "Kenneth H. Rosen", barcode: "9781259676512", total: 4, available: 0, waitlist: ["RVUM26CSE122"] },
-      { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1, waitlist: [] }
-    ];
+    // ALL 5 SAMPLE BOOKS REMOVED - EMPTY CATALOG READY FOR LIVE INGESTION
+    const INITIAL_BOOKS = [];
 
-    const PERMANENT_STORAGE_KEY = "rvu_secure_vault_prod_v5";
+    const PERMANENT_STORAGE_KEY = "rvu_secure_vault_prod_v6";
     const SESSION_KEY = "rvu_active_session_token";
 
     function loadState() {
@@ -909,6 +904,16 @@
 
       const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
       const quotaReached = myBorrows.length >= 2;
+
+      if (state.books.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-500 bg-[#162734]/50 border border-dashed border-[#263e50] rounded-2xl">
+            <p class="text-sm font-medium">No books cataloged in the library desk yet.</p>
+            <p class="text-xs text-slate-600 mt-1">Authorized faculty can use the Central Server Desk to ingest textbooks.</p>
+          </div>
+        `;
+        return;
+      }
 
       state.books.forEach(b => {
         if (query && !b.title.toLowerCase().includes(query) && !b.author.toLowerCase().includes(query) && (!b.barcode || !b.barcode.includes(query))) return;
