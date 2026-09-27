@@ -45,14 +45,17 @@
       </div>
     </div>
 
-    <!-- Active User & Switchers -->
+    <!-- Active User & Main Server Trigger -->
     <div class="flex items-center gap-3">
       <div id="currentUserBadge" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-mono">
-        <span class="text-slate-400" id="badgeLabel">Student:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
+        <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
-      <button onclick="toggleFacultyModal(true)" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 transition">
-        Faculty Terminal
+      
+      <!-- MAIN SERVER TERMINAL BUTTON (RESTRICTED TO RVUM26CSE063 ONLY) -->
+      <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
+        <span>⚡</span> Main Server Desk
       </button>
+
       <button id="logoutBtn" onclick="handleLogout()" class="hidden px-3 py-1.5 rounded-xl bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 text-xs font-semibold text-rose-300 transition">
         Exit
       </button>
@@ -82,7 +85,7 @@
             Login
           </button>
           <button id="tabSetup" onclick="setAuthTab('setup')" class="flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition">
-            First-Time Setup (OTP)
+            First-Time Setup (Phone OTP)
           </button>
         </div>
 
@@ -106,17 +109,17 @@
           </button>
         </form>
 
-        <!-- FIRST-TIME SETUP FORM -->
+        <!-- FIRST-TIME SETUP FORM (PHONE NUMBER OTP) -->
         <form id="formSetup" onsubmit="event.preventDefault();" class="space-y-4 hidden">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Select Your USN</label>
-            <select id="setupUsn" onchange="updateSetupEmail()" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500">
+            <select id="setupUsn" onchange="updateSetupPhone()" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500">
               <!-- Dynamically populated with 51 students -->
             </select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Registered Student Email</label>
-            <input type="text" id="setupEmail" disabled class="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-400" />
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Phone Number</label>
+            <input type="text" id="setupPhone" placeholder="+91 98801 XXXXX" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-white focus:outline-none focus:border-indigo-500" />
           </div>
           
           <div id="otpSection" class="space-y-3">
@@ -125,7 +128,7 @@
             </button>
             <div id="otpInputBlock" class="hidden space-y-3 pt-2">
               <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1">4-Digit Verification Code</label>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">4-Digit SMS Verification Code</label>
                 <div class="flex gap-2">
                   <input type="text" id="enteredOtp" maxlength="4" placeholder="0000" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-center font-mono text-base tracking-widest text-emerald-400 focus:outline-none focus:border-indigo-500" />
                   <button type="button" onclick="quickFillOtp()" class="px-3 py-2 rounded-xl bg-slate-800 text-[10px] text-slate-300 hover:text-white whitespace-nowrap">
@@ -158,7 +161,7 @@
             <span id="studentName"></span>
             <span id="studentUsnBadge" class="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 font-mono text-indigo-400 font-semibold"></span>
           </h2>
-          <p class="text-xs text-slate-400 mt-0.5" id="studentEmailDisplay"></p>
+          <p class="text-xs text-slate-400 mt-0.5" id="studentPhoneDisplay"></p>
         </div>
 
         <div class="flex items-center gap-3">
@@ -200,15 +203,15 @@
 
     </section>
 
-    <!-- FACULTY MODAL (RVUM26CSE063 DESK TERMINAL) -->
+    <!-- FACULTY MODAL (RVUM26CSE063 DESK TERMINAL - PIN LOCKED) -->
     <div id="facultyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-[#0e1724] border border-slate-800 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="bg-[#0e1724] border border-[#c5a059]/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
         
         <!-- Faculty Header -->
         <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-            <h3 class="font-display font-bold text-white text-base">Faculty Main Server Terminal (`RVUM26CSE063`)</h3>
+            <h3 class="font-display font-bold text-white text-base">Central Main Server Terminal (`RVUM26CSE063`)</h3>
           </div>
           <button onclick="toggleFacultyModal(false)" class="text-slate-400 hover:text-white text-sm">✕</button>
         </div>
@@ -218,19 +221,19 @@
           <div class="text-center space-y-1">
             <div class="text-3xl">🔐</div>
             <h4 class="font-bold text-white text-sm">Main Server Access Gate</h4>
-            <p class="text-xs text-slate-400">Authorized personnel only</p>
+            <p class="text-xs text-slate-400">Authenticated to Host: <code class="text-[#d4af37] font-mono">RVUM26CSE063</code></p>
           </div>
           <form onsubmit="event.preventDefault(); verifyFacultyLogin();" class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Staff ID</label>
-              <input type="text" id="facultyIdInput" placeholder="Staff Username" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Server Host ID</label>
+              <input type="text" id="facultyIdInput" value="Varun" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Security PIN</label>
-              <input type="password" id="facultyPinInput" placeholder="PIN" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Master Security PIN</label>
+              <input type="password" id="facultyPinInput" placeholder="Enter PIN (1403)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
             </div>
             <button type="submit" class="w-full py-2.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
-              Unlock Desk Controls
+              Unlock Desk Terminal
             </button>
           </form>
         </div>
@@ -283,6 +286,7 @@
                     <th class="p-2.5">SL</th>
                     <th class="p-2.5">USN</th>
                     <th class="p-2.5">Student Name</th>
+                    <th class="p-2.5">Mobile</th>
                     <th class="p-2.5">Status</th>
                     <th class="p-2.5 text-right">Credentials</th>
                   </tr>
@@ -367,63 +371,63 @@
 
   </main>
 
-  <!-- JAVASCRIPT LOGIC & 51-STUDENT DATABASE -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
     // -------------------------------------------------------------
     // 1. DATABASE INITIALIZATION: 51 REGISTERED STUDENTS (PDF ROSTER)
     // -------------------------------------------------------------
     const INITIAL_STUDENTS = [
-      { sl: 1, usn: "RVUM26CSE122", name: "NAVEEN KUMAR B", email: "naveenkumarbbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12201" },
-      { sl: 2, usn: "RVUM26CSE114", name: "NIKHIL", email: "nikhilbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 11402" },
-      { sl: 3, usn: "RVUM26CSE104", name: "PRAGATI AMAR GARUDKAR", email: "pragatiamargarudkarbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 10403" },
-      { sl: 4, usn: "RVUM26CSE103", name: "SONAM PANDEY", email: "sonampandeybtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 10304" },
-      { sl: 5, usn: "RVUM26CSE016", name: "ULLAS U", email: "ullasubtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 01605" },
-      { sl: 6, usn: "RVUM26CSE012", name: "VAAGESH CHANDRA VALLAMKONDA", email: "vaageshcvbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 01206" },
-      { sl: 7, usn: "RVUM26CSE063", name: "VARUN GOWDA UN", email: "varungowdaunbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 06307" },
-      { sl: 8, usn: "RVUM26CSE070", name: "VARUN RM", email: "Varunrmbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 07008" },
-      { sl: 9, usn: "RVUM26CSE039", name: "VEDANTH G", email: "vedanthgbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 03909" },
-      { sl: 10, usn: "RVUM26CSE090", name: "VEJENDLA RISHIV", email: "vejendlarishivbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 09010" },
-      { sl: 11, usn: "RVUM26CSE033", name: "VIVAAN NAYAK", email: "vivanmbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 03311" },
-      { sl: 12, usn: "RVUM26CSE047", name: "VIVIN PREMSAGAR K", email: "vivinpremsagarkbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 04712" },
-      { sl: 13, usn: "RVUM26CSE031", name: "YAJAT VINAY GHULE", email: "yajathvinaygbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 03113" },
-      { sl: 14, usn: "RVUM26CSE179", name: "YAKSHA M", email: "yakshambtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 17914" },
-      { sl: 15, usn: "RVUM26CSE135", name: "A CHARAN TEJ", email: "acharantejbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 13515" },
-      { sl: 16, usn: "RVUM26CSE170", name: "AMRUTH C N", email: "amruthcnbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 17016" },
-      { sl: 17, usn: "RVUM26CSE116", name: "ANANYA RANGAPPA LANGATI", email: "ananyarangappalangatibtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 11617" },
-      { sl: 18, usn: "RVUM26CSE120", name: "BENAKA S", email: "benakasbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12018" },
-      { sl: 19, usn: "RVUM26CSE133", name: "DARSHAN M PAWAR", email: "darshanpawarbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 13319" },
-      { sl: 20, usn: "RVUM26CSE142", name: "DEEKSHA P", email: "deekshapbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 14220" },
-      { sl: 21, usn: "RVUM26CSE136", name: "DHAWAN D GOWDA", email: "dhawandgowdabtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 13621" },
-      { sl: 22, usn: "RVUM26CSE174", name: "DHIREN M", email: "dhirenmbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 17422" },
-      { sl: 23, usn: "RVUM26CSE124", name: "DHRUV R P", email: "dhruvrpbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12423" },
-      { sl: 24, usn: "RVUM26CSE127", name: "HAMSINI M D", email: "hamsinimdbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12724" },
-      { sl: 25, usn: "RVUM26CSE126", name: "HEMANTH KUMAR R", email: "hemanthkumarrbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12625" },
-      { sl: 26, usn: "RVUM26CSE176", name: "JAYANTH C S", email: "jayanthcsbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 17626" },
-      { sl: 27, usn: "RVUM26CSE165", name: "JAYANTH.V", email: "jayanthvbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 16527" },
-      { sl: 28, usn: "RVUM26CSE159", name: "JITHYA SHREE C", email: "jithyashreecbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 15928" },
-      { sl: 29, usn: "RVUM26CSE111", name: "KKHUSHAL KESHAV", email: "kkhushalkeshavbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 11129" },
-      { sl: 30, usn: "RVUM26CSE141", name: "MALLIKARJUNA", email: "mallikarjunabtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 14130" },
-      { sl: 31, usn: "RVUM26CSE125", name: "MANOJ L", email: "manojlbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12531" },
-      { sl: 32, usn: "RVUM26CSE112", name: "MANYATHA S", email: "manyathasbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 11232" },
-      { sl: 33, usn: "RVUM26CSE128", name: "NESARA M", email: "nesarambtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12833" },
-      { sl: 34, usn: "RVUM26CSE109", name: "NIVEDITHA M", email: "nivedithambtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 10934" },
-      { sl: 35, usn: "RVUM26CSE131", name: "POOJA S", email: "poojasbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 13135" },
-      { sl: 36, usn: "RVUM26CSE140", name: "POORVI", email: "poorvibtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 14036" },
-      { sl: 37, usn: "RVUM26CSE138", name: "PRAJWAL PRABHAKAR KAPASHI", email: "prajwalprabhakarbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 13837" },
-      { sl: 38, usn: "RVUM26CSE144", name: "RAHUL S", email: "rahulsbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 14438" },
-      { sl: 39, usn: "RVUM26CSE119", name: "ROOPESH K L", email: "roopeshklbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 11939" },
-      { sl: 40, usn: "RVUM26CSE130", name: "RUCHITHA R GOWDA", email: "ruchithargowdabtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 13040" },
-      { sl: 41, usn: "RVUM26CSE163", name: "SAI RAKSHITH", email: "sairakshithbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 16341" },
-      { sl: 42, usn: "RVUM26CSE113", name: "SAIPRASAD", email: "saiprasadbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 11342" },
-      { sl: 43, usn: "RVUM26CSE129", name: "SAMARTH S SHETTY", email: "samarthsshettybtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12943" },
-      { sl: 44, usn: "RVUM26CSE095", name: "SANATAWHEED MAHAMMAD YUSUF BETAGERI", email: "sanatawheedmahammadyusufbetageribtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 09544" },
-      { sl: 45, usn: "RVUM26CSE123", name: "SHISHIR D", email: "shishirdbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 12345" },
-      { sl: 46, usn: "RVUM26CSE132", name: "SHUDANSHU BORDOLOI", email: "shudanshubordoloibtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 13246" },
-      { sl: 47, usn: "RVUM26CSE171", name: "SUDHARSAN SRINIVASAN", email: "sudarshansbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 17147" },
-      { sl: 48, usn: "RVUM26CSE115", name: "SUKANYA", email: "sukanyabtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 11548" },
-      { sl: 49, usn: "RVUM26CSE177", name: "SURPARAJU GNANA RUPINI", email: "surparajugnanarupinibtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 17749" },
-      { sl: 50, usn: "RVUM26CSE172", name: "TANAY R MAAKAM", email: "tanayrmaakambtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 17250" },
-      { sl: 51, usn: "RVUM26CSE143", name: "VIKAS MAHADEV PATTAR", email: "vikasmahadevpattarbtechcse26@mys.rvu.edu.in", isConfigured: false, password: "", phone: "+91 98801 14351" }
+      { sl: 1, usn: "RVUM26CSE122", name: "NAVEEN KUMAR B", isConfigured: false, password: "", phone: "+91 98801 12201" },
+      { sl: 2, usn: "RVUM26CSE114", name: "NIKHIL", isConfigured: false, password: "", phone: "+91 98801 11402" },
+      { sl: 3, usn: "RVUM26CSE104", name: "PRAGATI AMAR GARUDKAR", isConfigured: false, password: "", phone: "+91 98801 10403" },
+      { sl: 4, usn: "RVUM26CSE103", name: "SONAM PANDEY", isConfigured: false, password: "", phone: "+91 98801 10304" },
+      { sl: 5, usn: "RVUM26CSE016", name: "ULLAS U", isConfigured: false, password: "", phone: "+91 98801 01605" },
+      { sl: 6, usn: "RVUM26CSE012", name: "VAAGESH CHANDRA VALLAMKONDA", isConfigured: false, password: "", phone: "+91 98801 01206" },
+      { sl: 7, usn: "RVUM26CSE063", name: "VARUN GOWDA UN", isConfigured: false, password: "", phone: "+91 98801 06307" },
+      { sl: 8, usn: "RVUM26CSE070", name: "VARUN RM", isConfigured: false, password: "", phone: "+91 98801 07008" },
+      { sl: 9, usn: "RVUM26CSE039", name: "VEDANTH G", isConfigured: false, password: "", phone: "+91 98801 03909" },
+      { sl: 10, usn: "RVUM26CSE090", name: "VEJENDLA RISHIV", isConfigured: false, password: "", phone: "+91 98801 09010" },
+      { sl: 11, usn: "RVUM26CSE033", name: "VIVAAN NAYAK", isConfigured: false, password: "", phone: "+91 98801 03311" },
+      { sl: 12, usn: "RVUM26CSE047", name: "VIVIN PREMSAGAR K", isConfigured: false, password: "", phone: "+91 98801 04712" },
+      { sl: 13, usn: "RVUM26CSE031", name: "YAJAT VINAY GHULE", isConfigured: false, password: "", phone: "+91 98801 03113" },
+      { sl: 14, usn: "RVUM26CSE179", name: "YAKSHA M", isConfigured: false, password: "", phone: "+91 98801 17914" },
+      { sl: 15, usn: "RVUM26CSE135", name: "A CHARAN TEJ", isConfigured: false, password: "", phone: "+91 98801 13515" },
+      { sl: 16, usn: "RVUM26CSE170", name: "AMRUTH C N", isConfigured: false, password: "", phone: "+91 98801 17016" },
+      { sl: 17, usn: "RVUM26CSE116", name: "ANANYA RANGAPPA LANGATI", isConfigured: false, password: "", phone: "+91 98801 11617" },
+      { sl: 18, usn: "RVUM26CSE120", name: "BENAKA S", isConfigured: false, password: "", phone: "+91 98801 12018" },
+      { sl: 19, usn: "RVUM26CSE133", name: "DARSHAN M PAWAR", isConfigured: false, password: "", phone: "+91 98801 13319" },
+      { sl: 20, usn: "RVUM26CSE142", name: "DEEKSHA P", isConfigured: false, password: "", phone: "+91 98801 14220" },
+      { sl: 21, usn: "RVUM26CSE136", name: "DHAWAN D GOWDA", isConfigured: false, password: "", phone: "+91 98801 13621" },
+      { sl: 22, usn: "RVUM26CSE174", name: "DHIREN M", isConfigured: false, password: "", phone: "+91 98801 17422" },
+      { sl: 23, usn: "RVUM26CSE124", name: "DHRUV R P", isConfigured: false, password: "", phone: "+91 98801 12423" },
+      { sl: 24, usn: "RVUM26CSE127", name: "HAMSINI M D", isConfigured: false, password: "", phone: "+91 98801 12724" },
+      { sl: 25, usn: "RVUM26CSE126", name: "HEMANTH KUMAR R", isConfigured: false, password: "", phone: "+91 98801 12625" },
+      { sl: 26, usn: "RVUM26CSE176", name: "JAYANTH C S", isConfigured: false, password: "", phone: "+91 98801 17626" },
+      { sl: 27, usn: "RVUM26CSE165", name: "JAYANTH.V", isConfigured: false, password: "", phone: "+91 98801 16527" },
+      { sl: 28, usn: "RVUM26CSE159", name: "JITHYA SHREE C", isConfigured: false, password: "", phone: "+91 98801 15928" },
+      { sl: 29, usn: "RVUM26CSE111", name: "KKHUSHAL KESHAV", isConfigured: false, password: "", phone: "+91 98801 11129" },
+      { sl: 30, usn: "RVUM26CSE141", name: "MALLIKARJUNA", isConfigured: false, password: "", phone: "+91 98801 14130" },
+      { sl: 31, usn: "RVUM26CSE125", name: "MANOJ L", isConfigured: false, password: "", phone: "+91 98801 12531" },
+      { sl: 32, usn: "RVUM26CSE112", name: "MANYATHA S", isConfigured: false, password: "", phone: "+91 98801 11232" },
+      { sl: 33, usn: "RVUM26CSE128", name: "NESARA M", isConfigured: false, password: "", phone: "+91 98801 12833" },
+      { sl: 34, usn: "RVUM26CSE109", name: "NIVEDITHA M", isConfigured: false, password: "", phone: "+91 98801 10934" },
+      { sl: 35, usn: "RVUM26CSE131", name: "POOJA S", isConfigured: false, password: "", phone: "+91 98801 13135" },
+      { sl: 36, usn: "RVUM26CSE140", name: "POORVI", isConfigured: false, password: "", phone: "+91 98801 14036" },
+      { sl: 37, usn: "RVUM26CSE138", name: "PRAJWAL PRABHAKAR KAPASHI", isConfigured: false, password: "", phone: "+91 98801 13837" },
+      { sl: 38, usn: "RVUM26CSE144", name: "RAHUL S", isConfigured: false, password: "", phone: "+91 98801 14438" },
+      { sl: 39, usn: "RVUM26CSE119", name: "ROOPESH K L", isConfigured: false, password: "", phone: "+91 98801 11939" },
+      { sl: 40, usn: "RVUM26CSE130", name: "RUCHITHA R GOWDA", isConfigured: false, password: "", phone: "+91 98801 13040" },
+      { sl: 41, usn: "RVUM26CSE163", name: "SAI RAKSHITH", isConfigured: false, password: "", phone: "+91 98801 16341" },
+      { sl: 42, usn: "RVUM26CSE113", name: "SAIPRASAD", isConfigured: false, password: "", phone: "+91 98801 11342" },
+      { sl: 43, usn: "RVUM26CSE129", name: "SAMARTH S SHETTY", isConfigured: false, password: "", phone: "+91 98801 12943" },
+      { sl: 44, usn: "RVUM26CSE095", name: "SANATAWHEED MAHAMMAD YUSUF BETAGERI", isConfigured: false, password: "", phone: "+91 98801 09544" },
+      { sl: 45, usn: "RVUM26CSE123", name: "SHISHIR D", isConfigured: false, password: "", phone: "+91 98801 12345" },
+      { sl: 46, usn: "RVUM26CSE132", name: "SHUDANSHU BORDOLOI", isConfigured: false, password: "", phone: "+91 98801 13246" },
+      { sl: 47, usn: "RVUM26CSE171", name: "SUDHARSAN SRINIVASAN", isConfigured: false, password: "", phone: "+91 98801 17147" },
+      { sl: 48, usn: "RVUM26CSE115", name: "SUKANYA", isConfigured: false, password: "", phone: "+91 98801 11548" },
+      { sl: 49, usn: "RVUM26CSE177", name: "SURPARAJU GNANA RUPINI", isConfigured: false, password: "", phone: "+91 98801 17749" },
+      { sl: 50, usn: "RVUM26CSE172", name: "TANAY R MAAKAM", isConfigured: false, password: "", phone: "+91 98801 17250" },
+      { sl: 51, usn: "RVUM26CSE143", name: "VIKAS MAHADEV PATTAR", isConfigured: false, password: "", phone: "+91 98801 14351" }
     ];
 
     const INITIAL_BOOKS = [
@@ -434,7 +438,7 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", total: 2, available: 2, waitlist: [] }
     ];
 
-    const STORAGE_KEY = "rvu_smart_library_v51";
+    const STORAGE_KEY = "rvu_smart_library_v51_main_server";
 
     function loadState() {
       const data = localStorage.getItem(STORAGE_KEY);
@@ -484,7 +488,7 @@
     }
 
     // -------------------------------------------------------------
-    // 3. AUTHENTICATION & ONBOARDING (51 STUDENTS)
+    // 3. AUTHENTICATION & PHONE ONBOARDING (51 STUDENTS)
     // -------------------------------------------------------------
     function populateDropdowns() {
       const loginSelect = document.getElementById("loginUsn");
@@ -503,14 +507,14 @@
         opt2.textContent = `${s.usn} — ${s.name}`;
         setupSelect.appendChild(opt2);
       });
-      updateSetupEmail();
+      updateSetupPhone();
     }
 
-    function updateSetupEmail() {
+    function updateSetupPhone() {
       const selectedUsn = document.getElementById("setupUsn").value;
       const student = state.students.find(s => s.usn === selectedUsn);
       if (student) {
-        document.getElementById("setupEmail").value = student.email;
+        document.getElementById("setupPhone").value = student.phone;
       }
     }
 
@@ -535,13 +539,24 @@
 
     function generateSimulatedOtp() {
       const usn = document.getElementById("setupUsn").value;
+      const phoneInput = document.getElementById("setupPhone").value.trim();
       const student = state.students.find(s => s.usn === usn);
+
+      if (!phoneInput || phoneInput.length < 8) {
+        showToast("Please enter a valid mobile phone number.", "warning");
+        return;
+      }
+
       if (student.isConfigured) {
         showToast("Account already configured. Please Sign In directly.", "warning");
         setAuthTab("login");
         document.getElementById("loginUsn").value = usn;
         return;
       }
+
+      student.phone = phoneInput;
+      saveState(state);
+
       pendingOtp = Math.floor(1000 + Math.random() * 9000).toString();
       document.getElementById("otpInputBlock").classList.remove("hidden");
       showToast(`SMS to ${student.phone}: Your Verification OTP is ${pendingOtp}`, "info");
@@ -583,10 +598,10 @@
       const student = state.students.find(s => s.usn === usn);
 
       if (!student.isConfigured) {
-        showToast("First-time setup required. Redirecting to OTP onboarding...", "warning");
+        showToast("First-time setup required. Redirecting to Phone OTP onboarding...", "warning");
         setAuthTab("setup");
         document.getElementById("setupUsn").value = usn;
-        updateSetupEmail();
+        updateSetupPhone();
         return;
       }
 
@@ -609,7 +624,16 @@
 
       document.getElementById("studentName").textContent = currentStudent.name;
       document.getElementById("studentUsnBadge").textContent = currentStudent.usn;
-      document.getElementById("studentEmailDisplay").textContent = currentStudent.email;
+      document.getElementById("studentPhoneDisplay").textContent = `Phone: ${currentStudent.phone}`;
+
+      // MAIN SERVER ACCESS CHECK: ONLY DISPLAY FOR RVUM26CSE063
+      const mainServerBtn = document.getElementById("mainServerBtn");
+      if (currentStudent.usn === "RVUM26CSE063") {
+        mainServerBtn.classList.remove("hidden");
+        showToast("Main Server Administrator Authenticated (RVUM26CSE063)", "success");
+      } else {
+        mainServerBtn.classList.add("hidden");
+      }
 
       renderStudentDashboard();
     }
@@ -620,26 +644,60 @@
       document.getElementById("studentView").classList.add("hidden");
       document.getElementById("currentUserBadge").classList.add("hidden");
       document.getElementById("logoutBtn").classList.add("hidden");
+      document.getElementById("mainServerBtn").classList.add("hidden");
       document.getElementById("loginPass").value = "";
     }
 
     // -------------------------------------------------------------
-    // 4. STUDENT DASHBOARD: QUOTAS, CIRCULATION & CATALOG
+    // 4. MAIN SERVER DESK SECURITY GATEKEEPER (`RVUM26CSE063`)
+    // -------------------------------------------------------------
+    function openMainServerTerminal() {
+      if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
+        showToast("ACCESS DENIED: Faculty Terminal is restricted exclusively to Main Server (RVUM26CSE063).", "error");
+        return;
+      }
+      toggleFacultyModal(true);
+    }
+
+    function toggleFacultyModal(show) {
+      if (show && (!currentStudent || currentStudent.usn !== "RVUM26CSE063")) {
+        showToast("Access Denied: Main Server authority required.", "error");
+        return;
+      }
+      document.getElementById("facultyModal").classList.toggle("hidden", !show);
+    }
+
+    function verifyFacultyLogin() {
+      if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
+        showToast("Unauthorized Host Machine.", "error");
+        return;
+      }
+      const id = document.getElementById("facultyIdInput").value.trim();
+      const pin = document.getElementById("facultyPinInput").value.trim();
+
+      if (id === "Varun" && pin === "1403") {
+        document.getElementById("facultyAuthGate").classList.add("hidden");
+        document.getElementById("facultyDashboard").classList.remove("hidden");
+        renderFacultyDashboard();
+      } else {
+        showToast("Invalid Staff ID or Master Security PIN.", "error");
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 5. STUDENT DASHBOARD: QUOTAS, CIRCULATION & CATALOG
     // -------------------------------------------------------------
     function renderStudentDashboard() {
       if (!currentStudent) return;
 
-      // Active Borrows & Pending Holds
       const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
       const myHolds = state.holds.filter(h => h.usn === currentStudent.usn && h.status === "pending");
       const totalActive = myBorrows.length + myHolds.length;
 
-      // Anti-Hoarding Quota Check
       const quotaElem = document.getElementById("quotaCount");
       quotaElem.textContent = `${totalActive} / 2 Books`;
       quotaElem.className = totalActive >= 2 ? "text-lg font-bold font-mono text-rose-400" : "text-lg font-bold font-mono text-emerald-400";
 
-      // Render Active Borrows Card
       const circSection = document.getElementById("activeCirculationSection");
       const circList = document.getElementById("activeCirculationList");
       circList.innerHTML = "";
@@ -812,21 +870,18 @@
     }
 
     // -------------------------------------------------------------
-    // 5. INSTITUTIONAL "NO DUES" AUDIT GENERATOR
+    // 6. INSTITUTIONAL "NO DUES" AUDIT GENERATOR
     // -------------------------------------------------------------
     function openGraduationAudit() {
       const myBorrows = state.circulations.filter(c => c.usn === currentStudent.usn && !c.isReturned);
       const now = new Date();
       let totalFine = 0;
-      let overdueTitles = [];
 
       myBorrows.forEach(b => {
         const due = new Date(b.dueDate);
         const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
         if (diffDays < 0) {
-          const fine = Math.abs(diffDays) * 5;
-          totalFine += fine;
-          overdueTitles.push(`${b.title} (Fine: ₹${fine})`);
+          totalFine += Math.abs(diffDays) * 5;
         }
       });
 
@@ -858,27 +913,9 @@
     }
 
     // -------------------------------------------------------------
-    // 6. FACULTY MAIN SERVER DESK (`RVUM26CSE063`)
+    // 7. FACULTY MAIN SERVER DASHBOARD EXECUTION
     // -------------------------------------------------------------
-    function toggleFacultyModal(show) {
-      document.getElementById("facultyModal").classList.toggle("hidden", !show);
-    }
-
-    function verifyFacultyLogin() {
-      const id = document.getElementById("facultyIdInput").value.trim();
-      const pin = document.getElementById("facultyPinInput").value.trim();
-
-      if (id === "Varun" && pin === "1403") {
-        document.getElementById("facultyAuthGate").classList.add("hidden");
-        document.getElementById("facultyDashboard").classList.remove("hidden");
-        renderFacultyDashboard();
-      } else {
-        showToast("Invalid Staff ID or Security PIN.", "error");
-      }
-    }
-
     function renderFacultyDashboard() {
-      // Metrics
       const activeBorrows = state.circulations.filter(c => !c.isReturned);
       const pendingHolds = state.holds.filter(h => h.status === "pending");
       let overdueCount = 0;
@@ -891,7 +928,6 @@
       document.getElementById("statPendingHolds").textContent = pendingHolds.length;
       document.getElementById("statOverdues").textContent = overdueCount;
 
-      // Pending Holds List (1-Click Physical Handover)
       const holdContainer = document.getElementById("facultyHoldList");
       holdContainer.innerHTML = "";
       if (pendingHolds.length === 0) {
@@ -913,7 +949,6 @@
         });
       }
 
-      // Checked Out Titles & Return Handler
       const circContainer = document.getElementById("facultyActiveCirculationList");
       circContainer.innerHTML = "";
       if (activeBorrows.length === 0) {
@@ -971,7 +1006,6 @@
 
       const book = state.books.find(b => b.id === circ.bookId);
       if (book) {
-        // Priority Transit Lock: If peers in FIFO queue, lock exclusively for Next Student
         if (book.waitlist.length > 0) {
           const nextUsn = book.waitlist.shift();
           const nextStudent = state.students.find(s => s.usn === nextUsn);
@@ -1009,6 +1043,7 @@
           <td class="p-2.5 text-slate-500">${s.sl}</td>
           <td class="p-2.5 text-indigo-400 font-bold">${s.usn}</td>
           <td class="p-2.5 text-white">${s.name}</td>
+          <td class="p-2.5 text-slate-400">${s.phone}</td>
           <td class="p-2.5">
             ${s.isConfigured ? '<span class="text-emerald-400">Configured</span>' : '<span class="text-amber-400">Unconfigured</span>'}
           </td>
