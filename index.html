@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Campus Library Desk - RV University</title>
+  <title>Smart Campus Library Desk - RV University Mysuru</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Optical Barcode & QR Scanner -->
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -25,24 +25,56 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-amber-500 selection:text-black">
 
-  <!-- TOP ENTERPRISE HEADER -->
+  <!-- TOP ENTERPRISE HEADER WITH OFFICIAL RV UNIVERSITY MYSURU CREST -->
   <header class="px-6 py-3.5 border-b border-slate-800/90 bg-[#0e1724]/95 backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
     <div class="flex items-center gap-3.5">
-      <!-- RV University Crest -->
-      <div class="h-11 px-3 py-1 rounded-xl bg-[#09101a] border border-[#c5a059]/40 flex items-center gap-2.5 shadow-sm">
-        <svg class="h-8 w-8 text-[#d4af37]" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
-          <path d="M50 8 C35 8 20 22 20 40 C20 65 50 88 50 88 C50 88 80 65 80 40 C80 22 65 8 50 8 Z" stroke="#c5a059" fill="#0b131e"/>
-          <path d="M32 30 Q50 45 68 30 M32 42 Q50 57 68 42 M50 20 L50 75" stroke="#e0c068" stroke-width="3.5"/>
-          <circle cx="50" cy="22" r="4" fill="#e0c068"/>
+      <!-- Official RV University Brand Emblem Badge -->
+      <div class="h-12 px-3 py-1.5 rounded-2xl bg-[#09101a] border border-[#D1A85C]/40 flex items-center gap-3 shadow-md hover:border-[#D1A85C] transition">
+        <!-- SVG Vector of RV University Seal (Sun, Tree of Wisdom, Open Book) -->
+        <svg class="h-9 w-9 flex-shrink-0" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer Shield / Crest Ring -->
+          <circle cx="60" cy="60" r="56" stroke="#D1A85C" stroke-width="2.5" fill="#070c14" />
+          <circle cx="60" cy="60" r="50" stroke="#D1A85C" stroke-width="1" stroke-dasharray="3 3" />
+          
+          <!-- Rising Sun Rays (Knowledge Dawn) -->
+          <g stroke="#D1A85C" stroke-width="1.8" stroke-linecap="round">
+            <line x1="60" y1="20" x2="60" y2="28" />
+            <line x1="42" y1="25" x2="47" y2="32" />
+            <line x1="78" y1="25" x2="73" y2="32" />
+            <line x1="28" y1="38" x2="35" y2="43" />
+            <line x1="92" y1="38" x2="85" y2="43" />
+          </g>
+          <!-- Sun Core -->
+          <circle cx="60" cy="40" r="9" fill="#D1A85C" />
+
+          <!-- Sacred Tree of Learning & Wisdom Foliage -->
+          <path d="M46 54 C46 45, 54 44, 60 48 C66 44, 74 45, 74 54 C78 57, 76 65, 70 68 C68 70, 52 70, 50 68 C44 65, 42 57, 46 54 Z" fill="#e0c068" opacity="0.9" />
+          
+          <!-- Tree Trunk linking to Foundation -->
+          <path d="M57 66 L57 76 L63 76 L63 66 Z" fill="#D1A85C" />
+
+          <!-- Open Book of Higher Learning -->
+          <path d="M34 78 Q60 74 60 84 Q60 74 86 78 L86 92 Q60 88 60 98 Q60 88 34 92 Z" fill="#ffffff" stroke="#D1A85C" stroke-width="1.8" />
+          <line x1="60" y1="84" x2="60" y2="98" stroke="#D1A85C" stroke-width="2" />
+
+          <!-- Foundation Ribbon Base -->
+          <path d="M40 102 Q60 106 80 102" stroke="#D1A85C" stroke-width="2" stroke-linecap="round" />
         </svg>
-        <div class="border-l border-slate-700/80 pl-2.5 leading-tight">
-          <div class="flex items-center gap-1">
-            <span class="font-display font-extrabold text-sm tracking-wide text-white">RV</span>
-            <span class="font-display font-bold text-xs tracking-wider text-[#d4af37]">UNIVERSITY</span>
+
+        <!-- Official Typography Wordmark with Mysuru Campus tag -->
+        <div class="border-l border-slate-700/80 pl-3 leading-tight">
+          <div class="flex items-center gap-1.5">
+            <span class="font-display font-extrabold text-base tracking-wide text-white">RV</span>
+            <span class="font-display font-bold text-xs tracking-wider text-[#D1A85C]">UNIVERSITY</span>
           </div>
-          <span class="text-[9px] text-[#c5a059] italic block font-serif tracking-wide">Go, change the world</span>
+          <div class="flex items-center gap-1 mt-0.5">
+            <span class="text-[9px] font-mono font-bold tracking-widest text-emerald-400 uppercase">MYSURU CAMPUS</span>
+            <span class="text-[9px] text-slate-500">•</span>
+            <span class="text-[9px] text-[#D1A85C] italic font-serif">Go, change the world</span>
+          </div>
         </div>
       </div>
+
       <span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider font-mono">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SHA-256 Zero-Trust Desk
       </span>
@@ -54,8 +86,8 @@
         <span class="text-slate-400" id="badgeLabel">USN:</span> <span id="badgeValue" class="text-emerald-400 font-bold"></span>
       </div>
       
-      <!-- CENTRAL SERVER BUTTON (RESTRICTED HARDWARE HOST RVUM26CSE063) -->
-      <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
+      <!-- CENTRAL SERVER BUTTON (RESTRICTED TO RVUM26CSE063 & RVUM26CSE016) -->
+      <button id="mainServerBtn" onclick="openMainServerTerminal()" class="hidden px-3.5 py-1.5 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
         <span>⚡</span> Central Server Desk
       </button>
 
@@ -74,15 +106,15 @@
     <section id="authView" class="max-w-md mx-auto py-10 space-y-6">
       <div class="bg-[#0e1724] border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl relative">
         <div class="text-center space-y-2 mb-6">
-          <div class="w-12 h-12 rounded-2xl bg-[#c5a059]/10 text-[#d4af37] border border-[#c5a059]/30 flex items-center justify-center text-2xl mx-auto">
+          <div class="w-12 h-12 rounded-2xl bg-[#D1A85C]/10 text-[#D1A85C] border border-[#D1A85C]/30 flex items-center justify-center text-2xl mx-auto">
             📖
           </div>
           <h2 class="font-display text-2xl font-bold text-white">Student Sign In</h2>
-          <p class="text-xs text-slate-400">Select your registered RVU USN to continue</p>
+          <p class="text-xs text-slate-400">Select your registered RVU Mysuru USN to continue</p>
         </div>
 
         <div class="flex rounded-xl bg-slate-900 p-1 mb-6 border border-slate-800 text-xs">
-          <button id="tabLogin" onclick="setAuthTab('login')" class="flex-1 py-1.5 rounded-lg font-bold bg-[#c5a059] text-slate-950 transition">
+          <button id="tabLogin" onclick="setAuthTab('login')" class="flex-1 py-1.5 rounded-lg font-bold bg-[#D1A85C] text-slate-950 transition">
             Login
           </button>
           <button id="tabSetup" onclick="setAuthTab('setup')" class="flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition">
@@ -103,7 +135,7 @@
               <button type="button" onclick="togglePasswordVisibility('loginPass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs">👁️</button>
             </div>
           </div>
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
             Sign In to Desk
           </button>
         </form>
@@ -147,7 +179,7 @@
     <section id="studentView" class="hidden space-y-6">
       <div class="bg-[#0e1724] border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span class="text-[10px] font-mono text-[#d4af37] uppercase tracking-wider block font-bold">Active Academic Clearance Session</span>
+          <span class="text-[10px] font-mono text-[#D1A85C] uppercase tracking-wider block font-bold">Active Academic Clearance Session</span>
           <h2 class="text-xl font-bold text-white flex items-center gap-2">
             <span id="studentName"></span>
             <span id="studentUsnBadge" class="text-xs px-2.5 py-0.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 font-mono text-indigo-400 font-semibold"></span>
@@ -160,7 +192,7 @@
             <span class="text-[10px] text-slate-400 uppercase font-bold block">Anti-Hoarding Quota</span>
             <span id="quotaCount" class="text-lg font-bold font-mono text-emerald-400">0 / 2 Books</span>
           </div>
-          <button onclick="openGraduationAudit()" class="px-4 py-2.5 rounded-xl bg-[#c5a059]/10 hover:bg-[#c5a059]/20 border border-[#c5a059]/40 text-xs font-bold text-[#d4af37] transition">
+          <button onclick="openGraduationAudit()" class="px-4 py-2.5 rounded-xl bg-[#D1A85C]/10 hover:bg-[#D1A85C]/20 border border-[#D1A85C]/40 text-xs font-bold text-[#D1A85C] transition">
             🎓 Institutional "NO DUES" Audit
           </button>
         </div>
@@ -193,13 +225,13 @@
       </div>
     </section>
 
-    <!-- FACULTY MODAL (RVUM26CSE063 DESK TERMINAL) -->
+    <!-- FACULTY MODAL (RVUM26CSE063 & RVUM26CSE016 DESK TERMINAL) -->
     <div id="facultyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-[#0e1724] border border-[#c5a059]/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="bg-[#0e1724] border border-[#D1A85C]/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
         <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-            <h3 class="font-display font-bold text-white text-base">Central Main Server Terminal (`RVUM26CSE063`)</h3>
+            <h3 class="font-display font-bold text-white text-base">Central Main Server Terminal (Mysuru Dual-Admin Desk)</h3>
           </div>
           <button onclick="toggleFacultyModal(false)" class="text-slate-400 hover:text-white text-sm">✕</button>
         </div>
@@ -209,18 +241,18 @@
           <div class="text-center space-y-1">
             <div class="text-3xl">🔐</div>
             <h4 class="font-bold text-white text-sm">Server Security Gate</h4>
-            <p class="text-xs text-slate-400">Authenticated to Host: <code class="text-[#d4af37] font-mono">RVUM26CSE063</code></p>
+            <p class="text-xs text-slate-400">Authorized: <code class="text-[#D1A85C] font-mono">Varun Gowda UN / Ullas U</code></p>
           </div>
           <form onsubmit="event.preventDefault(); verifyFacultyLogin();" class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Server Host</label>
-              <input type="text" id="facultyIdInput" value="Varun" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Administrator Name</label>
+              <input type="text" id="facultyIdInput" value="Varun" placeholder="Varun or Ullas" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-1">Master PIN</label>
               <input type="password" id="facultyPinInput" placeholder="Enter PIN (1403)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:outline-none" />
             </div>
-            <button type="submit" class="w-full py-2.5 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
               Unlock Server Controls
             </button>
           </form>
@@ -343,7 +375,7 @@
               </div>
 
               <div class="flex justify-end pt-1">
-                <button type="submit" class="px-6 py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
+                <button type="submit" class="px-6 py-2 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
                   Confirm & Ingest to Shelf Stock
                 </button>
               </div>
@@ -386,8 +418,9 @@
         <div id="printableCert" class="bg-white text-slate-900 p-8 rounded-2xl space-y-6 border-4 border-slate-900">
           <div class="border-b-2 border-slate-900 pb-4 text-center space-y-1">
             <h3 class="text-2xl font-black uppercase tracking-tight text-slate-950 font-serif">RV UNIVERSITY</h3>
-            <p class="text-xs uppercase font-bold tracking-widest text-slate-700">Office of the University Librarian & Student Clearance</p>
-            <p class="text-[11px] text-slate-500 italic">Mysuru Campus • School of Computer Science and Engineering</p>
+            <p class="text-xs uppercase font-bold tracking-widest text-[#D1A85C]">Mysuru Campus • School of Engineering</p>
+            <p class="text-[11px] text-slate-600">Office of the University Librarian & Student Clearance Desk</p>
+            <p class="text-[10px] text-slate-500 italic">KIADB Industrial Area, Nanjangud, Mysuru, Karnataka</p>
           </div>
 
           <div class="text-center py-2 bg-slate-100 rounded-xl">
@@ -433,7 +466,7 @@
 
         <div class="flex justify-end gap-3">
           <button onclick="toggleAuditModal(false)" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-semibold text-slate-300">Close</button>
-          <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-[#c5a059] text-slate-950 font-bold text-xs">Print Official PDF</button>
+          <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-[#D1A85C] text-slate-950 font-bold text-xs">Print Official PDF</button>
         </div>
       </div>
     </div>
@@ -462,6 +495,7 @@
       { sl: 2, usn: "RVUM26CSE114", name: "NIKHIL", isConfigured: false, passHash: "", phone: "+91 98801 11402" },
       { sl: 3, usn: "RVUM26CSE104", name: "PRAGATI AMAR GARUDKAR", isConfigured: false, passHash: "", phone: "+91 98801 10403" },
       { sl: 4, usn: "RVUM26CSE103", name: "SONAM PANDEY", isConfigured: false, passHash: "", phone: "+91 98801 10304" },
+      // ULLAS U IS IN A FRESH FIRST-TIME SETUP STATE
       { sl: 5, usn: "RVUM26CSE016", name: "ULLAS U", isConfigured: false, passHash: "", phone: "+91 98801 01605" },
       { sl: 6, usn: "RVUM26CSE012", name: "VAAGESH CHANDRA VALLAMKONDA", isConfigured: false, passHash: "", phone: "+91 98801 01206" },
       { sl: 7, usn: "RVUM26CSE063", name: "VARUN GOWDA UN", isConfigured: false, passHash: "", phone: "+91 98801 06307" },
@@ -519,17 +553,18 @@
       { id: "B5", title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", barcode: "9780132350884", total: 2, available: 1, waitlist: [] }
     ];
 
-    const PERMANENT_STORAGE_KEY = "rvu_secure_vault_prod_v1";
+    const PERMANENT_STORAGE_KEY = "rvu_secure_vault_prod_v3";
     const SESSION_KEY = "rvu_active_session_token";
 
-    // Legacy store keys to seamlessly migrate existing passwords to SHA-256 hashes
+    // Legacy store keys to migrate
     const LEGACY_STORAGE_KEYS = [
+      "rvu_secure_vault_prod_v2",
+      "rvu_secure_vault_prod_v1",
       "rvu_permanent_autonomous_v8",
       "rvu_permanent_production_store_v1",
       "rvu_smart_library_tri_scan_v7",
       "rvu_smart_library_ocr_v6",
-      "rvu_smart_library_scanned_v5",
-      "rvu_autonomous_desk_passwords_v1"
+      "rvu_smart_library_scanned_v5"
     ];
 
     function loadState() {
@@ -546,7 +581,7 @@
         };
       }
 
-      // AUTO-MIGRATION: Migrate plaintext passwords to SHA-256 hashes safely
+      // Safe migration from older storage snapshots
       LEGACY_STORAGE_KEYS.forEach(k => {
         const legacyRaw = localStorage.getItem(k);
         if (legacyRaw) {
@@ -554,6 +589,9 @@
             const legacyData = JSON.parse(legacyRaw);
             if (legacyData.students && Array.isArray(legacyData.students)) {
               legacyData.students.forEach(async ls => {
+                // Ensure Ullas U is never restored with an old password
+                if (ls.usn === "RVUM26CSE016") return;
+
                 const target = state.students.find(s => s.usn === ls.usn);
                 if (target && ls.isConfigured && !target.passHash) {
                   target.isConfigured = true;
@@ -579,6 +617,13 @@
           } catch (e) {}
         }
       });
+
+      // Explicitly enforce clean reset for Ullas U
+      const ullas = state.students.find(s => s.usn === "RVUM26CSE016");
+      if (ullas) {
+        ullas.isConfigured = false;
+        ullas.passHash = "";
+      }
 
       saveState(state);
       return state;
@@ -671,12 +716,12 @@
       const formSetup = document.getElementById("formSetup");
 
       if (tab === "login") {
-        tabLogin.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#c5a059] text-slate-950 transition";
+        tabLogin.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#D1A85C] text-slate-950 transition";
         tabSetup.className = "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition";
         formLogin.classList.remove("hidden");
         formSetup.classList.add("hidden");
       } else {
-        tabSetup.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#c5a059] text-slate-950 transition";
+        tabSetup.className = "flex-1 py-1.5 rounded-lg font-bold bg-[#D1A85C] text-slate-950 transition";
         tabLogin.className = "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition";
         formSetup.classList.remove("hidden");
         formLogin.classList.add("hidden");
@@ -731,7 +776,6 @@
 
       const student = state.students.find(s => s.usn === usn);
       student.isConfigured = true;
-      // Store ONLY the cryptographic SHA-256 hash
       student.passHash = await sha256(pass);
       delete student.password;
       saveState(state);
@@ -784,8 +828,9 @@
       document.getElementById("studentUsnBadge").textContent = currentStudent.usn;
       document.getElementById("studentPhoneDisplay").textContent = `Mobile: ${currentStudent.phone}`;
 
+      // STRICT DUAL-FACULTY AUTHORIZATION: RVUM26CSE063 (VARUN) & RVUM26CSE016 (ULLAS)
       const mainServerBtn = document.getElementById("mainServerBtn");
-      if (currentStudent.usn === "RVUM26CSE063") {
+      if (currentStudent.usn === "RVUM26CSE063" || currentStudent.usn === "RVUM26CSE016") {
         mainServerBtn.classList.remove("hidden");
       } else {
         mainServerBtn.classList.add("hidden");
@@ -899,7 +944,7 @@
             ` : myWaitlistPos !== -1 ? `
               <span class="text-xs text-amber-400 font-mono font-semibold">Position #${myWaitlistPos + 1} in FIFO Waitlist</span>
             ` : b.available > 0 ? `
-              <button onclick="autonomousSelfIssue('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-[#c5a059] hover:bg-[#b38f4a] disabled:opacity-40 text-slate-950 font-bold text-xs transition">
+              <button onclick="autonomousSelfIssue('${b.id}')" ${quotaReached ? 'disabled' : ''} class="w-full py-2 rounded-xl bg-[#D1A85C] hover:bg-[#b89146] disabled:opacity-40 text-slate-950 font-bold text-xs transition">
                 ${quotaReached ? 'Quota Limit Reached (Max 2)' : 'Instant Autonomous Issue (-1 Count)'}
               </button>
             ` : `
@@ -969,7 +1014,6 @@
       const book = state.books.find(b => b.id === circ.bookId);
       if (book) {
         if (book.waitlist.length > 0) {
-          // Priority Transit Lock: Allocate to Waitlist Student #1
           const nextUsn = book.waitlist.shift();
           const nextStudent = state.students.find(s => s.usn === nextUsn);
           
@@ -1058,9 +1102,9 @@
       }
 
       // Compute tamper-evident hash token
-      const auditPayload = `${currentStudent.usn}_${statusKey}_${auditDate}_rvu_secret_salt_2026`;
+      const auditPayload = `${currentStudent.usn}_${statusKey}_${auditDate}_rvu_mysuru_salt_2026`;
       const fullHash = await sha256(auditPayload);
-      document.getElementById("certHashSerial").textContent = `RVU-CSE-${fullHash.substring(0, 12).toUpperCase()}`;
+      document.getElementById("certHashSerial").textContent = `RVUM-CSE-${fullHash.substring(0, 12).toUpperCase()}`;
 
       document.getElementById("auditModal").classList.remove("hidden");
     }
@@ -1070,14 +1114,24 @@
     }
 
     // -------------------------------------------------------------
-    // FACULTY DESK TERMINAL (RVUM26CSE063 ONLY)
+    // FACULTY DESK TERMINAL (RVUM26CSE063 & RVUM26CSE016 ACCESS)
     // -------------------------------------------------------------
     function openMainServerTerminal() {
-      if (!currentStudent || currentStudent.usn !== "RVUM26CSE063") {
+      // DUAL FACULTY AUTHORIZATION
+      if (!currentStudent || (currentStudent.usn !== "RVUM26CSE063" && currentStudent.usn !== "RVUM26CSE016")) {
         soundWarning();
-        showToast("Access Denied: Terminal restricted to RVUM26CSE063.", "error");
+        showToast("Access Denied: Terminal restricted to Varun Gowda UN & Ullas U.", "error");
         return;
       }
+
+      // Auto-prefill admin name according to logged-in user
+      const nameField = document.getElementById("facultyIdInput");
+      if (currentStudent.usn === "RVUM26CSE016") {
+        nameField.value = "Ullas";
+      } else {
+        nameField.value = "Varun";
+      }
+
       toggleFacultyModal(true);
     }
 
@@ -1089,13 +1143,14 @@
     }
 
     async function verifyFacultyLogin() {
-      const id = document.getElementById("facultyIdInput").value.trim();
+      const id = document.getElementById("facultyIdInput").value.trim().toLowerCase();
       const pin = document.getElementById("facultyPinInput").value.trim();
 
       // Cryptographic check with Salt
       const enteredPinHash = await sha256(pin + "_rvu_pin_salt");
 
-      if (id === "Varun" && enteredPinHash === MASTER_PIN_HASH) {
+      // Allows login as Varun or Ullas with Master PIN
+      if ((id === "varun" || id === "ullas") && enteredPinHash === MASTER_PIN_HASH) {
         document.getElementById("facultyAuthGate").classList.add("hidden");
         document.getElementById("facultyDashboard").classList.remove("hidden");
         soundSuccess();
@@ -1179,7 +1234,7 @@
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `RVU_Library_Ledger_${new Date().toISOString().split("T")[0]}.json`);
+      downloadAnchor.setAttribute("download", `RVU_Mysuru_Library_Ledger_${new Date().toISOString().split("T")[0]}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
