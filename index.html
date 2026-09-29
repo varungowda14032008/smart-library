@@ -131,7 +131,7 @@
             <label class="block text-xs font-semibold text-slate-300 mb-1">Permanent Password</label>
             <div class="relative">
               <input type="password" id="loginPass" placeholder="Enter password" class="w-full px-3 py-2.5 rounded-xl bg-[#111f2a] border border-[#223a4d] text-xs text-white focus:outline-none focus:border-[#cda659] pr-10" />
-              <button type="button" onclick="togglePasswordVisibility('loginPass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs">👁️</button>
+              <button type="button" onclick="togglePasswordVisibility('loginPass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-white text-xs">👁</button>
             </div>
           </div>
           <button type="submit" class="w-full py-2.5 rounded-xl bg-[#cda659] hover:bg-[#b58f44] text-slate-950 font-bold text-xs uppercase tracking-wider transition">
@@ -264,7 +264,7 @@
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Titles</span>
               <span id="statTotalBooks" class="text-xl font-bold font-mono text-indigo-400">0</span>
             </div>
-            <div class="bg-[#111f2a] border border-[#223a4d] p-3.5 rounded-2xl text-center">
+            <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl text-center">
               <span class="text-[10px] text-slate-400 uppercase font-bold block">Physical Copies</span>
               <span id="statTotalCopies" class="text-xl font-bold font-mono text-amber-400">0</span>
             </div>
@@ -493,10 +493,8 @@
     // 1. FRONTEND KIOSK FIREWALL & ANTI-TAMPER INTEGRITY SHIELD
     // =====================================================================
     (function activateClientFirewall() {
-      // Block Context Menu (Inspect Element)
       document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-      // Block Inspection Key Shortcuts
       document.addEventListener('keydown', (e) => {
         if (
           e.key === 'F12' ||
@@ -510,7 +508,6 @@
         }
       });
 
-      // DevTools Heuristic Window Difference Trap
       const threshold = 160;
       setInterval(() => {
         const widthThreshold = window.outerWidth - window.innerWidth > threshold;
@@ -527,7 +524,6 @@
       }, 1000);
     })();
 
-    // Cryptographic Storage Checksum Seal
     const HARDWARE_INTEGRITY_SALT = "rvu_kiosk_firmware_shield_2026";
 
     async function computeDataSeal(dataString) {
@@ -546,7 +542,6 @@
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // Exact SHA-256 of ("1403_rvu_pin_salt")
     const MASTER_PIN_HASH = "a3b934757c60312015fa8b88eb34691e84aa6d0d216f488cbaea9153578ee16c";
 
     // =====================================================================
@@ -606,31 +601,122 @@
       { sl: 51, usn: "RVUM26CSE143", name: "VIKAS MAHADEV PATTAR", isConfigured: false, passHash: "", phone: "+91 98801 14351" }
     ];
 
-    // ZERO SAMPLE BOOKS
-    const INITIAL_BOOKS = [];
+    // =====================================================================
+    // 4. 10 CORE COMPUTER SCIENCE & ENGINEERING (CSE) TEXTBOOKS
+    // =====================================================================
+    const INITIAL_BOOKS = [
+      {
+        id: "CSE-101",
+        title: "Introduction to Algorithms (CLRS 4th Edition)",
+        author: "Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein",
+        barcode: "9780262046305",
+        total: 5,
+        available: 5,
+        waitlist: []
+      },
+      {
+        id: "CSE-102",
+        title: "Operating System Concepts (10th Edition)",
+        author: "Abraham Silberschatz, Peter B. Galvin, Greg Gagne",
+        barcode: "9781119456339",
+        total: 4,
+        available: 4,
+        waitlist: []
+      },
+      {
+        id: "CSE-103",
+        title: "Database System Concepts (7th Edition)",
+        author: "Abraham Silberschatz, Henry F. Korth, S. Sudarshan",
+        barcode: "9780078022159",
+        total: 4,
+        available: 3,
+        waitlist: []
+      },
+      {
+        id: "CSE-104",
+        title: "Computer Networking: A Top-Down Approach (8th Edition)",
+        author: "James F. Kurose, Keith W. Ross",
+        barcode: "9780136681557",
+        total: 3,
+        available: 3,
+        waitlist: []
+      },
+      {
+        id: "CSE-105",
+        title: "Computer Organization and Architecture: Designing for Performance",
+        author: "William Stallings",
+        barcode: "9780134997193",
+        total: 4,
+        available: 4,
+        waitlist: []
+      },
+      {
+        id: "CSE-106",
+        title: "Introduction to the Theory of Computation (3rd Edition)",
+        author: "Michael Sipser",
+        barcode: "9781133187790",
+        total: 3,
+        available: 0,
+        waitlist: ["RVUM26CSE122"]
+      },
+      {
+        id: "CSE-107",
+        title: "Compilers: Principles, Techniques, and Tools (Dragon Book)",
+        author: "Alfred V. Aho, Monica S. Lam, Ravi Sethi, Jeffrey D. Ullman",
+        barcode: "9780321486813",
+        total: 2,
+        available: 2,
+        waitlist: []
+      },
+      {
+        id: "CSE-108",
+        title: "Discrete Mathematics and Its Applications (8th Edition)",
+        author: "Kenneth H. Rosen",
+        barcode: "9781259676512",
+        total: 5,
+        available: 5,
+        waitlist: []
+      },
+      {
+        id: "CSE-109",
+        title: "Artificial Intelligence: A Modern Approach (4th Edition)",
+        author: "Stuart Russell, Peter Norvig",
+        barcode: "9780134610993",
+        total: 3,
+        available: 2,
+        waitlist: []
+      },
+      {
+        id: "CSE-110",
+        title: "Software Engineering: A Practitioner's Approach (9th Edition)",
+        author: "Roger S. Pressman, Bruce R. Maxim",
+        barcode: "9781259872976",
+        total: 3,
+        available: 3,
+        waitlist: []
+      }
+    ];
 
-    // PERMANENT MASTER STORAGE KEYS
-    const MASTER_STORAGE_KEY = "rvu_master_database_permanent";
+    const MASTER_STORAGE_KEY = "rvu_master_database_permanent_v7";
     const SESSION_KEY = "rvu_active_session_token";
 
     async function loadState() {
       let state = {
         students: JSON.parse(JSON.stringify(INITIAL_STUDENTS)),
-        books: [],
+        books: JSON.parse(JSON.stringify(INITIAL_BOOKS)),
         circulations: []
       };
 
       const masterRaw = localStorage.getItem(MASTER_STORAGE_KEY);
-      const storedSeal = localStorage.getItem("rvu_database_integrity_seal");
+      const storedSeal = localStorage.getItem("rvu_database_integrity_seal_v7");
 
       if (masterRaw) {
-        // Verify Data Integrity Checksum
         if (storedSeal) {
           const expected = await computeDataSeal(masterRaw);
           if (storedSeal !== expected) {
             alert("SECURITY ALERT: Storage tampering detected! Reverting to safe verified state.");
             localStorage.removeItem(MASTER_STORAGE_KEY);
-            localStorage.removeItem("rvu_database_integrity_seal");
+            localStorage.removeItem("rvu_database_integrity_seal_v7");
             return state;
           }
         }
@@ -647,16 +733,16 @@
               }
             });
           }
-          if (masterData.books && Array.isArray(masterData.books)) {
-            state.books = masterData.books.filter(b => !["B1", "B2", "B3", "B4", "B5"].includes(b.id));
+          if (masterData.books && Array.isArray(masterData.books) && masterData.books.length > 0) {
+            state.books = masterData.books;
           }
           if (masterData.circulations && Array.isArray(masterData.circulations)) {
-            state.circulations = masterData.circulations.filter(c => !["B1", "B2", "B3", "B4", "B5"].includes(c.bookId));
+            state.circulations = masterData.circulations;
           }
         } catch(e) {}
       }
 
-      // Enforce clean state for Ullas U until he finishes setup
+      // Ullas U setup safety
       const ullas = state.students.find(s => s.usn === "RVUM26CSE016");
       if (ullas && !ullas.passHash) {
         ullas.isConfigured = false;
@@ -671,7 +757,7 @@
       const jsonString = JSON.stringify(stateObj);
       localStorage.setItem(MASTER_STORAGE_KEY, jsonString);
       const seal = await computeDataSeal(jsonString);
-      localStorage.setItem("rvu_database_integrity_seal", seal);
+      localStorage.setItem("rvu_database_integrity_seal_v7", seal);
     }
 
     let state;
@@ -721,7 +807,7 @@
     function togglePasswordVisibility(fieldId, btn) {
       const input = document.getElementById(fieldId);
       input.type = input.type === "password" ? "text" : "password";
-      btn.textContent = input.type === "password" ? "👁️️" : "🔒";
+      btn.textContent = input.type === "password" ? "👁" : "🔒";
     }
 
     function populateDropdowns() {
@@ -1489,7 +1575,7 @@
       const count = parseInt(document.getElementById("newBookCount").value, 10);
 
       state.books.push({
-        id: "B" + Date.now().toString().slice(-6),
+        id: "CSE-" + (state.books.length + 101),
         title: title,
         author: author,
         barcode: barcode || "REF-" + Date.now().toString().slice(-6),
